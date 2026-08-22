@@ -18,274 +18,41 @@
 
 <body>
 
-<div class="editor-container">
-
-    <h1>Question Editor</h1>
-
-    <p class="subtitle">
-        Create and manage your question bank
-    </p>
+    <div class="editor-container">
 
 
-    <!-- ============================================ -->
-    <!-- COMMON MARKING SCHEME -->
-    <!-- ============================================ -->
+        <h1>Question Editor</h1>
 
-    <section class="marking-section">
 
-        <h2>Marking Scheme</h2>
-
-        <p>
-            These marks apply to every question.
+        <p class="subtitle">
+            Create and manage your question bank
         </p>
 
 
-        <label for="positiveMarks">
-            Marks for Correct Answer
-        </label>
 
-        <input
-            type="number"
-            id="positiveMarks"
-            min="0"
-            step="0.25"
-            value="1">
+        <!-- ========================================= -->
+        <!-- Common Test Marking -->
+        <!-- ========================================= -->
 
+        <section class="settings-section">
 
-        <label for="negativeMarks">
-            Negative Marks for Wrong Answer
-        </label>
+            <h2>
+                Test Marking
+            </h2>
 
-        <input
-            type="number"
-            id="negativeMarks"
-            min="0"
-            step="0.25"
-            value="0">
 
+            <p>
+                These marking rules apply to
+                every question in the test.
+            </p>
 
-        <button
-            type="button"
-            id="saveSettingsButton">
-            Save Marking Scheme
-        </button>
-
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- QUESTION FORM -->
-    <!-- ============================================ -->
-
-    <section class="question-section">
-
-        <h2 id="formTitle">
-            Add Question
-        </h2>
-
-
-        <form id="questionForm">
-
-            <input
-                type="hidden"
-                id="questionId">
-
-
-            <!-- Question -->
-
-            <label for="question">
-                Question
-            </label>
-
-            <textarea
-                id="question"
-                rows="4"
-                placeholder="Enter your question..."
-                required></textarea>
-
-
-            <!-- Option A -->
-
-            <label for="optionA">
-                Option A
-            </label>
-
-            <input
-                type="text"
-                id="optionA"
-                placeholder="Enter option A"
-                required>
-
-
-            <!-- Option B -->
-
-            <label for="optionB">
-                Option B
-            </label>
-
-            <input
-                type="text"
-                id="optionB"
-                placeholder="Enter option B"
-                required>
-
-
-            <!-- Option C -->
-
-            <label for="optionC">
-                Option C
-            </label>
-
-            <input
-                type="text"
-                id="optionC"
-                placeholder="Enter option C"
-                required>
-
-
-            <!-- Option D -->
-
-            <label for="optionD">
-                Option D
-            </label>
-
-            <input
-                type="text"
-                id="optionD"
-                placeholder="Enter option D"
-                required>
-
-
-            <!-- Correct Answer -->
-
-            <label for="correctAnswer">
-                Correct Answer
-            </label>
-
-            <select
-                id="correctAnswer"
-                required>
-
-                <option value="">
-                    Select correct answer
-                </option>
-
-                <option value="A">
-                    Option A
-                </option>
-
-                <option value="B">
-                    Option B
-                </option>
-
-                <option value="C">
-                    Option C
-                </option>
-
-                <option value="D">
-                    Option D
-                </option>
-
-            </select>
-
-
-            <!-- Buttons -->
-
-            <div class="button-row">
-
-                <button
-                    type="submit"
-                    id="saveButton">
-                    Save Question
-                </button>
-
-
-                <button
-                    type="button"
-                    id="cancelButton"
-                    onclick="resetForm()">
-
-                    Clear
-
-                </button>
-
-            </div>
-
-        </form>
-
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- QUESTION LIST -->
-    <!-- ============================================ -->
-
-    <section class="question-list">
-
-        <h2>
-            Saved Questions
-        </h2>
-
-
-        <p id="questionCount">
-            0 questions
-        </p>
-
-
-        <div id="questionsContainer">
-        </div>
-
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- HOME -->
-    <!-- ============================================ -->
-
-    <a
-        href="index.html"
-        class="home-link">
-
-        ← Back to Home
-
-    </a>
-
-</div>
-
-
-<!-- ============================================== -->
-<!-- JAVASCRIPT -->
-<!-- ============================================== -->
-
-<script src="js/storage.js"></script>
-
-<script src="js/editor.js"></script>
-
-
-</body>
-
-</html>                </option>
-
-                <option value="B">
-                    Option B
-                </option>
-
-                <option value="C">
-                    Option C
-                </option>
-
-                <option value="D">
-                    Option D
-                </option>
-
-            </select>
-
-
-            <!-- Marks -->
 
             <label for="positiveMarks">
+
                 Marks for Correct Answer
+
             </label>
+
 
             <input
                 type="number"
@@ -297,8 +64,11 @@
 
 
             <label for="negativeMarks">
+
                 Negative Marks for Wrong Answer
+
             </label>
+
 
             <input
                 type="number"
@@ -308,26 +78,210 @@
                 step="0.25"
                 required>
 
-            <!-- Buttons -->
 
-            <div class="button-row">
+            <button
+                type="button"
+                id="saveSettingsButton">
 
-                <button
-                    type="submit"
-                    id="saveButton">
-                    Save Question
-                </button>
+                Save Marking Settings
 
-                <button
-                    type="button"
-                    id="cancelButton"
-                    onclick="resetForm()">
-                    Clear
-                </button>
+            </button>
 
-            </div>
 
-        </form>
+            <p id="settingsMessage"></p>
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Question Form -->
+        <!-- ========================================= -->
+
+        <section class="question-section">
+
+
+            <h2>
+                Question
+            </h2>
+
+
+            <form id="questionForm">
+
+
+                <input
+                    type="hidden"
+                    id="questionId">
+
+
+
+                <label for="question">
+
+                    Question
+
+                </label>
+
+
+                <textarea
+                    id="question"
+                    rows="4"
+                    placeholder="Enter your question..."
+                    required></textarea>
+
+
+
+                <!-- Option A -->
+
+                <label for="optionA">
+
+                    Option A
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="optionA"
+                    placeholder="Enter option A"
+                    required>
+
+
+
+                <!-- Option B -->
+
+                <label for="optionB">
+
+                    Option B
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="optionB"
+                    placeholder="Enter option B"
+                    required>
+
+
+
+                <!-- Option C -->
+
+                <label for="optionC">
+
+                    Option C
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="optionC"
+                    placeholder="Enter option C"
+                    required>
+
+
+
+                <!-- Option D -->
+
+                <label for="optionD">
+
+                    Option D
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="optionD"
+                    placeholder="Enter option D"
+                    required>
+
+
+
+                <!-- Correct Answer -->
+
+                <label for="correctAnswer">
+
+                    Correct Answer
+
+                </label>
+
+
+                <select
+                    id="correctAnswer"
+                    required>
+
+
+                    <option value="">
+
+                        Select correct answer
+
+                    </option>
+
+
+                    <option value="A">
+
+                        Option A
+
+                    </option>
+
+
+                    <option value="B">
+
+                        Option B
+
+                    </option>
+
+
+                    <option value="C">
+
+                        Option C
+
+                    </option>
+
+
+                    <option value="D">
+
+                        Option D
+
+                    </option>
+
+
+                </select>
+
+
+
+                <!-- Buttons -->
+
+                <div class="button-row">
+
+
+                    <button
+                        type="submit"
+                        id="saveButton">
+
+                        Save Question
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelButton"
+                        onclick="resetForm()">
+
+                        Clear
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+        </section>
+
 
 
         <!-- ========================================= -->
@@ -336,36 +290,50 @@
 
         <section class="question-list">
 
+
             <h2>
                 Saved Questions
             </h2>
+
 
             <p id="questionCount">
                 0 questions
             </p>
 
+
             <div id="questionsContainer">
             </div>
+
 
         </section>
 
 
-        <!-- Home -->
+
+        <!-- ========================================= -->
+        <!-- Back to Home -->
+        <!-- ========================================= -->
 
         <a
             href="index.html"
             class="home-link">
+
             ← Back to Home
+
         </a>
+
 
     </div>
 
 
+
+    <!-- ============================================= -->
     <!-- JavaScript -->
+    <!-- ============================================= -->
 
     <script src="js/storage.js"></script>
 
     <script src="js/editor.js"></script>
+
 
 </body>
 
