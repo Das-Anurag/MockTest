@@ -36,9 +36,6 @@ const positiveMarks =
 const negativeMarks =
     document.getElementById("negativeMarks");
 
-const explanation =
-    document.getElementById("explanation");
-
 const saveButton =
     document.getElementById("saveButton");
 
@@ -87,9 +84,6 @@ form.addEventListener("submit", function(event) {
 
         negativeMarks:
             Number(negativeMarks.value),
-
-        explanation:
-            explanation.value.trim()
 
     };
 
@@ -249,10 +243,6 @@ function editQuestion(id) {
 
     negativeMarks.value =
         q.negativeMarks;
-
-    explanation.value =
-        q.explanation || "";
-
 
     saveButton.textContent =
         "Update Question";
