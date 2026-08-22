@@ -1,11 +1,13 @@
+"editor.js"
+
 // ======================================================
 // Mock Test - Question Editor
 // ======================================================
 
 
-// ======================================================
-// HTML ELEMENTS
-// ======================================================
+// ------------------------------------------------------
+// HTML elements
+// ------------------------------------------------------
 
 const form =
     document.getElementById(
@@ -67,21 +69,21 @@ const negativeMarks =
     );
 
 
-const saveSettingsButton =
-    document.getElementById(
-        "saveSettingsButton"
-    );
-
-
 const saveButton =
     document.getElementById(
         "saveButton"
     );
 
 
-const formTitle =
+const saveSettingsButton =
     document.getElementById(
-        "formTitle"
+        "saveSettingsButton"
+    );
+
+
+const settingsMessage =
+    document.getElementById(
+        "settingsMessage"
     );
 
 
@@ -97,23 +99,31 @@ const questionCount =
     );
 
 
-// ======================================================
-// LOAD SETTINGS
-// ======================================================
+
+// ------------------------------------------------------
+// Load saved settings
+// ------------------------------------------------------
 
 loadSettings();
 
 
-// ======================================================
-// DISPLAY QUESTIONS
-// ======================================================
+
+// ------------------------------------------------------
+// Display saved questions
+// ------------------------------------------------------
 
 displayQuestions();
 
 
+
 // ======================================================
-// LOAD MARKING SETTINGS
+// TEST MARKING SETTINGS
 // ======================================================
+
+
+// ------------------------------------------------------
+// Load settings
+// ------------------------------------------------------
 
 function loadSettings() {
 
@@ -131,13 +141,15 @@ function loadSettings() {
 }
 
 
-// ======================================================
-// SAVE MARKING SETTINGS
-// ======================================================
+
+// ------------------------------------------------------
+// Save settings
+// ------------------------------------------------------
 
 saveSettingsButton.addEventListener(
     "click",
     function() {
+
 
         const settings = {
 
@@ -157,43 +169,68 @@ saveSettingsButton.addEventListener(
         saveSettings(settings);
 
 
-        alert(
-            "Marking scheme saved successfully."
+        settingsMessage.textContent =
+            "Marking settings saved.";
+
+
+        setTimeout(
+            function() {
+
+                settingsMessage.textContent =
+                    "";
+
+            },
+            2000
         );
 
     }
 );
 
 
+
 // ======================================================
-// SAVE / UPDATE QUESTION
+// QUESTION FORM
 // ======================================================
+
+
+// ------------------------------------------------------
+// Save / update question
+// ------------------------------------------------------
 
 form.addEventListener(
     "submit",
     function(event) {
+
 
         event.preventDefault();
 
 
         const questionData = {
 
-            id: questionId.value,
+            id:
+                questionId.value,
+
 
             question:
                 question.value.trim(),
 
+
             options: {
 
-                A: optionA.value.trim(),
+                A:
+                    optionA.value.trim(),
 
-                B: optionB.value.trim(),
+                B:
+                    optionB.value.trim(),
 
-                C: optionC.value.trim(),
+                C:
+                    optionC.value.trim(),
 
-                D: optionD.value.trim()
+                D:
+                    optionD.value.trim()
 
             },
+
 
             correctAnswer:
                 correctAnswer.value
@@ -201,11 +238,11 @@ form.addEventListener(
         };
 
 
-        // ------------------------------------------
-        // NEW QUESTION
-        // ------------------------------------------
+
+        // New question
 
         if (!questionId.value) {
+
 
             addQuestion(
                 questionData
@@ -219,11 +256,10 @@ form.addEventListener(
         }
 
 
-        // ------------------------------------------
-        // UPDATE QUESTION
-        // ------------------------------------------
+        // Existing question
 
         else {
+
 
             updateQuestion(
                 questionData
@@ -237,7 +273,9 @@ form.addEventListener(
         }
 
 
+
         resetForm();
+
 
         displayQuestions();
 
@@ -245,18 +283,23 @@ form.addEventListener(
 );
 
 
+
 // ======================================================
 // DISPLAY QUESTIONS
 // ======================================================
 
+
 function displayQuestions() {
+
 
     const questions =
         getQuestions();
 
 
     questionCount.textContent =
+
         questions.length +
+
         (
             questions.length === 1
                 ? " question"
@@ -264,22 +307,28 @@ function displayQuestions() {
         );
 
 
+
     questionsContainer.innerHTML =
         "";
 
 
+
     if (questions.length === 0) {
+
 
         questionsContainer.innerHTML =
             "<p>No questions have been added yet.</p>";
+
 
         return;
 
     }
 
 
+
     questions.forEach(
         function(q, index) {
+
 
             const card =
                 document.createElement(
@@ -289,6 +338,7 @@ function displayQuestions() {
 
             card.className =
                 "question-card";
+
 
 
             card.innerHTML = `
@@ -338,7 +388,6 @@ function displayQuestions() {
                 <div class="answer-info">
 
                     Correct Answer:
-
                     <strong>
                         ${q.correctAnswer}
                     </strong>
@@ -348,10 +397,9 @@ function displayQuestions() {
 
                 <div class="card-buttons">
 
+
                     <button
-                        onclick="
-                        editQuestion('${q.id}')
-                        ">
+                        onclick="editQuestion('${q.id}')">
 
                         Edit
 
@@ -359,17 +407,17 @@ function displayQuestions() {
 
 
                     <button
-                        onclick="
-                        removeQuestion('${q.id}')
-                        ">
+                        onclick="removeQuestion('${q.id}')">
 
                         Delete
 
                     </button>
 
+
                 </div>
 
             `;
+
 
 
             questionsContainer.appendChild(
@@ -382,11 +430,14 @@ function displayQuestions() {
 }
 
 
+
 // ======================================================
 // EDIT QUESTION
 // ======================================================
 
+
 function editQuestion(id) {
+
 
     const q =
         getQuestionById(id);
@@ -397,6 +448,7 @@ function editQuestion(id) {
         return;
 
     }
+
 
 
     questionId.value =
@@ -427,12 +479,10 @@ function editQuestion(id) {
         q.correctAnswer;
 
 
+
     saveButton.textContent =
         "Update Question";
 
-
-    formTitle.textContent =
-        "Edit Question";
 
 
     window.scrollTo({
@@ -446,11 +496,14 @@ function editQuestion(id) {
 }
 
 
+
 // ======================================================
 // DELETE QUESTION
 // ======================================================
 
+
 function removeQuestion(id) {
+
 
     const confirmation =
         confirm(
@@ -465,6 +518,7 @@ function removeQuestion(id) {
     }
 
 
+
     deleteQuestion(id);
 
 
@@ -473,11 +527,14 @@ function removeQuestion(id) {
 }
 
 
+
 // ======================================================
 // RESET FORM
 // ======================================================
 
+
 function resetForm() {
+
 
     form.reset();
 
@@ -490,33 +547,19 @@ function resetForm() {
         "Save Question";
 
 
-    formTitle.textContent =
-        "Add Question";
-
-
-    // Restore marking values
-    // because form.reset() must not
-    // change the common marking scheme.
-
-    const settings =
-        getSettings();
-
-
-    positiveMarks.value =
-        settings.positiveMarks;
-
-
-    negativeMarks.value =
-        settings.negativeMarks;
+    loadSettings();
 
 }
 
 
+
 // ======================================================
-// ESCAPE HTML
+// HTML PROTECTION
 // ======================================================
 
+
 function escapeHTML(text) {
+
 
     const div =
         document.createElement(
