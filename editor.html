@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Question Editor</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="editor-container">
+
+        <h1>Question Editor</h1>
+
+        <p class="subtitle">
+            Create and manage your question bank
+        </p>
+
+
+        <!-- ========================================= -->
+        <!-- Question Form -->
+        <!-- ========================================= -->
+
+        <form id="questionForm">
+
+            <input type="hidden" id="questionId">
+
+
+            <label for="question">
+                Question
+            </label>
+
+            <textarea
+                id="question"
+                rows="4"
+                placeholder="Enter your question..."
+                required></textarea>
+
+
+            <label for="optionA">
+                Option A
+            </label>
+
+            <input
+                type="text"
+                id="optionA"
+                placeholder="Enter option A"
+                required>
+
+
+            <label for="optionB">
+                Option B
+            </label>
+
+            <input
+                type="text"
+                id="optionB"
+                placeholder="Enter option B"
+                required>
+
+
+            <label for="optionC">
+                Option C
+            </label>
+
+            <input
+                type="text"
+                id="optionC"
+                placeholder="Enter option C"
+                required>
+
+
+            <label for="optionD">
+                Option D
+            </label>
+
+            <input
+                type="text"
+                id="optionD"
+                placeholder="Enter option D"
+                required>
+
+
+            <!-- Correct Answer -->
+
+            <label for="correctAnswer">
+                Correct Answer
+            </label>
+
+            <select id="correctAnswer" required>
+
+                <option value="">
+                    Select correct answer
+                </option>
+
+                <option value="A">
+                    Option A
+                </option>
+
+                <option value="B">
+                    Option B
+                </option>
+
+                <option value="C">
+                    Option C
+                </option>
+
+                <option value="D">
+                    Option D
+                </option>
+
+            </select>
+
+
+            <!-- Marks -->
+
+            <label for="positiveMarks">
+                Marks for Correct Answer
+            </label>
+
+            <input
+                type="number"
+                id="positiveMarks"
+                value="1"
+                min="0"
+                step="0.25"
+                required>
+
+
+            <label for="negativeMarks">
+                Negative Marks for Wrong Answer
+            </label>
+
+            <input
+                type="number"
+                id="negativeMarks"
+                value="0"
+                min="0"
+                step="0.25"
+                required>
+
+
+            <!-- Explanation -->
+
+            <label for="explanation">
+                Explanation
+            </label>
+
+            <textarea
+                id="explanation"
+                rows="4"
+                placeholder="Explain why the correct answer is correct..."></textarea>
+
+
+            <!-- Buttons -->
+
+            <div class="button-row">
+
+                <button
+                    type="submit"
+                    id="saveButton">
+                    Save Question
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelButton"
+                    onclick="resetForm()">
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <!-- ========================================= -->
+        <!-- Question List -->
+        <!-- ========================================= -->
+
+        <section class="question-list">
+
+            <h2>
+                Saved Questions
+            </h2>
+
+            <p id="questionCount">
+                0 questions
+            </p>
+
+            <div id="questionsContainer">
+            </div>
+
+        </section>
+
+
+        <!-- Home -->
+
+        <a
+            href="index.html"
+            class="home-link">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="js/storage.js"></script>
+
+    <script src="js/editor.js"></script>
+
+</body>
+
+</html>
