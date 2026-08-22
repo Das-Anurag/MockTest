@@ -2,34 +2,66 @@
 // Mock Test - Storage System
 // ======================================================
 
-// Name used by localStorage
+
+// ======================================================
+// STORAGE KEYS
+// ======================================================
+
 const QUESTION_STORAGE_KEY = "mockTestQuestions";
 
+const SETTINGS_STORAGE_KEY = "mockTestSettings";
 
-// ------------------------------------------------------
+
+// ======================================================
+// DEFAULT SETTINGS
+// ======================================================
+
+const DEFAULT_SETTINGS = {
+
+    positiveMarks: 1,
+
+    negativeMarks: 0
+
+};
+
+
+// ======================================================
+// QUESTION FUNCTIONS
+// ======================================================
+
+
 // Get all questions
-// ------------------------------------------------------
 
 function getQuestions() {
 
-    const data = localStorage.getItem(QUESTION_STORAGE_KEY);
+    const data =
+        localStorage.getItem(
+            QUESTION_STORAGE_KEY
+        );
 
     if (!data) {
         return [];
     }
 
     try {
+
         return JSON.parse(data);
+
     } catch (error) {
-        console.error("Could not read questions:", error);
+
+        console.error(
+            "Could not read questions:",
+            error
+        );
+
         return [];
+
     }
+
 }
 
 
-// ------------------------------------------------------
 // Save all questions
-// ------------------------------------------------------
 
 function saveQuestions(questions) {
 
@@ -37,73 +69,158 @@ function saveQuestions(questions) {
         QUESTION_STORAGE_KEY,
         JSON.stringify(questions)
     );
+
 }
 
 
-// ------------------------------------------------------
 // Add a new question
-// ------------------------------------------------------
 
 function addQuestion(question) {
 
-    const questions = getQuestions();
+    const questions =
+        getQuestions();
 
-    question.id = Date.now().toString();
+    question.id =
+        Date.now().toString();
 
     questions.push(question);
 
     saveQuestions(questions);
 
     return question;
+
 }
 
 
-// ------------------------------------------------------
 // Update an existing question
-// ------------------------------------------------------
 
 function updateQuestion(updatedQuestion) {
 
-    const questions = getQuestions();
+    const questions =
+        getQuestions();
 
-    const index = questions.findIndex(
-        question => question.id === updatedQuestion.id
-    );
+    const index =
+        questions.findIndex(
+            question =>
+                question.id ===
+                updatedQuestion.id
+        );
 
     if (index === -1) {
+
         return false;
+
     }
 
-    questions[index] = updatedQuestion;
+    questions[index] =
+        updatedQuestion;
 
     saveQuestions(questions);
 
     return true;
+
 }
 
 
-// ------------------------------------------------------
 // Delete a question
-// ------------------------------------------------------
 
 function deleteQuestion(id) {
 
-    const questions = getQuestions();
+    const questions =
+        getQuestions();
 
-    const newQuestions = questions.filter(
-        question => question.id !== id
-    );
+    const newQuestions =
+        questions.filter(
+            question =>
+                question.id !== id
+        );
 
     saveQuestions(newQuestions);
+
 }
 
 
-// ------------------------------------------------------
 // Find one question
-// ------------------------------------------------------
 
 function getQuestionById(id) {
 
+    const questions =
+        getQuestions();
+
+    return questions.find(
+        question =>
+            question.id === id
+    );
+
+}
+
+
+// Delete all questions
+
+function clearAllQuestions() {
+
+    localStorage.removeItem(
+        QUESTION_STORAGE_KEY
+    );
+
+}
+
+
+// ======================================================
+// MARKING SETTINGS
+// ======================================================
+
+
+// Get marking settings
+
+function getSettings() {
+
+    const data =
+        localStorage.getItem(
+            SETTINGS_STORAGE_KEY
+        );
+
+    if (!data) {
+
+        return {
+            ...DEFAULT_SETTINGS
+        };
+
+    }
+
+    try {
+
+        return {
+            ...DEFAULT_SETTINGS,
+            ...JSON.parse(data)
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Could not read settings:",
+            error
+        );
+
+        return {
+            ...DEFAULT_SETTINGS
+        };
+
+    }
+
+}
+
+
+// Save marking settings
+
+function saveSettings(settings) {
+
+    localStorage.setItem(
+        SETTINGS_STORAGE_KEY,
+        JSON.stringify(settings)
+    );
+
+}
     const questions = getQuestions();
 
     return questions.find(
