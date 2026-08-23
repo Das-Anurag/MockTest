@@ -1,5 +1,3 @@
-"editor.js"
-
 // ======================================================
 // Mock Test - Question Editor
 // ======================================================
@@ -68,6 +66,10 @@ const negativeMarks =
         "negativeMarks"
     );
 
+const testDuration =
+    document.getElementById(
+        "testDuration"
+    );
 
 const saveButton =
     document.getElementById(
@@ -138,8 +140,11 @@ function loadSettings() {
     negativeMarks.value =
         settings.negativeMarks;
 
-}
 
+    testDuration.value =
+        settings.testDurationMinutes;
+
+}
 
 
 // ------------------------------------------------------
@@ -153,17 +158,22 @@ saveSettingsButton.addEventListener(
 
         const settings = {
 
-            positiveMarks:
-                Number(
-                    positiveMarks.value
-                ),
+    positiveMarks:
+        Number(
+            positiveMarks.value
+        ),
 
-            negativeMarks:
-                Number(
-                    negativeMarks.value
-                )
+    negativeMarks:
+        Number(
+            negativeMarks.value
+        ),
 
-        };
+    testDurationMinutes:
+        Number(
+            testDuration.value
+        )
+
+};
 
 
         saveSettings(settings);
