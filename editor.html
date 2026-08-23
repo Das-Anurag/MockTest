@@ -31,21 +31,24 @@
 
 
         <!-- ========================================= -->
-        <!-- Common Test Marking -->
+        <!-- Common Test Settings -->
         <!-- ========================================= -->
 
         <section class="settings-section">
 
             <h2>
-                Test Marking
+                Test Settings
             </h2>
 
 
             <p>
-                These marking rules apply to
-                every question in the test.
+                These settings apply to the
+                entire test.
             </p>
 
+
+
+            <!-- Correct marks -->
 
             <label for="positiveMarks">
 
@@ -63,6 +66,9 @@
                 required>
 
 
+
+            <!-- Negative marks -->
+
             <label for="negativeMarks">
 
                 Negative Marks for Wrong Answer
@@ -79,11 +85,33 @@
                 required>
 
 
+
+            <!-- Test duration -->
+
+            <label for="testDuration">
+
+                Test Duration (minutes)
+
+            </label>
+
+
+            <input
+                type="number"
+                id="testDuration"
+                value="20"
+                min="1"
+                step="1"
+                required>
+
+
+
+            <!-- Save settings -->
+
             <button
                 type="button"
                 id="saveSettingsButton">
 
-                Save Marking Settings
+                Save Test Settings
 
             </button>
 
@@ -114,6 +142,8 @@
                     id="questionId">
 
 
+
+                <!-- Question -->
 
                 <label for="question">
 
