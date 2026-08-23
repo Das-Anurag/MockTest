@@ -1,5 +1,3 @@
-"test.js"
-
 // ======================================================
 // Mock Test - Test Engine
 // ======================================================
@@ -26,8 +24,6 @@ const questions = getQuestions();
 let currentQuestionIndex = 0;
 
 let answers = {};
-
-let markedForReview = {};
 
 let timeSpent = {};
 
@@ -75,18 +71,6 @@ const optionsContainer =
     );
 
 
-const questionNavigation =
-    document.getElementById(
-        "questionNavigation"
-    );
-
-
-const reviewButton =
-    document.getElementById(
-        "reviewButton"
-    );
-
-
 const previousButton =
     document.getElementById(
         "previousButton"
@@ -105,29 +89,37 @@ const submitButton =
     );
 
 
-// ------------------------------------------------------
-// Check question bank
-// ------------------------------------------------------
+// ======================================================
+// CHECK QUESTION BANK
+// ======================================================
 
 if (questions.length === 0) {
+
 
     questionText.textContent =
         "No questions are available.";
 
+
     optionsContainer.innerHTML = `
+
         <p>
             Please add questions using
             the Question Editor.
         </p>
+
     `;
 
+
     previousButton.disabled = true;
+
     nextButton.disabled = true;
-    reviewButton.disabled = true;
+
     submitButton.disabled = true;
+
 
 }
 else {
+
 
     initializeTest();
 
@@ -140,9 +132,16 @@ else {
 
 function initializeTest() {
 
-    createQuestionNavigation();
+
+    currentQuestionIndex = 0;
+
+
+    questionStartTime =
+        Date.now();
+
 
     displayQuestion();
+
 
     startTimer();
 
@@ -156,19 +155,44 @@ function initializeTest() {
 function displayQuestion() {
 
 
-    saveCurrentQuestionTime();
+    if (testSubmitted) {
+
+        return;
+
+    }
+
+
+    /*
+     * Save the time spent on the question
+     * that was previously displayed.
+     *
+     * The first question has no previous
+     * question, so its initial time is zero.
+     */
+
+    if (
+        questionStartTime !== null
+    ) {
+
+        saveCurrentQuestionTime();
+
+    }
 
 
     questionStartTime =
         Date.now();
 
 
+
     const q =
-        questions[currentQuestionIndex];
+        questions[
+            currentQuestionIndex
+        ];
 
 
     const number =
         currentQuestionIndex + 1;
+
 
 
     progressText.textContent =
@@ -185,6 +209,7 @@ function displayQuestion() {
         q.question;
 
 
+
     optionsContainer.innerHTML =
         "";
 
@@ -194,18 +219,20 @@ function displayQuestion() {
         ["A", "B", "C", "D"];
 
 
+
     optionKeys.forEach(
         function(key) {
 
 
-            const option =
+            const label =
                 document.createElement(
                     "label"
                 );
 
 
-            option.className =
+            label.className =
                 "answer-option";
+
 
 
             const radio =
@@ -226,9 +253,18 @@ function displayQuestion() {
                 key;
 
 
+
+            /*
+             * Restore previously selected
+             * answer when returning to
+             * this question.
+             */
+
             radio.checked =
-                answers[currentQuestionIndex]
-                === key;
+
+                answers[
+                    currentQuestionIndex
+                ] === key;
 
 
 
@@ -236,11 +272,10 @@ function displayQuestion() {
                 "change",
                 function() {
 
+
                     answers[
                         currentQuestionIndex
                     ] = key;
-
-                    updateNavigation();
 
                 }
             );
@@ -257,18 +292,19 @@ function displayQuestion() {
                 q.options[key];
 
 
-            option.appendChild(
+
+            label.appendChild(
                 radio
             );
 
 
-            option.appendChild(
+            label.appendChild(
                 text
             );
 
 
             optionsContainer.appendChild(
-                option
+                label
             );
 
         }
@@ -276,31 +312,24 @@ function displayQuestion() {
 
 
 
-    reviewButton.textContent =
-
-        markedForReview[
-            currentQuestionIndex
-        ]
-
-            ? "Remove Review Mark"
-
-            : "Mark for Review";
-
-
+    /*
+     * Previous button
+     */
 
     previousButton.disabled =
 
         currentQuestionIndex === 0;
 
 
+
+    /*
+     * Next button
+     */
+
     nextButton.disabled =
 
         currentQuestionIndex ===
         questions.length - 1;
-
-
-
-    updateNavigation();
 
 }
 
@@ -333,137 +362,17 @@ function saveCurrentQuestionTime() {
         );
 
 
-    timeSpent[currentQuestionIndex] =
+
+    timeSpent[
+        currentQuestionIndex
+    ] =
 
         (
-            timeSpent[currentQuestionIndex] ||
-            0
-        ) + seconds;
-
-}
-
-
-// ======================================================
-// QUESTION NAVIGATION
-// ======================================================
-
-function createQuestionNavigation() {
-
-
-    questionNavigation.innerHTML =
-        "";
-
-
-    questions.forEach(
-        function(q, index) {
-
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.textContent =
-                index + 1;
-
-
-            button.className =
-                "question-nav-button";
-
-
-            button.addEventListener(
-                "click",
-                function() {
-
-                    goToQuestion(index);
-
-                }
-            );
-
-
-            questionNavigation.appendChild(
-                button
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// UPDATE QUESTION NAVIGATION
-// ======================================================
-
-function updateNavigation() {
-
-
-    const buttons =
-        questionNavigation.querySelectorAll(
-            ".question-nav-button"
-        );
-
-
-    buttons.forEach(
-        function(button, index) {
-
-
-            button.classList.remove(
-                "current"
-            );
-
-
-            button.classList.remove(
-                "answered"
-            );
-
-
-            button.classList.remove(
-                "review"
-            );
-
-
-
-            if (
-                index ===
+            timeSpent[
                 currentQuestionIndex
-            ) {
+            ] || 0
 
-                button.classList.add(
-                    "current"
-                );
-
-            }
-
-
-            if (
-                answers[index]
-            ) {
-
-                button.classList.add(
-                    "answered"
-                );
-
-            }
-
-
-            if (
-                markedForReview[index]
-            ) {
-
-                button.classList.add(
-                    "review"
-                );
-
-            }
-
-        }
-    );
+        ) + seconds;
 
 }
 
@@ -495,12 +404,13 @@ function goToQuestion(index) {
 
 
 // ======================================================
-// PREVIOUS
+// PREVIOUS BUTTON
 // ======================================================
 
 previousButton.addEventListener(
     "click",
     function() {
+
 
         goToQuestion(
             currentQuestionIndex - 1
@@ -511,51 +421,17 @@ previousButton.addEventListener(
 
 
 // ======================================================
-// NEXT
+// NEXT BUTTON
 // ======================================================
 
 nextButton.addEventListener(
     "click",
     function() {
 
+
         goToQuestion(
             currentQuestionIndex + 1
         );
-
-    }
-);
-
-
-// ======================================================
-// MARK FOR REVIEW
-// ======================================================
-
-reviewButton.addEventListener(
-    "click",
-    function() {
-
-
-        markedForReview[
-            currentQuestionIndex
-        ] =
-
-            !markedForReview[
-                currentQuestionIndex
-            ];
-
-
-        reviewButton.textContent =
-
-            markedForReview[
-                currentQuestionIndex
-            ]
-
-                ? "Remove Review Mark"
-
-                : "Mark for Review";
-
-
-        updateNavigation();
 
     }
 );
@@ -571,39 +447,52 @@ function startTimer() {
     updateTimerDisplay();
 
 
+
     timerInterval =
+
         setInterval(
             function() {
 
 
-                if (
-                    testSubmitted
-                ) {
+                if (testSubmitted) {
 
                     return;
 
                 }
 
 
+
                 remainingSeconds--;
+
 
 
                 updateTimerDisplay();
 
 
 
+                /*
+                 * When the timer reaches zero,
+                 * submit automatically.
+                 */
+
                 if (
                     remainingSeconds <= 0
                 ) {
+
+
+                    remainingSeconds = 0;
+
+
+                    updateTimerDisplay();
+
+
 
                     clearInterval(
                         timerInterval
                     );
 
 
-                    submitTest(
-                        true
-                    );
+                    submitTest(true);
 
                 }
 
@@ -614,9 +503,9 @@ function startTimer() {
 }
 
 
-// ------------------------------------------------------
-// Timer display
-// ------------------------------------------------------
+// ======================================================
+// TIMER DISPLAY
+// ======================================================
 
 function updateTimerDisplay() {
 
@@ -631,14 +520,15 @@ function updateTimerDisplay() {
         remainingSeconds % 60;
 
 
+
     timer.textContent =
 
         String(minutes).padStart(
             2,
             "0"
-        ) +
+        )
 
-        ":" +
+        + ":" +
 
         String(seconds).padStart(
             2,
@@ -649,7 +539,7 @@ function updateTimerDisplay() {
 
 
 // ======================================================
-// SUBMIT BUTTON
+// MANUAL SUBMIT
 // ======================================================
 
 submitButton.addEventListener(
@@ -657,8 +547,17 @@ submitButton.addEventListener(
     function() {
 
 
+        if (testSubmitted) {
+
+            return;
+
+        }
+
+
         const unanswered =
+
             questions.length -
+
             Object.keys(
                 answers
             ).length;
@@ -677,6 +576,7 @@ submitButton.addEventListener(
             confirm(message)
         ) {
 
+
             submitTest(false);
 
         }
@@ -689,12 +589,12 @@ submitButton.addEventListener(
 // SUBMIT TEST
 // ======================================================
 
-function submitTest(autoSubmitted) {
+function submitTest(
+    autoSubmitted
+) {
 
 
-    if (
-        testSubmitted
-    ) {
+    if (testSubmitted) {
 
         return;
 
@@ -704,10 +604,17 @@ function submitTest(autoSubmitted) {
     testSubmitted = true;
 
 
+
     clearInterval(
         timerInterval
     );
 
+
+
+    /*
+     * Save the time spent on the
+     * question currently displayed.
+     */
 
     saveCurrentQuestionTime();
 
@@ -738,8 +645,10 @@ function submitTest(autoSubmitted) {
 
 
             const selected =
+
                 answers[index] ||
                 null;
+
 
 
             let marks = 0;
@@ -749,28 +658,43 @@ function submitTest(autoSubmitted) {
 
 
 
+            /*
+             * Unanswered
+             */
+
             if (
                 selected === null
             ) {
 
+
                 unanswered++;
+
 
                 marks = 0;
 
             }
 
 
+
+            /*
+             * Correct
+             */
+
             else if (
                 selected ===
                 q.correctAnswer
             ) {
 
+
                 correct++;
 
+
                 marks =
+
                     Number(
                         settings.positiveMarks
                     );
+
 
                 status =
                     "correct";
@@ -778,14 +702,23 @@ function submitTest(autoSubmitted) {
             }
 
 
+
+            /*
+             * Wrong
+             */
+
             else {
+
 
                 wrong++;
 
+
                 marks =
+
                     -Number(
                         settings.negativeMarks
                     );
+
 
                 status =
                     "wrong";
@@ -803,20 +736,34 @@ function submitTest(autoSubmitted) {
                 questionIndex:
                     index,
 
+
                 questionId:
                     q.id,
+
+
+                question:
+                    q.question,
+
 
                 selectedAnswer:
                     selected,
 
+
                 correctAnswer:
                     q.correctAnswer,
+
+
+                options:
+                    q.options,
+
 
                 status:
                     status,
 
+
                 marks:
                     marks,
+
 
                 timeSpent:
                     timeSpent[index] || 0
@@ -828,14 +775,23 @@ function submitTest(autoSubmitted) {
 
 
 
+    /*
+     * Total possible marks
+     */
+
     const totalPossibleMarks =
 
         questions.length *
+
         Number(
             settings.positiveMarks
         );
 
 
+
+    /*
+     * Percentage
+     */
 
     const percentage =
 
@@ -849,6 +805,10 @@ function submitTest(autoSubmitted) {
             ) * 100;
 
 
+
+    /*
+     * Final result object
+     */
 
     const result = {
 
@@ -908,6 +868,10 @@ function submitTest(autoSubmitted) {
 
 
 
+    /*
+     * Save result
+     */
+
     localStorage.setItem(
 
         "mockTestLastResult",
@@ -918,7 +882,11 @@ function submitTest(autoSubmitted) {
 
 
 
+    /*
+     * Go to feedback page
+     */
+
     window.location.href =
         "result.html";
 
-          }
+}
