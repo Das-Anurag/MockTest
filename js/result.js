@@ -286,17 +286,187 @@ function displayResult(result) {
 // ======================================================
 function calculateTimeAnalysis(result) {
 
-    const results = result.questionResults;
 
-    if (results.length === 0) {
+    const results =
+        result.questionResults;
+
+
+    if (
+        results.length === 0
+    ) {
 
         averageTime.textContent =
             "0 seconds";
 
         return;
+
     }
 
 
+
+    // --------------------------------------------------
+    // Get test duration from saved settings
+    // --------------------------------------------------
+
+    const settings =
+        getSettings();
+
+
+    const totalGivenTime =
+
+        Number(
+            settings.testDurationMinutes
+        ) * 60;
+
+
+
+    // --------------------------------------------------
+    // Average available time per question
+    // --------------------------------------------------
+
+    const avg =
+
+        totalGivenTime /
+        result.totalQuestions;
+
+
+
+    averageTime.textContent =
+
+        formatTime(avg);
+
+
+
+    // --------------------------------------------------
+    // Find questions where actual time was greater
+    // than the average available time
+    // --------------------------------------------------
+
+    const slow =
+
+        results.filter(
+            function(item) {
+
+                return (
+
+                    Number(
+                        item.timeSpent
+                    ) > avg
+
+                );
+
+            }
+        );
+
+
+
+    slowQuestions.innerHTML =
+        "";
+
+
+
+    if (
+        slow.length === 0
+    ) {
+
+        slowQuestions.innerHTML = `
+
+            <p>
+
+                You did not spend more than
+                the average available time
+                on any question.
+
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    const heading =
+        document.createElement(
+            "p"
+        );
+
+
+    heading.innerHTML = `
+
+        You spent more than the average
+        available time on
+        <strong>${slow.length}</strong>
+        question(s):
+
+    `;
+
+
+    slowQuestions.appendChild(
+        heading
+    );
+
+
+
+    const list =
+        document.createElement(
+            "ul"
+        );
+
+
+
+    slow.forEach(
+        function(item) {
+
+
+            const difference =
+
+                Number(
+                    item.timeSpent
+                ) - avg;
+
+
+
+            const li =
+                document.createElement(
+                    "li"
+                );
+
+
+            li.innerHTML = `
+
+                Question
+                <strong>
+                    ${item.questionIndex + 1}
+                </strong>
+
+                —
+
+                Actual time:
+                ${formatTime(item.timeSpent)}
+
+                —
+
+                ${formatTime(difference)}
+                above average
+
+            `;
+
+
+            list.appendChild(
+                li
+            );
+
+        }
+    );
+
+
+    slowQuestions.appendChild(
+        list
+    );
+
+}
     // --------------------------------------------------
     // Total test time
     // --------------------------------------------------
