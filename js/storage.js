@@ -20,7 +20,9 @@ const DEFAULT_SETTINGS = {
 
     positiveMarks: 1,
 
-    negativeMarks: 0
+    negativeMarks: 0,
+
+    testDurationMinutes: 20
 
 };
 
@@ -230,7 +232,26 @@ function getSettings() {
 
     try {
 
-        return JSON.parse(data);
+        const savedSettings =
+            JSON.parse(data);
+
+
+        /*
+         * Merge saved settings with
+         * default settings.
+         *
+         * This is important because
+         * older saved settings may not
+         * contain testDurationMinutes.
+         */
+
+        return {
+
+            ...DEFAULT_SETTINGS,
+
+            ...savedSettings
+
+        };
 
     }
 
