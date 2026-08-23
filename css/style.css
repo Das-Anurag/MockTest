@@ -1,0 +1,935 @@
+/* ======================================================
+   MOCK TEST - MAIN STYLE SHEET
+   ====================================================== */
+
+
+/* ======================================================
+   GENERAL
+   ====================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f4f6f8;
+
+    color: #222;
+
+    line-height: 1.5;
+}
+
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+
+button {
+    cursor: pointer;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+
+/* ======================================================
+   COMMON CONTAINER
+   ====================================================== */
+
+.editor-container,
+.result-container,
+.test-container,
+.home-container {
+    width: 100%;
+
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding: 20px;
+}
+
+
+/* ======================================================
+   HEADINGS
+   ====================================================== */
+
+h1 {
+    margin-top: 0;
+
+    margin-bottom: 8px;
+
+    font-size: 30px;
+
+    text-align: center;
+}
+
+
+h2 {
+    margin-top: 0;
+
+    font-size: 22px;
+}
+
+
+.subtitle {
+    margin-top: 0;
+
+    margin-bottom: 25px;
+
+    text-align: center;
+
+    color: #666;
+}
+
+
+/* ======================================================
+   HOME PAGE
+   ====================================================== */
+
+.home-container {
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.home-card {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.08);
+
+    text-align: center;
+}
+
+
+.home-card h1 {
+    font-size: 34px;
+}
+
+
+.home-description {
+    color: #666;
+
+    margin-bottom: 30px;
+}
+
+
+.home-buttons {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.home-button {
+    display: block;
+
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+.home-button:hover {
+    opacity: 0.9;
+}
+
+
+/* ======================================================
+   COMMON SECTIONS
+   ====================================================== */
+
+.settings-section,
+.question-section,
+.question-list,
+.feedback-section,
+.performance-card,
+.score-card,
+.statistics {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ======================================================
+   EDITOR
+   ====================================================== */
+
+.settings-section h2,
+.question-section h2,
+.question-list h2 {
+    margin-bottom: 15px;
+}
+
+
+.settings-section label,
+.question-section label {
+    display: block;
+
+    margin-top: 15px;
+
+    margin-bottom: 6px;
+
+    font-weight: bold;
+}
+
+
+.settings-section input,
+.question-section input,
+.question-section textarea,
+.question-section select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+
+    outline: none;
+}
+
+
+.settings-section input:focus,
+.question-section input:focus,
+.question-section textarea:focus,
+.question-section select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+
+.question-section textarea {
+    resize: vertical;
+
+    min-height: 100px;
+}
+
+
+/* ======================================================
+   BUTTONS
+   ====================================================== */
+
+button,
+.result-button,
+.home-link {
+    transition:
+        opacity 0.2s,
+        transform 0.1s;
+}
+
+
+button:hover,
+.result-button:hover,
+.home-link:hover {
+    opacity: 0.9;
+}
+
+
+button:active,
+.result-button:active,
+.home-link:active {
+    transform: scale(0.98);
+}
+
+
+#saveSettingsButton,
+#saveButton,
+#submitButton {
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+
+#cancelButton {
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #64748b;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+
+.button-row {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+
+.button-row button {
+    flex: 1;
+
+    margin-top: 0;
+}
+
+
+/* ======================================================
+   SETTINGS MESSAGE
+   ====================================================== */
+
+#settingsMessage {
+    margin-bottom: 0;
+
+    color: #15803d;
+
+    font-weight: bold;
+}
+
+
+/* ======================================================
+   QUESTION LIST
+   ====================================================== */
+
+#questionCount {
+    color: #666;
+
+    margin-top: -5px;
+}
+
+
+#questionsContainer {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.question-card {
+    border: 1px solid #dbe2ea;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    background: #fafafa;
+}
+
+
+.question-card h3 {
+    margin-top: 0;
+
+    margin-bottom: 8px;
+
+    font-size: 17px;
+}
+
+
+.question-card p {
+    margin: 5px 0;
+}
+
+
+.question-card button {
+    margin-top: 10px;
+
+    margin-right: 7px;
+
+    padding: 8px 12px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: white;
+}
+
+
+/* ======================================================
+   TEST PAGE
+   ====================================================== */
+
+.test-container {
+    min-height: 100vh;
+}
+
+
+.test-header {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.06);
+}
+
+
+.test-header h1 {
+    margin-bottom: 15px;
+}
+
+
+#progressText {
+    text-align: center;
+
+    color: #666;
+
+    margin-bottom: 10px;
+}
+
+
+#timer {
+    text-align: center;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    color: #dc2626;
+}
+
+
+.question-card-test {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.06);
+
+    margin-bottom: 15px;
+}
+
+
+#questionNumber {
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+
+#questionText {
+    font-size: 19px;
+
+    font-weight: 500;
+
+    margin-bottom: 22px;
+}
+
+
+/* ======================================================
+   ANSWER OPTIONS
+   ====================================================== */
+
+#optionsContainer {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.answer-option {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    background: #fafafa;
+
+    cursor: pointer;
+}
+
+
+.answer-option:hover {
+    background: #f1f5f9;
+}
+
+
+.answer-option input {
+    margin-top: 4px;
+
+    flex-shrink: 0;
+}
+
+
+/* ======================================================
+   TEST NAVIGATION
+   ====================================================== */
+
+.test-navigation {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+
+#previousButton,
+#nextButton,
+#submitButton {
+    flex: 1;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+
+#previousButton,
+#nextButton {
+    background: #475569;
+
+    color: white;
+}
+
+
+#submitButton {
+    background: #dc2626;
+
+    color: white;
+}
+
+
+button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ======================================================
+   RESULT PAGE
+   ====================================================== */
+
+.result-container {
+    padding-top: 25px;
+}
+
+
+.result-header {
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 14px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.06);
+
+    text-align: center;
+}
+
+
+.result-header h1 {
+    margin-bottom: 8px;
+}
+
+
+#submissionStatus {
+    color: #666;
+
+    margin-bottom: 0;
+}
+
+
+/* ======================================================
+   SCORE
+   ====================================================== */
+
+.score-card {
+    text-align: center;
+}
+
+
+.score-title {
+    color: #666;
+
+    font-size: 17px;
+
+    margin-bottom: 5px;
+}
+
+
+.score {
+    font-size: 42px;
+
+    font-weight: bold;
+
+    color: #2563eb;
+}
+
+
+.percentage {
+    font-size: 25px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+
+/* ======================================================
+   STATISTICS
+   ====================================================== */
+
+.statistics {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+
+    padding: 15px;
+}
+
+
+.stat-card {
+    text-align: center;
+
+    padding: 12px 5px;
+
+    border-radius: 10px;
+
+    background: #f1f5f9;
+}
+
+
+.stat-card span {
+    display: block;
+
+    font-size: 13px;
+
+    color: #64748b;
+
+    margin-bottom: 5px;
+}
+
+
+.stat-card strong {
+    font-size: 23px;
+}
+
+
+/* ======================================================
+   PERFORMANCE
+   ====================================================== */
+
+.performance-card {
+    text-align: center;
+
+    background: #eff6ff;
+}
+
+
+.performance-card h2 {
+    margin-bottom: 8px;
+}
+
+
+#performanceMessage {
+    margin-bottom: 0;
+
+    font-size: 17px;
+}
+
+
+/* ======================================================
+   QUESTION-WISE RESULT
+   ====================================================== */
+
+#questionResults {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+.result-question-card {
+    border: 1px solid #dbe2ea;
+
+    border-radius: 11px;
+
+    padding: 16px;
+
+    background: #fafafa;
+}
+
+
+.result-question-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+
+.result-question-header strong {
+    font-size: 17px;
+}
+
+
+.result-question-header span {
+    padding: 4px 9px;
+
+    border-radius: 20px;
+
+    background: #e2e8f0;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+.result-question-text {
+    margin-bottom: 15px;
+
+    font-size: 16px;
+
+    font-weight: 500;
+}
+
+
+.result-question-card p {
+    margin: 8px 0;
+}
+
+
+/* ======================================================
+   RESULT BUTTONS
+   ====================================================== */
+
+.result-buttons {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.result-button {
+    display: block;
+
+    padding: 13px;
+
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* ======================================================
+   HOME LINK
+   ====================================================== */
+
+.home-link {
+    display: block;
+
+    margin: 20px 0;
+
+    text-align: center;
+
+    color: #2563eb;
+
+    font-weight: bold;
+}
+
+
+/* ======================================================
+   MOBILE
+   ====================================================== */
+
+@media (max-width: 600px) {
+
+
+    .editor-container,
+    .result-container,
+    .test-container,
+    .home-container {
+        padding: 12px;
+    }
+
+
+    h1 {
+        font-size: 26px;
+    }
+
+
+    h2 {
+        font-size: 20px;
+    }
+
+
+    .home-card {
+        padding: 22px 16px;
+    }
+
+
+    .home-card h1 {
+        font-size: 29px;
+    }
+
+
+    .settings-section,
+    .question-section,
+    .question-list,
+    .feedback-section,
+    .performance-card,
+    .score-card,
+    .statistics {
+        padding: 16px;
+    }
+
+
+    .statistics {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .score {
+        font-size: 36px;
+    }
+
+
+    .percentage {
+        font-size: 22px;
+    }
+
+
+    .test-navigation {
+        flex-wrap: wrap;
+    }
+
+
+    #previousButton,
+    #nextButton,
+    #submitButton {
+        min-width: 30%;
+    }
+
+
+    .result-question-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+  }
