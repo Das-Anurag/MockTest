@@ -284,47 +284,34 @@ function displayResult(result) {
 // ======================================================
 // TIME ANALYSIS
 // ======================================================
-
 function calculateTimeAnalysis(result) {
 
+    const results = result.questionResults;
 
-    const results =
-        result.questionResults;
-
-
-    if (
-        results.length === 0
-    ) {
+    if (results.length === 0) {
 
         averageTime.textContent =
             "0 seconds";
 
         return;
-
     }
 
 
+    // --------------------------------------------------
+    // Total test time
+    // --------------------------------------------------
 
-    let totalTime = 0;
-
-
-    results.forEach(
-        function(item) {
-
-            totalTime +=
-                Number(
-                    item.timeSpent
-                ) || 0;
-
-        }
-    );
+    const totalGivenTime =
+        20 * 60;
 
 
+    // --------------------------------------------------
+    // Average available time per question
+    // --------------------------------------------------
 
     const avg =
-        totalTime /
-        results.length;
-
+        totalGivenTime /
+        result.totalQuestions;
 
 
     averageTime.textContent =
@@ -332,17 +319,17 @@ function calculateTimeAnalysis(result) {
 
 
 
-    /*
-     * Find questions taking more
-     * than the average time.
-     */
+    // --------------------------------------------------
+    // Find questions taking more than the
+    // average available time
+    // --------------------------------------------------
 
     const slow =
         results.filter(
             function(item) {
 
                 return (
-                    item.timeSpent >
+                    Number(item.timeSpent) >
                     avg
                 );
 
@@ -356,21 +343,18 @@ function calculateTimeAnalysis(result) {
 
 
 
-    if (
-        slow.length === 0
-    ) {
+    if (slow.length === 0) {
 
         slowQuestions.innerHTML = `
 
             <p>
-                You did not spend more than
-                the average time on any question.
+                You did not spend more than the
+                average available time on any question.
             </p>
 
         `;
 
         return;
-
     }
 
 
@@ -384,7 +368,8 @@ function calculateTimeAnalysis(result) {
     heading.innerHTML = `
 
         You spent more than the average
-        time on <strong>${slow.length}</strong>
+        available time on
+        <strong>${slow.length}</strong>
         question(s):
 
     `;
@@ -406,7 +391,6 @@ function calculateTimeAnalysis(result) {
     slow.forEach(
         function(item) {
 
-
             const li =
                 document.createElement(
                     "li"
@@ -421,10 +405,12 @@ function calculateTimeAnalysis(result) {
                 </strong>
 
                 —
+                Actual time:
                 ${formatTime(item.timeSpent)}
 
-                (${formatTime(item.timeSpent - avg)}
-                above average)
+                —
+                ${formatTime(item.timeSpent - avg)}
+                above average
 
             `;
 
@@ -440,8 +426,6 @@ function calculateTimeAnalysis(result) {
     );
 
 }
-
-
 // ======================================================
 // PERFORMANCE MESSAGE
 // ======================================================
