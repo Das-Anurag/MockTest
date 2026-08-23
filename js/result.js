@@ -90,7 +90,7 @@ const questionResults =
 
 
 // ------------------------------------------------------
-// Check whether result exists
+// Check whether a result exists
 // ------------------------------------------------------
 
 if (!resultData) {
@@ -100,10 +100,25 @@ if (!resultData) {
 }
 else {
 
-    const result =
-        JSON.parse(resultData);
+    try {
 
-    displayResult(result);
+        const result =
+            JSON.parse(resultData);
+
+        displayResult(result);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Could not read test result:",
+            error
+        );
+
+        showNoResult();
+
+    }
 
 }
 
@@ -125,6 +140,34 @@ function showNoResult() {
 
     percentage.textContent =
         "—";
+
+
+    totalQuestions.textContent =
+        "—";
+
+
+    correct.textContent =
+        "—";
+
+
+    wrong.textContent =
+        "—";
+
+
+    unanswered.textContent =
+        "—";
+
+
+    markingInfo.textContent =
+        "No test result is available.";
+
+
+    averageTime.textContent =
+        "—";
+
+
+    performanceMessage.textContent =
+        "Please take a mock test first.";
 
 
     questionResults.innerHTML = `
@@ -229,14 +272,18 @@ function displayResult(result) {
 
         Correct answer:
         <strong>
-            +${formatNumber(result.positiveMarks)}
+            +${formatNumber(
+                result.positiveMarks
+            )}
         </strong>
 
         &nbsp;&nbsp;
 
         Wrong answer:
         <strong>
-            −${formatNumber(result.negativeMarks)}
+            −${formatNumber(
+                result.negativeMarks
+            )}
         </strong>
 
         &nbsp;&nbsp;
@@ -271,7 +318,7 @@ function displayResult(result) {
 
 
     // --------------------------------------------------
-    // Detailed question results
+    // Question-wise results
     // --------------------------------------------------
 
     displayQuestionResults(
@@ -284,6 +331,7 @@ function displayResult(result) {
 // ======================================================
 // TIME ANALYSIS
 // ======================================================
+
 function calculateTimeAnalysis(result) {
 
 
@@ -291,12 +339,24 @@ function calculateTimeAnalysis(result) {
         result.questionResults;
 
 
+
     if (
+        !results ||
         results.length === 0
     ) {
 
         averageTime.textContent =
             "0 seconds";
+
+
+        slowQuestions.innerHTML = `
+
+            <p>
+                No question-time data is available.
+            </p>
+
+        `;
+
 
         return;
 
@@ -305,12 +365,17 @@ function calculateTimeAnalysis(result) {
 
 
     // --------------------------------------------------
-    // Get test duration from saved settings
+    // Get saved test settings
     // --------------------------------------------------
 
     const settings =
         getSettings();
 
+
+
+    // --------------------------------------------------
+    // Total given test time
+    // --------------------------------------------------
 
     const totalGivenTime =
 
@@ -322,6 +387,13 @@ function calculateTimeAnalysis(result) {
 
     // --------------------------------------------------
     // Average available time per question
+    //
+    // Formula:
+    //
+    // Total given time
+    // -----------------
+    // Number of questions
+    //
     // --------------------------------------------------
 
     const avg =
@@ -331,15 +403,18 @@ function calculateTimeAnalysis(result) {
 
 
 
-    averageTime.textContent =
+    // --------------------------------------------------
+    // Display average available time
+    // --------------------------------------------------
 
+    averageTime.textContent =
         formatTime(avg);
 
 
 
     // --------------------------------------------------
-    // Find questions where actual time was greater
-    // than the average available time
+    // Find questions where actual time
+    // was greater than average available time
     // --------------------------------------------------
 
     const slow =
@@ -365,6 +440,10 @@ function calculateTimeAnalysis(result) {
 
 
 
+    // --------------------------------------------------
+    // No slow questions
+    // --------------------------------------------------
+
     if (
         slow.length === 0
     ) {
@@ -387,6 +466,10 @@ function calculateTimeAnalysis(result) {
 
 
 
+    // --------------------------------------------------
+    // Heading
+    // --------------------------------------------------
+
     const heading =
         document.createElement(
             "p"
@@ -397,7 +480,9 @@ function calculateTimeAnalysis(result) {
 
         You spent more than the average
         available time on
-        <strong>${slow.length}</strong>
+        <strong>
+            ${slow.length}
+        </strong>
         question(s):
 
     `;
@@ -408,6 +493,10 @@ function calculateTimeAnalysis(result) {
     );
 
 
+
+    // --------------------------------------------------
+    // List of slow questions
+    // --------------------------------------------------
 
     const list =
         document.createElement(
@@ -420,11 +509,17 @@ function calculateTimeAnalysis(result) {
         function(item) {
 
 
-            const difference =
+            const actualTime =
 
                 Number(
                     item.timeSpent
-                ) - avg;
+                );
+
+
+
+            const difference =
+
+                actualTime - avg;
 
 
 
@@ -444,7 +539,7 @@ function calculateTimeAnalysis(result) {
                 —
 
                 Actual time:
-                ${formatTime(item.timeSpent)}
+                ${formatTime(actualTime)}
 
                 —
 
@@ -467,135 +562,8 @@ function calculateTimeAnalysis(result) {
     );
 
 }
-    // --------------------------------------------------
-    // Total test time
-    // --------------------------------------------------
-
-    const totalGivenTime =
-        20 * 60;
 
 
-    // --------------------------------------------------
-    // Average available time per question
-    // --------------------------------------------------
-
-    const avg =
-        totalGivenTime /
-        result.totalQuestions;
-
-
-    averageTime.textContent =
-        formatTime(avg);
-
-
-
-    // --------------------------------------------------
-    // Find questions taking more than the
-    // average available time
-    // --------------------------------------------------
-
-    const slow =
-        results.filter(
-            function(item) {
-
-                return (
-                    Number(item.timeSpent) >
-                    avg
-                );
-
-            }
-        );
-
-
-
-    slowQuestions.innerHTML =
-        "";
-
-
-
-    if (slow.length === 0) {
-
-        slowQuestions.innerHTML = `
-
-            <p>
-                You did not spend more than the
-                average available time on any question.
-            </p>
-
-        `;
-
-        return;
-    }
-
-
-
-    const heading =
-        document.createElement(
-            "p"
-        );
-
-
-    heading.innerHTML = `
-
-        You spent more than the average
-        available time on
-        <strong>${slow.length}</strong>
-        question(s):
-
-    `;
-
-
-    slowQuestions.appendChild(
-        heading
-    );
-
-
-
-    const list =
-        document.createElement(
-            "ul"
-        );
-
-
-
-    slow.forEach(
-        function(item) {
-
-            const li =
-                document.createElement(
-                    "li"
-                );
-
-
-            li.innerHTML = `
-
-                Question
-                <strong>
-                    ${item.questionIndex + 1}
-                </strong>
-
-                —
-                Actual time:
-                ${formatTime(item.timeSpent)}
-
-                —
-                ${formatTime(item.timeSpent - avg)}
-                above average
-
-            `;
-
-
-            list.appendChild(li);
-
-        }
-    );
-
-
-    slowQuestions.appendChild(
-        list
-    );
-
-}
 // ======================================================
 // PERFORMANCE MESSAGE
 // ======================================================
@@ -613,38 +581,67 @@ function generatePerformanceMessage(result) {
 
 
 
-    if (p >= 90) {
+    if (
+        p >= 90
+    ) {
 
         message =
-            "Outstanding performance! Your accuracy is excellent and you have demonstrated a very strong understanding of the questions.";
+
+            "Outstanding performance! " +
+            "Your accuracy is excellent and " +
+            "you have demonstrated a very strong " +
+            "understanding of the questions.";
 
     }
 
-    else if (p >= 75) {
+    else if (
+        p >= 75
+    ) {
 
         message =
-            "Very good performance! You have a strong understanding of the subject, with only some areas needing further improvement.";
+
+            "Very good performance! " +
+            "You have a strong understanding of " +
+            "the subject, with only some areas " +
+            "needing further improvement.";
 
     }
 
-    else if (p >= 60) {
+    else if (
+        p >= 60
+    ) {
 
         message =
-            "Good performance! You have a reasonable understanding, but further practice can improve both accuracy and confidence.";
+
+            "Good performance! " +
+            "You have a reasonable understanding, " +
+            "but further practice can improve both " +
+            "accuracy and confidence.";
 
     }
 
-    else if (p >= 40) {
+    else if (
+        p >= 40
+    ) {
 
         message =
-            "Your performance is moderate. More practice and careful analysis of the incorrect answers should help improve your result.";
+
+            "Your performance is moderate. " +
+            "More practice and careful analysis " +
+            "of the incorrect answers should help " +
+            "improve your result.";
 
     }
 
     else {
 
         message =
-            "You need more practice. Review the questions you answered incorrectly and strengthen the underlying concepts before attempting the next test.";
+
+            "You need more practice. " +
+            "Review the questions you answered " +
+            "incorrectly and strengthen the " +
+            "underlying concepts before attempting " +
+            "the next test.";
 
     }
 
@@ -668,6 +665,26 @@ function displayQuestionResults(result) {
 
 
 
+    if (
+        !result.questionResults ||
+        result.questionResults.length === 0
+    ) {
+
+        questionResults.innerHTML = `
+
+            <p>
+                No question-wise result is available.
+            </p>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
     result.questionResults.forEach(
         function(item, index) {
 
@@ -688,6 +705,7 @@ function displayQuestionResults(result) {
             // ------------------------------------------
 
             let statusText = "";
+
 
 
             if (
@@ -727,6 +745,7 @@ function displayQuestionResults(result) {
                 "Not answered";
 
 
+
             if (
                 item.selectedAnswer
             ) {
@@ -758,7 +777,7 @@ function displayQuestionResults(result) {
 
 
             // ------------------------------------------
-            // Card
+            // Question card
             // ------------------------------------------
 
             card.innerHTML = `
@@ -863,17 +882,21 @@ function formatTime(seconds) {
         );
 
 
+
     if (
         seconds < 60
     ) {
 
         return (
+
             seconds +
+
             (
                 seconds === 1
                     ? " second"
                     : " seconds"
             )
+
         );
 
     }
@@ -947,6 +970,7 @@ function formatMarks(marks) {
         Number(marks);
 
 
+
     if (
         number > 0
     ) {
@@ -957,6 +981,7 @@ function formatMarks(marks) {
     }
 
 
+
     if (
         number < 0
     ) {
@@ -964,6 +989,7 @@ function formatMarks(marks) {
         return formatNumber(number);
 
     }
+
 
 
     return "0";
@@ -982,6 +1008,7 @@ function formatNumber(number) {
         Number(number);
 
 
+
     if (
         Number.isInteger(n)
     ) {
@@ -989,6 +1016,7 @@ function formatNumber(number) {
         return String(n);
 
     }
+
 
 
     return n.toFixed(2)
@@ -1019,4 +1047,4 @@ function escapeHTML(text) {
 
     return div.innerHTML;
 
-                  }
+}
