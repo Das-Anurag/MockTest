@@ -2,13 +2,9 @@
 // Mock Test - Test Engine
 // ======================================================
 
-
 // ------------------------------------------------------
 // Test configuration
 // ------------------------------------------------------
-
-const TEST_DURATION_MINUTES = 20;
-
 
 // ------------------------------------------------------
 // Questions
@@ -29,8 +25,7 @@ let timeSpent = {};
 
 let questionStartTime = Date.now();
 
-let remainingSeconds =
-    TEST_DURATION_MINUTES * 60;
+let remainingSeconds = 0;
 
 let timerInterval = null;
 
@@ -129,11 +124,25 @@ else {
 // ======================================================
 // INITIALIZE TEST
 // ======================================================
-
 function initializeTest() {
 
-
     currentQuestionIndex = 0;
+
+
+    /*
+     * Get the test duration from
+     * the saved test settings.
+     */
+
+    const settings =
+        getSettings();
+
+
+    remainingSeconds =
+
+        Number(
+            settings.testDurationMinutes
+        ) * 60;
 
 
     questionStartTime =
@@ -146,7 +155,6 @@ function initializeTest() {
     startTimer();
 
 }
-
 
 // ======================================================
 // DISPLAY QUESTION
