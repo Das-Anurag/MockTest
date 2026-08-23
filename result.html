@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Test Result</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+
+<body>
+
+    <div class="result-container">
+
+
+        <!-- ========================================= -->
+        <!-- Heading -->
+        <!-- ========================================= -->
+
+        <header class="result-header">
+
+            <h1>Test Result</h1>
+
+            <p id="submissionStatus">
+                Test completed
+            </p>
+
+        </header>
+
+
+
+        <!-- ========================================= -->
+        <!-- Score -->
+        <!-- ========================================= -->
+
+        <section class="score-card">
+
+            <div class="score-title">
+                Your Score
+            </div>
+
+
+            <div
+                id="score"
+                class="score">
+
+                0 / 0
+
+            </div>
+
+
+            <div
+                id="percentage"
+                class="percentage">
+
+                0%
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Statistics -->
+        <!-- ========================================= -->
+
+        <section class="statistics">
+
+
+            <div class="stat-card">
+
+                <span>
+                    Total Questions
+                </span>
+
+                <strong id="totalQuestions">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Correct
+                </span>
+
+                <strong id="correct">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Wrong
+                </span>
+
+                <strong id="wrong">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Unanswered
+                </span>
+
+                <strong id="unanswered">
+                    0
+                </strong>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Marking -->
+        <!-- ========================================= -->
+
+        <section class="feedback-section">
+
+            <h2>
+                Marking System
+            </h2>
+
+
+            <p id="markingInfo">
+            </p>
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Time Analysis -->
+        <!-- ========================================= -->
+
+        <section class="feedback-section">
+
+
+            <h2>
+                Time Analysis
+            </h2>
+
+
+            <p>
+
+                Average time per question:
+
+                <strong id="averageTime">
+                    0 seconds
+                </strong>
+
+            </p>
+
+
+            <div id="slowQuestions">
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Performance -->
+        <!-- ========================================= -->
+
+        <section class="performance-card">
+
+
+            <h2>
+                Performance
+            </h2>
+
+
+            <p id="performanceMessage">
+            </p>
+
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Detailed Results -->
+        <!-- ========================================= -->
+
+        <section class="feedback-section">
+
+
+            <h2>
+                Question-wise Analysis
+            </h2>
+
+
+            <div id="questionResults">
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- Buttons -->
+        <!-- ========================================= -->
+
+        <div class="result-buttons">
+
+
+            <a
+                href="index.html"
+                class="result-button">
+
+                Back to Home
+
+            </a>
+
+
+            <a
+                href="test.html"
+                class="result-button">
+
+                Take Test Again
+
+            </a>
+
+
+            <a
+                href="editor.html"
+                class="result-button">
+
+                Question Editor
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ============================================= -->
+    <!-- JavaScript -->
+    <!-- ============================================= -->
+
+    <script src="js/result.js"></script>
+
+
+</body>
+
+</html>
