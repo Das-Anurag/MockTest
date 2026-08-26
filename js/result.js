@@ -1,27 +1,64 @@
 // ======================================================
-// Mock Test - Result / Feedback System
+// Mock Test - Result / Feedback Page
 // ======================================================
 
 
-// ------------------------------------------------------
-// Get saved result
-// ------------------------------------------------------
+// ======================================================
+// GET SAVED RESULT
+// ======================================================
 
-const resultData =
+const savedResult =
     localStorage.getItem(
         "mockTestLastResult"
     );
 
 
-// ------------------------------------------------------
-// HTML elements
-// ------------------------------------------------------
+if (!savedResult) {
 
-const submissionStatus =
-    document.getElementById(
-        "submissionStatus"
+    document.body.innerHTML = `
+
+        <div class="result-container">
+
+            <section class="result-header">
+
+                <h1>
+                    No Result Available
+                </h1>
+
+                <p>
+                    Please take a test first.
+                </p>
+
+                <a
+                    href="index.html"
+                    class="result-button">
+
+                    Back to Home
+
+                </a>
+
+            </section>
+
+        </div>
+
+    `;
+
+    throw new Error(
+        "No test result found."
     );
 
+}
+
+
+const result =
+    JSON.parse(
+        savedResult
+    );
+
+
+// ======================================================
+// HTML ELEMENTS
+// ======================================================
 
 const score =
     document.getElementById(
@@ -35,33 +72,39 @@ const percentage =
     );
 
 
-const totalQuestions =
+const correctCount =
     document.getElementById(
-        "totalQuestions"
+        "correctCount"
     );
 
 
-const correct =
+const wrongCount =
     document.getElementById(
-        "correct"
+        "wrongCount"
     );
 
 
-const wrong =
+const unansweredCount =
     document.getElementById(
-        "wrong"
+        "unansweredCount"
     );
 
 
-const unanswered =
+const totalCount =
     document.getElementById(
-        "unanswered"
+        "totalCount"
     );
 
 
-const markingInfo =
+const submissionStatus =
     document.getElementById(
-        "markingInfo"
+        "submissionStatus"
+    );
+
+
+const performanceMessage =
+    document.getElementById(
+        "performanceMessage"
     );
 
 
@@ -77,253 +120,286 @@ const slowQuestions =
     );
 
 
-const performanceMessage =
-    document.getElementById(
-        "performanceMessage"
-    );
-
-
 const questionResults =
     document.getElementById(
         "questionResults"
     );
 
 
-// ------------------------------------------------------
-// Check whether a result exists
-// ------------------------------------------------------
+// ======================================================
+// MARKING TABLE ELEMENTS
+// ======================================================
 
-if (!resultData) {
+const correctMarkPerQuestion =
+    document.getElementById(
+        "correctMarkPerQuestion"
+    );
 
-    showNoResult();
+
+const wrongMarkPerQuestion =
+    document.getElementById(
+        "wrongMarkPerQuestion"
+    );
+
+
+const unansweredMarkPerQuestion =
+    document.getElementById(
+        "unansweredMarkPerQuestion"
+    );
+
+
+const totalMarkPerQuestion =
+    document.getElementById(
+        "totalMarkPerQuestion"
+    );
+
+
+const correctNetMark =
+    document.getElementById(
+        "correctNetMark"
+    );
+
+
+const wrongNetMark =
+    document.getElementById(
+        "wrongNetMark"
+    );
+
+
+const unansweredNetMark =
+    document.getElementById(
+        "unansweredNetMark"
+    );
+
+
+const totalNetMark =
+    document.getElementById(
+        "totalNetMark"
+    );
+
+
+// ======================================================
+// DISPLAY BASIC RESULT
+// ======================================================
+
+score.textContent =
+    formatNumber(
+        result.score
+    );
+
+
+percentage.textContent =
+    formatNumber(
+        result.percentage
+    ) + "%";
+
+
+correctCount.textContent =
+    result.correct;
+
+
+wrongCount.textContent =
+    result.wrong;
+
+
+unansweredCount.textContent =
+    result.unanswered;
+
+
+totalCount.textContent =
+    result.totalQuestions;
+
+
+// ======================================================
+// SUBMISSION STATUS
+// ======================================================
+
+if (
+    result.submittedAutomatically
+) {
+
+    submissionStatus.textContent =
+        "The test was automatically submitted because the time ended.";
 
 }
 else {
 
-    try {
-
-        const result =
-            JSON.parse(resultData);
-
-        displayResult(result);
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Could not read test result:",
-            error
-        );
-
-        showNoResult();
-
-    }
+    submissionStatus.textContent =
+        "The test was submitted manually.";
 
 }
 
 
 // ======================================================
-// NO RESULT
+// MARKING BREAKDOWN
 // ======================================================
 
-function showNoResult() {
+const positiveMarks =
+    Number(
+        result.positiveMarks
+    );
 
 
-    submissionStatus.textContent =
-        "No test result is available.";
+const negativeMarks =
+    Number(
+        result.negativeMarks
+    );
 
 
-    score.textContent =
-        "—";
+// ------------------------------------------------------
+// Mark carried by one question
+// ------------------------------------------------------
+
+correctMarkPerQuestion.textContent =
+    formatNumber(
+        positiveMarks
+    );
 
 
-    percentage.textContent =
-        "—";
+wrongMarkPerQuestion.textContent =
+    formatNumber(
+        -negativeMarks
+    );
 
 
-    totalQuestions.textContent =
-        "—";
+unansweredMarkPerQuestion.textContent =
+    "0";
 
 
-    correct.textContent =
-        "—";
+totalMarkPerQuestion.textContent =
+    "—";
 
 
-    wrong.textContent =
-        "—";
+// ------------------------------------------------------
+// Net marks
+// ------------------------------------------------------
+
+const correctMarks =
+    result.correct *
+    positiveMarks;
 
 
-    unanswered.textContent =
-        "—";
+const wrongMarks =
+    result.wrong *
+    (-negativeMarks);
 
 
-    markingInfo.textContent =
-        "No test result is available.";
+const unansweredMarks =
+    0;
 
 
-    averageTime.textContent =
-        "—";
+const netMarks =
+    correctMarks +
+    wrongMarks +
+    unansweredMarks;
+
+
+correctNetMark.textContent =
+    formatNumber(
+        correctMarks
+    );
+
+
+wrongNetMark.textContent =
+    formatNumber(
+        wrongMarks
+    );
+
+
+unansweredNetMark.textContent =
+    formatNumber(
+        unansweredMarks
+    );
+
+
+totalNetMark.textContent =
+    formatNumber(
+        netMarks
+    );
+
+
+// ======================================================
+// PERFORMANCE MESSAGE
+// ======================================================
+
+generatePerformanceMessage();
+
+
+// ======================================================
+// TIME ANALYSIS
+// ======================================================
+
+generateTimeAnalysis();
+
+
+// ======================================================
+// QUESTION-WISE ANALYSIS
+// ======================================================
+
+generateQuestionAnalysis();
+
+
+// ======================================================
+// PERFORMANCE
+// ======================================================
+
+function generatePerformanceMessage() {
+
+    const percentageValue =
+        Number(
+            result.percentage
+        );
+
+
+    let message;
+
+
+    if (
+        percentageValue >= 90
+    ) {
+
+        message =
+            "Outstanding performance! You have demonstrated excellent accuracy and a very strong understanding of the questions.";
+
+    }
+
+    else if (
+        percentageValue >= 75
+    ) {
+
+        message =
+            "Excellent performance! You have demonstrated a strong understanding of the subject.";
+
+    }
+
+    else if (
+        percentageValue >= 60
+    ) {
+
+        message =
+            "Good performance! Your overall understanding is satisfactory, but there is still room for improvement.";
+
+    }
+
+    else if (
+        percentageValue >= 40
+    ) {
+
+        message =
+            "Fair performance. Review the questions you answered incorrectly and strengthen those areas.";
+
+    }
+
+    else {
+
+        message =
+            "You need more practice. Review the incorrect and unanswered questions carefully and try the test again.";
+
+    }
 
 
     performanceMessage.textContent =
-        "Please take a mock test first.";
-
-
-    questionResults.innerHTML = `
-
-        <p>
-            Please take a mock test first.
-        </p>
-
-    `;
-
-}
-
-
-// ======================================================
-// DISPLAY RESULT
-// ======================================================
-
-function displayResult(result) {
-
-
-    // --------------------------------------------------
-    // Submission status
-    // --------------------------------------------------
-
-    if (
-        result.submittedAutomatically
-    ) {
-
-        submissionStatus.textContent =
-
-            "Test submitted automatically because the time expired.";
-
-    }
-    else {
-
-        submissionStatus.textContent =
-
-            "Test submitted manually.";
-
-    }
-
-
-
-    // --------------------------------------------------
-    // Score
-    // --------------------------------------------------
-
-    score.textContent =
-
-        formatNumber(
-            result.score
-        )
-
-        + " / " +
-
-        formatNumber(
-            result.totalPossibleMarks
-        );
-
-
-
-    // --------------------------------------------------
-    // Percentage
-    // --------------------------------------------------
-
-    percentage.textContent =
-
-        formatNumber(
-            result.percentage
-        )
-
-        + "%";
-
-
-
-    // --------------------------------------------------
-    // Statistics
-    // --------------------------------------------------
-
-    totalQuestions.textContent =
-        result.totalQuestions;
-
-
-    correct.textContent =
-        result.correct;
-
-
-    wrong.textContent =
-        result.wrong;
-
-
-    unanswered.textContent =
-        result.unanswered;
-
-
-
-    // --------------------------------------------------
-    // Marking information
-    // --------------------------------------------------
-
-    markingInfo.innerHTML = `
-
-        Correct answer:
-        <strong>
-            +${formatNumber(
-                result.positiveMarks
-            )}
-        </strong>
-
-        &nbsp;&nbsp;
-
-        Wrong answer:
-        <strong>
-            −${formatNumber(
-                result.negativeMarks
-            )}
-        </strong>
-
-        &nbsp;&nbsp;
-
-        Unanswered:
-        <strong>
-            0
-        </strong>
-
-    `;
-
-
-
-    // --------------------------------------------------
-    // Time analysis
-    // --------------------------------------------------
-
-    calculateTimeAnalysis(
-        result
-    );
-
-
-
-    // --------------------------------------------------
-    // Performance
-    // --------------------------------------------------
-
-    generatePerformanceMessage(
-        result
-    );
-
-
-
-    // --------------------------------------------------
-    // Question-wise results
-    // --------------------------------------------------
-
-    displayQuestionResults(
-        result
-    );
+        message;
 
 }
 
@@ -332,117 +408,85 @@ function displayResult(result) {
 // TIME ANALYSIS
 // ======================================================
 
-function calculateTimeAnalysis(result) {
+function generateTimeAnalysis() {
 
-
-    const results =
-        result.questionResults;
-
+    const questions =
+        result.questionResults || [];
 
 
     if (
-        !results ||
-        results.length === 0
+        questions.length === 0
     ) {
 
         averageTime.textContent =
-            "0 seconds";
-
-
-        slowQuestions.innerHTML = `
-
-            <p>
-                No question-time data is available.
-            </p>
-
-        `;
-
+            "No time data is available.";
 
         return;
 
     }
 
 
+    /*
+     * Total time actually spent
+     */
 
-    // --------------------------------------------------
-    // Get saved test settings
-    // --------------------------------------------------
-
-    const settings =
-        getSettings();
-
+    let totalTime =
+        0;
 
 
-    // --------------------------------------------------
-    // Total given test time
-    // --------------------------------------------------
+    questions.forEach(
+        function(q) {
 
-    const totalGivenTime =
+            totalTime +=
+                Number(
+                    q.timeSpent || 0
+                );
 
-        Number(
-            settings.testDurationMinutes
-        ) * 60;
-
-
-
-    // --------------------------------------------------
-    // Average available time per question
-    //
-    // Formula:
-    //
-    // Total given time
-    // -----------------
-    // Number of questions
-    //
-    // --------------------------------------------------
-
-    const avg =
-
-        totalGivenTime /
-        result.totalQuestions;
+        }
+    );
 
 
+    /*
+     * Average time spent on one question
+     *
+     * This is based on the actual
+     * time spent during the test.
+     */
 
-    // --------------------------------------------------
-    // Display average available time
-    // --------------------------------------------------
+    const actualAverageTime =
+        totalTime /
+        questions.length;
+
 
     averageTime.textContent =
-        formatTime(avg);
+
+        "Average time spent per question: " +
+
+        formatTime(
+            actualAverageTime
+        );
 
 
-
-    // --------------------------------------------------
-    // Find questions where actual time
-    // was greater than average available time
-    // --------------------------------------------------
+    /*
+     * Find questions taking more than
+     * the average time.
+     */
 
     const slow =
+        questions.filter(
+            function(q) {
 
-        results.filter(
-            function(item) {
-
-                return (
-
-                    Number(
-                        item.timeSpent
-                    ) > avg
-
-                );
+                return Number(
+                    q.timeSpent || 0
+                ) > actualAverageTime;
 
             }
         );
 
 
-
     slowQuestions.innerHTML =
         "";
 
-
-
-    // --------------------------------------------------
-    // No slow questions
-    // --------------------------------------------------
 
     if (
         slow.length === 0
@@ -451,11 +495,7 @@ function calculateTimeAnalysis(result) {
         slowQuestions.innerHTML = `
 
             <p>
-
-                You did not spend more than
-                the average available time
-                on any question.
-
+                No question took more than the average time.
             </p>
 
         `;
@@ -465,27 +505,14 @@ function calculateTimeAnalysis(result) {
     }
 
 
-
-    // --------------------------------------------------
-    // Heading
-    // --------------------------------------------------
-
     const heading =
         document.createElement(
             "p"
         );
 
 
-    heading.innerHTML = `
-
-        You spent more than the average
-        available time on
-        <strong>
-            ${slow.length}
-        </strong>
-        question(s):
-
-    `;
+    heading.innerHTML =
+        "<strong>Questions that took more than average time:</strong>";
 
 
     slowQuestions.appendChild(
@@ -493,35 +520,14 @@ function calculateTimeAnalysis(result) {
     );
 
 
-
-    // --------------------------------------------------
-    // List of slow questions
-    // --------------------------------------------------
-
     const list =
         document.createElement(
             "ul"
         );
 
 
-
     slow.forEach(
-        function(item) {
-
-
-            const actualTime =
-
-                Number(
-                    item.timeSpent
-                );
-
-
-
-            const difference =
-
-                actualTime - avg;
-
-
+        function(q) {
 
             const li =
                 document.createElement(
@@ -529,24 +535,19 @@ function calculateTimeAnalysis(result) {
                 );
 
 
-            li.innerHTML = `
+            li.textContent =
 
-                Question
-                <strong>
-                    ${item.questionIndex + 1}
-                </strong>
+                "Question " +
 
-                —
+                (
+                    q.questionIndex + 1
+                ) +
 
-                Actual time:
-                ${formatTime(actualTime)}
+                " — " +
 
-                —
-
-                ${formatTime(difference)}
-                above average
-
-            `;
+                formatTime(
+                    q.timeSpent
+                );
 
 
             list.appendChild(
@@ -565,129 +566,21 @@ function calculateTimeAnalysis(result) {
 
 
 // ======================================================
-// PERFORMANCE MESSAGE
+// QUESTION-WISE ANALYSIS
 // ======================================================
 
-function generatePerformanceMessage(result) {
-
-
-    const p =
-        Number(
-            result.percentage
-        );
-
-
-    let message = "";
-
-
-
-    if (
-        p >= 90
-    ) {
-
-        message =
-
-            "Outstanding performance! " +
-            "Your accuracy is excellent and " +
-            "you have demonstrated a very strong " +
-            "understanding of the questions.";
-
-    }
-
-    else if (
-        p >= 75
-    ) {
-
-        message =
-
-            "Very good performance! " +
-            "You have a strong understanding of " +
-            "the subject, with only some areas " +
-            "needing further improvement.";
-
-    }
-
-    else if (
-        p >= 60
-    ) {
-
-        message =
-
-            "Good performance! " +
-            "You have a reasonable understanding, " +
-            "but further practice can improve both " +
-            "accuracy and confidence.";
-
-    }
-
-    else if (
-        p >= 40
-    ) {
-
-        message =
-
-            "Your performance is moderate. " +
-            "More practice and careful analysis " +
-            "of the incorrect answers should help " +
-            "improve your result.";
-
-    }
-
-    else {
-
-        message =
-
-            "You need more practice. " +
-            "Review the questions you answered " +
-            "incorrectly and strengthen the " +
-            "underlying concepts before attempting " +
-            "the next test.";
-
-    }
-
-
-
-    performanceMessage.textContent =
-        message;
-
-}
-
-
-// ======================================================
-// QUESTION-WISE RESULTS
-// ======================================================
-
-function displayQuestionResults(result) {
-
+function generateQuestionAnalysis() {
 
     questionResults.innerHTML =
         "";
 
 
-
-    if (
-        !result.questionResults ||
-        result.questionResults.length === 0
-    ) {
-
-        questionResults.innerHTML = `
-
-            <p>
-                No question-wise result is available.
-            </p>
-
-        `;
+    const questions =
+        result.questionResults || [];
 
 
-        return;
-
-    }
-
-
-
-    result.questionResults.forEach(
-        function(item, index) {
-
+    questions.forEach(
+        function(q, index) {
 
             const card =
                 document.createElement(
@@ -699,164 +592,309 @@ function displayQuestionResults(result) {
                 "result-question-card";
 
 
-
             // ------------------------------------------
-            // Status
-            // ------------------------------------------
-
-            let statusText = "";
-
-
-
-            if (
-                item.status ===
-                "correct"
-            ) {
-
-                statusText =
-                    "Correct";
-
-            }
-
-            else if (
-                item.status ===
-                "wrong"
-            ) {
-
-                statusText =
-                    "Wrong";
-
-            }
-
-            else {
-
-                statusText =
-                    "Unanswered";
-
-            }
-
-
-
-            // ------------------------------------------
-            // Selected answer text
+            // Header
             // ------------------------------------------
 
-            let selectedText =
-                "Not answered";
+            const header =
+                document.createElement(
+                    "div"
+                );
 
 
+            header.className =
+                "result-question-header";
 
-            if (
-                item.selectedAnswer
-            ) {
 
-                selectedText =
+            const title =
+                document.createElement(
+                    "strong"
+                );
 
-                    item.selectedAnswer
-                    + ". "
-                    + item.options[
-                        item.selectedAnswer
-                    ];
 
-            }
+            title.textContent =
 
+                "Question " +
+
+                (index + 1);
+
+
+            const status =
+                document.createElement(
+                    "span"
+                );
+
+
+            status.textContent =
+                getStatusText(
+                    q.status
+                );
+
+
+            header.appendChild(
+                title
+            );
+
+
+            header.appendChild(
+                status
+            );
 
 
             // ------------------------------------------
-            // Correct answer text
+            // Question
             // ------------------------------------------
 
-            const correctText =
+            const questionText =
+                document.createElement(
+                    "div"
+                );
 
-                item.correctAnswer
-                + ". "
-                + item.options[
-                    item.correctAnswer
+
+            questionText.className =
+                "result-question-text";
+
+
+            questionText.textContent =
+                q.question;
+
+
+            // ------------------------------------------
+            // Options
+            // ------------------------------------------
+
+            const optionsContainer =
+                document.createElement(
+                    "div"
+                );
+
+
+            optionsContainer.className =
+                "result-options";
+
+
+            const optionKeys =
+                [
+                    "A",
+                    "B",
+                    "C",
+                    "D"
                 ];
 
 
+            optionKeys.forEach(
+                function(key) {
+
+                    const option =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    option.className =
+                        "result-answer-option";
+
+
+                    /*
+                     * Option label.
+                     */
+
+                    const label =
+                        document.createElement(
+                            "strong"
+                        );
+
+
+                    label.textContent =
+                        key + ". ";
+
+
+                    /*
+                     * Option text.
+                     */
+
+                    const text =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    text.textContent =
+                        q.options[key];
+
+
+                    option.appendChild(
+                        label
+                    );
+
+
+                    option.appendChild(
+                        text
+                    );
+
+
+                    /*
+                     * --------------------------------
+                     * ACTUAL CORRECT ANSWER
+                     * --------------------------------
+                     *
+                     * Green background.
+                     */
+
+                    if (
+                        key ===
+                        q.correctAnswer
+                    ) {
+
+                        option.classList.add(
+                            "correct-option"
+                        );
+
+                    }
+
+
+                    /*
+                     * --------------------------------
+                     * USER'S SELECTED ANSWER
+                     * --------------------------------
+                     *
+                     * Blue font.
+                     */
+
+                    if (
+                        key ===
+                        q.selectedAnswer
+                    ) {
+
+                        option.classList.add(
+                            "selected-option"
+                        );
+
+                    }
+
+
+                    /*
+                     * If both are true, the option
+                     * receives BOTH styles.
+                     *
+                     * Therefore:
+                     *
+                     * Green background =
+                     * correct answer
+                     *
+                     * Blue text =
+                     * user's selection
+                     */
+
+                    optionsContainer.appendChild(
+                        option
+                    );
+
+                }
+            );
+
 
             // ------------------------------------------
-            // Question card
+            // Answer information
             // ------------------------------------------
 
-            card.innerHTML = `
-
-                <div class="result-question-header">
-
-                    <strong>
-                        Question ${index + 1}
-                    </strong>
-
-                    <span>
-                        ${statusText}
-                    </span>
-
-                </div>
+            const selected =
+                document.createElement(
+                    "p"
+                );
 
 
-                <div class="result-question-text">
+            selected.innerHTML =
 
-                    ${escapeHTML(
-                        item.question
-                    )}
+                "<strong>Your answer:</strong> " +
 
-                </div>
-
-
-                <p>
-
-                    <strong>
-                        Your Answer:
-                    </strong>
-
-                    ${escapeHTML(
-                        selectedText
-                    )}
-
-                </p>
+                (
+                    q.selectedAnswer
+                        ? q.selectedAnswer
+                        : "Unanswered"
+                );
 
 
-                <p>
-
-                    <strong>
-                        Correct Answer:
-                    </strong>
-
-                    ${escapeHTML(
-                        correctText
-                    )}
-
-                </p>
+            const correct =
+                document.createElement(
+                    "p"
+                );
 
 
-                <p>
+            correct.innerHTML =
 
-                    <strong>
-                        Time:
-                    </strong>
+                "<strong>Correct answer:</strong> " +
 
-                    ${formatTime(
-                        item.timeSpent
-                    )}
-
-                </p>
+                q.correctAnswer;
 
 
-                <p>
+            const marks =
+                document.createElement(
+                    "p"
+                );
 
-                    <strong>
-                        Marks:
-                    </strong>
 
-                    ${formatMarks(
-                        item.marks
-                    )}
+            marks.innerHTML =
 
-                </p>
+                "<strong>Marks:</strong> " +
 
-            `;
+                formatNumber(
+                    q.marks
+                );
 
+
+            const time =
+                document.createElement(
+                    "p"
+                );
+
+
+            time.innerHTML =
+
+                "<strong>Time spent:</strong> " +
+
+                formatTime(
+                    q.timeSpent
+                );
+
+
+            // ------------------------------------------
+            // Build card
+            // ------------------------------------------
+
+            card.appendChild(
+                header
+            );
+
+
+            card.appendChild(
+                questionText
+            );
+
+
+            card.appendChild(
+                optionsContainer
+            );
+
+
+            card.appendChild(
+                selected
+            );
+
+
+            card.appendChild(
+                correct
+            );
+
+
+            card.appendChild(
+                marks
+            );
+
+
+            card.appendChild(
+                time
+            );
 
 
             questionResults.appendChild(
@@ -870,181 +908,108 @@ function displayQuestionResults(result) {
 
 
 // ======================================================
-// FORMAT TIME
+// STATUS TEXT
 // ======================================================
 
-function formatTime(seconds) {
+function getStatusText(status) {
 
+    if (
+        status === "correct"
+    ) {
 
-    seconds =
-        Math.round(
-            Number(seconds)
-        );
+        return "Correct";
 
+    }
 
 
     if (
-        seconds < 60
+        status === "wrong"
     ) {
 
-        return (
+        return "Wrong";
 
-            seconds +
+    }
 
-            (
-                seconds === 1
-                    ? " second"
-                    : " seconds"
-            )
 
+    return "Unanswered";
+
+}
+
+
+// ======================================================
+// FORMAT NUMBER
+// ======================================================
+
+function formatNumber(value) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isInteger(
+            number
+        )
+    ) {
+
+        return String(
+            number
         );
 
     }
 
 
-
-    const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
-
-    const remaining =
-        seconds % 60;
-
-
-
-    if (
-        remaining === 0
-    ) {
-
-        return (
-
-            minutes +
-
-            (
-                minutes === 1
-                    ? " minute"
-                    : " minutes"
-            )
-
-        );
-
-    }
-
-
-
-    return (
-
-        minutes +
-
-        (
-            minutes === 1
-                ? " minute "
-                : " minutes "
-        )
-
-        +
-
-        remaining +
-
-        (
-            remaining === 1
-                ? " second"
-                : " seconds"
-        )
-
+    return number.toFixed(
+        2
     );
 
 }
 
 
 // ======================================================
-// FORMAT MARKS
+// FORMAT TIME
 // ======================================================
 
-function formatMarks(marks) {
+function formatTime(seconds) {
 
-
-    const number =
-        Number(marks);
-
-
-
-    if (
-        number > 0
-    ) {
-
-        return "+" +
-            formatNumber(number);
-
-    }
-
-
-
-    if (
-        number < 0
-    ) {
-
-        return formatNumber(number);
-
-    }
-
-
-
-    return "0";
-
-}
-
-
-// ======================================================
-// FORMAT NUMBERS
-// ======================================================
-
-function formatNumber(number) {
-
-
-    const n =
-        Number(number);
-
-
-
-    if (
-        Number.isInteger(n)
-    ) {
-
-        return String(n);
-
-    }
-
-
-
-    return n.toFixed(2)
-        .replace(
-            /\.?0+$/,
-            ""
-        );
-
-}
-
-
-// ======================================================
-// HTML PROTECTION
-// ======================================================
-
-function escapeHTML(text) {
-
-
-    const div =
-        document.createElement(
-            "div"
+    const totalSeconds =
+        Math.round(
+            Number(seconds) || 0
         );
 
 
-    div.textContent =
-        text;
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
 
 
-    return div.innerHTML;
+    const remainingSeconds =
+        totalSeconds % 60;
+
+
+    if (
+        minutes === 0
+    ) {
+
+        return (
+            remainingSeconds +
+            " sec"
+        );
+
+    }
+
+
+    return (
+
+        minutes +
+
+        " min " +
+
+        remainingSeconds +
+
+        " sec"
+
+    );
 
 }
