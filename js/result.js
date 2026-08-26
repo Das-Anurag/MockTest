@@ -50,6 +50,8 @@ if (!savedResult) {
 }
 
 
+// Convert saved JSON into JavaScript object
+
 const result =
     JSON.parse(
         savedResult
@@ -57,42 +59,78 @@ const result =
 
 
 // ======================================================
+// GET SETTINGS
+// ======================================================
+
+const settings =
+    getSettings();
+
+
+// ======================================================
+// BASIC TEST INFORMATION
+// ======================================================
+
+const totalQuestions =
+    Number(
+        result.totalQuestions || 0
+    );
+
+
+const correct =
+    Number(
+        result.correct || 0
+    );
+
+
+const wrong =
+    Number(
+        result.wrong || 0
+    );
+
+
+const unanswered =
+    Number(
+        result.unanswered || 0
+    );
+
+
+const score =
+    Number(
+        result.score || 0
+    );
+
+
+const percentage =
+    Number(
+        result.percentage || 0
+    );
+
+
+const positiveMarks =
+    Number(
+        result.positiveMarks || 0
+    );
+
+
+const negativeMarks =
+    Number(
+        result.negativeMarks || 0
+    );
+
+
+// ======================================================
 // HTML ELEMENTS
 // ======================================================
 
-const score =
+const scoreElement =
     document.getElementById(
         "score"
     );
 
 
-const percentage =
+const percentageElement =
     document.getElementById(
         "percentage"
-    );
-
-
-const correctCount =
-    document.getElementById(
-        "correctCount"
-    );
-
-
-const wrongCount =
-    document.getElementById(
-        "wrongCount"
-    );
-
-
-const unansweredCount =
-    document.getElementById(
-        "unansweredCount"
-    );
-
-
-const totalCount =
-    document.getElementById(
-        "totalCount"
     );
 
 
@@ -130,6 +168,30 @@ const questionResults =
 // MARKING TABLE ELEMENTS
 // ======================================================
 
+const correctQuestionCount =
+    document.getElementById(
+        "correctQuestionCount"
+    );
+
+
+const wrongQuestionCount =
+    document.getElementById(
+        "wrongQuestionCount"
+    );
+
+
+const unansweredQuestionCount =
+    document.getElementById(
+        "unansweredQuestionCount"
+    );
+
+
+const totalQuestionCount =
+    document.getElementById(
+        "totalQuestionCount"
+    );
+
+
 const correctMarkPerQuestion =
     document.getElementById(
         "correctMarkPerQuestion"
@@ -145,12 +207,6 @@ const wrongMarkPerQuestion =
 const unansweredMarkPerQuestion =
     document.getElementById(
         "unansweredMarkPerQuestion"
-    );
-
-
-const totalMarkPerQuestion =
-    document.getElementById(
-        "totalMarkPerQuestion"
     );
 
 
@@ -179,53 +235,49 @@ const totalNetMark =
 
 
 // ======================================================
-// DISPLAY BASIC RESULT
+// DISPLAY SCORE
 // ======================================================
 
-score.textContent =
-    formatNumber(
-        result.score
-    );
+if (scoreElement) {
+
+    scoreElement.textContent =
+        formatNumber(
+            score
+        );
+
+}
 
 
-percentage.textContent =
-    formatNumber(
-        result.percentage
-    ) + "%";
+if (percentageElement) {
 
+    percentageElement.textContent =
+        formatNumber(
+            percentage
+        ) + "%";
 
-correctCount.textContent =
-    result.correct;
-
-
-wrongCount.textContent =
-    result.wrong;
-
-
-unansweredCount.textContent =
-    result.unanswered;
-
-
-totalCount.textContent =
-    result.totalQuestions;
+}
 
 
 // ======================================================
 // SUBMISSION STATUS
 // ======================================================
 
-if (
-    result.submittedAutomatically
-) {
+if (submissionStatus) {
 
-    submissionStatus.textContent =
-        "The test was automatically submitted because the time ended.";
+    if (
+        result.submittedAutomatically
+    ) {
 
-}
-else {
+        submissionStatus.textContent =
+            "The test was automatically submitted because the time ended.";
 
-    submissionStatus.textContent =
-        "The test was submitted manually.";
+    }
+    else {
+
+        submissionStatus.textContent =
+            "The test was submitted manually.";
+
+    }
 
 }
 
@@ -234,88 +286,137 @@ else {
 // MARKING BREAKDOWN
 // ======================================================
 
-const positiveMarks =
-    Number(
-        result.positiveMarks
-    );
+
+// ------------------------------------------------------
+// Number of questions
+// ------------------------------------------------------
+
+if (correctQuestionCount) {
+
+    correctQuestionCount.textContent =
+        correct;
+
+}
 
 
-const negativeMarks =
-    Number(
-        result.negativeMarks
-    );
+if (wrongQuestionCount) {
+
+    wrongQuestionCount.textContent =
+        wrong;
+
+}
+
+
+if (unansweredQuestionCount) {
+
+    unansweredQuestionCount.textContent =
+        unanswered;
+
+}
+
+
+if (totalQuestionCount) {
+
+    totalQuestionCount.textContent =
+        totalQuestions;
+
+}
 
 
 // ------------------------------------------------------
-// Mark carried by one question
+// Mark per question
 // ------------------------------------------------------
 
-correctMarkPerQuestion.textContent =
-    formatNumber(
-        positiveMarks
-    );
+if (correctMarkPerQuestion) {
+
+    correctMarkPerQuestion.textContent =
+        formatNumber(
+            positiveMarks
+        );
+
+}
 
 
-wrongMarkPerQuestion.textContent =
-    formatNumber(
-        -negativeMarks
-    );
+if (wrongMarkPerQuestion) {
+
+    wrongMarkPerQuestion.textContent =
+        formatNumber(
+            -negativeMarks
+        );
+
+}
 
 
-unansweredMarkPerQuestion.textContent =
-    "0";
+if (unansweredMarkPerQuestion) {
 
+    unansweredMarkPerQuestion.textContent =
+        "0";
 
-totalMarkPerQuestion.textContent =
-    "—";
+}
 
 
 // ------------------------------------------------------
 // Net marks
 // ------------------------------------------------------
 
-const correctMarks =
-    result.correct *
+const correctNet =
+    correct *
     positiveMarks;
 
 
-const wrongMarks =
-    result.wrong *
+const wrongNet =
+    wrong *
     (-negativeMarks);
 
 
-const unansweredMarks =
+const unansweredNet =
     0;
 
 
-const netMarks =
-    correctMarks +
-    wrongMarks +
-    unansweredMarks;
+const totalNet =
+    correctNet +
+    wrongNet +
+    unansweredNet;
 
 
-correctNetMark.textContent =
-    formatNumber(
-        correctMarks
-    );
+if (correctNetMark) {
+
+    correctNetMark.textContent =
+        formatNumber(
+            correctNet
+        );
+
+}
 
 
-wrongNetMark.textContent =
-    formatNumber(
-        wrongMarks
-    );
+if (wrongNetMark) {
+
+    wrongNetMark.textContent =
+        formatNumber(
+            wrongNet
+        );
+
+}
 
 
-unansweredNetMark.textContent =
-    formatNumber(
-        unansweredMarks
-    );
+if (unansweredNetMark) {
+
+    unansweredNetMark.textContent =
+        formatNumber(
+            unansweredNet
+        );
+
+}
 
 
-totalNetMark.textContent =
-    formatNumber(
-        netMarks
-    );
+if (totalNetMark) {
+
+    totalNetMark.textContent =
+        formatNumber(
+            totalNet
+        );
+
+}
 
 
 // ======================================================
@@ -340,22 +441,23 @@ generateQuestionAnalysis();
 
 
 // ======================================================
-// PERFORMANCE
+// PERFORMANCE MESSAGE FUNCTION
 // ======================================================
 
 function generatePerformanceMessage() {
 
-    const percentageValue =
-        Number(
-            result.percentage
-        );
+    if (!performanceMessage) {
+
+        return;
+
+    }
 
 
     let message;
 
 
     if (
-        percentageValue >= 90
+        percentage >= 90
     ) {
 
         message =
@@ -364,7 +466,7 @@ function generatePerformanceMessage() {
     }
 
     else if (
-        percentageValue >= 75
+        percentage >= 75
     ) {
 
         message =
@@ -373,7 +475,7 @@ function generatePerformanceMessage() {
     }
 
     else if (
-        percentageValue >= 60
+        percentage >= 60
     ) {
 
         message =
@@ -382,7 +484,7 @@ function generatePerformanceMessage() {
     }
 
     else if (
-        percentageValue >= 40
+        percentage >= 40
     ) {
 
         message =
@@ -410,78 +512,119 @@ function generatePerformanceMessage() {
 
 function generateTimeAnalysis() {
 
-    const questions =
-        result.questionResults || [];
-
-
-    if (
-        questions.length === 0
-    ) {
-
-        averageTime.textContent =
-            "No time data is available.";
+    if (!averageTime) {
 
         return;
 
     }
 
 
-    /*
-     * Total time actually spent
-     */
-
-    let totalTime =
-        0;
+    const questionData =
+        result.questionResults || [];
 
 
-    questions.forEach(
-        function(q) {
+    if (
+        totalQuestions === 0
+    ) {
 
-            totalTime +=
-                Number(
-                    q.timeSpent || 0
-                );
+        averageTime.textContent =
+            "Average time cannot be calculated because there are no questions.";
+
+        if (slowQuestions) {
+
+            slowQuestions.innerHTML =
+                "";
 
         }
-    );
 
+        return;
+
+    }
+
+
+    // ==================================================
+    // TOTAL GIVEN TIME
+    // ==================================================
 
     /*
-     * Average time spent on one question
+     * The test duration is obtained from
+     * the saved settings.
      *
-     * This is based on the actual
-     * time spent during the test.
+     * Example:
+     *
+     * testDurationMinutes = 20
+     *
+     * Therefore:
+     *
+     * Total given time = 20 minutes
      */
 
-    const actualAverageTime =
-        totalTime /
-        questions.length;
+    const totalGivenTimeMinutes =
+        Number(
+            settings.testDurationMinutes
+        );
+
+
+    const totalGivenTimeSeconds =
+        totalGivenTimeMinutes *
+        60;
+
+
+    // ==================================================
+    // AVERAGE TIME
+    // ==================================================
+
+    /*
+     * IMPORTANT:
+     *
+     * Average Time =
+     *
+     * Total Given Time
+     * ----------------
+     * Number of Questions
+     *
+     */
+
+    const averageTimeSeconds =
+        totalGivenTimeSeconds /
+        totalQuestions;
+
+
+    const averageTimeMinutes =
+        averageTimeSeconds /
+        60;
 
 
     averageTime.textContent =
 
-        "Average time spent per question: " +
+        "Average time per question: " +
 
         formatTime(
-            actualAverageTime
+            averageTimeSeconds
         );
 
 
-    /*
-     * Find questions taking more than
-     * the average time.
-     */
+    // ==================================================
+    // FIND QUESTIONS ABOVE AVERAGE
+    // ==================================================
 
     const slow =
-        questions.filter(
+        questionData.filter(
             function(q) {
 
                 return Number(
                     q.timeSpent || 0
-                ) > actualAverageTime;
+                ) > averageTimeSeconds;
 
             }
         );
+
+
+    if (!slowQuestions) {
+
+        return;
+
+    }
 
 
     slowQuestions.innerHTML =
@@ -512,7 +655,7 @@ function generateTimeAnalysis() {
 
 
     heading.innerHTML =
-        "<strong>Questions that took more than average time:</strong>";
+        "<strong>Questions that took more than the average time:</strong>";
 
 
     slowQuestions.appendChild(
@@ -540,7 +683,9 @@ function generateTimeAnalysis() {
                 "Question " +
 
                 (
-                    q.questionIndex + 1
+                    Number(
+                        q.questionIndex
+                    ) + 1
                 ) +
 
                 " — " +
@@ -571,6 +716,13 @@ function generateTimeAnalysis() {
 
 function generateQuestionAnalysis() {
 
+    if (!questionResults) {
+
+        return;
+
+    }
+
+
     questionResults.innerHTML =
         "";
 
@@ -582,6 +734,11 @@ function generateQuestionAnalysis() {
     questions.forEach(
         function(q, index) {
 
+
+            // ==========================================
+            // QUESTION CARD
+            // ==========================================
+
             const card =
                 document.createElement(
                     "div"
@@ -592,9 +749,9 @@ function generateQuestionAnalysis() {
                 "result-question-card";
 
 
-            // ------------------------------------------
-            // Header
-            // ------------------------------------------
+            // ==========================================
+            // QUESTION HEADER
+            // ==========================================
 
             const header =
                 document.createElement(
@@ -616,7 +773,9 @@ function generateQuestionAnalysis() {
 
                 "Question " +
 
-                (index + 1);
+                (
+                    index + 1
+                );
 
 
             const status =
@@ -641,9 +800,9 @@ function generateQuestionAnalysis() {
             );
 
 
-            // ------------------------------------------
-            // Question
-            // ------------------------------------------
+            // ==========================================
+            // QUESTION TEXT
+            // ==========================================
 
             const questionText =
                 document.createElement(
@@ -659,9 +818,9 @@ function generateQuestionAnalysis() {
                 q.question;
 
 
-            // ------------------------------------------
-            // Options
-            // ------------------------------------------
+            // ==========================================
+            // OPTIONS
+            // ==========================================
 
             const optionsContainer =
                 document.createElement(
@@ -685,6 +844,7 @@ function generateQuestionAnalysis() {
             optionKeys.forEach(
                 function(key) {
 
+
                     const option =
                         document.createElement(
                             "div"
@@ -695,9 +855,9 @@ function generateQuestionAnalysis() {
                         "result-answer-option";
 
 
-                    /*
-                     * Option label.
-                     */
+                    // ----------------------------------
+                    // Option label
+                    // ----------------------------------
 
                     const label =
                         document.createElement(
@@ -709,9 +869,9 @@ function generateQuestionAnalysis() {
                         key + ". ";
 
 
-                    /*
-                     * Option text.
-                     */
+                    // ----------------------------------
+                    // Option text
+                    // ----------------------------------
 
                     const text =
                         document.createElement(
@@ -733,13 +893,9 @@ function generateQuestionAnalysis() {
                     );
 
 
-                    /*
-                     * --------------------------------
-                     * ACTUAL CORRECT ANSWER
-                     * --------------------------------
-                     *
-                     * Green background.
-                     */
+                    // ----------------------------------
+                    // Actual correct answer
+                    // ----------------------------------
 
                     if (
                         key ===
@@ -753,13 +909,9 @@ function generateQuestionAnalysis() {
                     }
 
 
-                    /*
-                     * --------------------------------
-                     * USER'S SELECTED ANSWER
-                     * --------------------------------
-                     *
-                     * Blue font.
-                     */
+                    // ----------------------------------
+                    // User selected answer
+                    // ----------------------------------
 
                     if (
                         key ===
@@ -774,16 +926,12 @@ function generateQuestionAnalysis() {
 
 
                     /*
-                     * If both are true, the option
-                     * receives BOTH styles.
+                     * If the selected answer is also
+                     * the correct answer:
                      *
-                     * Therefore:
-                     *
-                     * Green background =
-                     * correct answer
-                     *
-                     * Blue text =
-                     * user's selection
+                     * Green background
+                     * +
+                     * Blue text
                      */
 
                     optionsContainer.appendChild(
@@ -794,73 +942,9 @@ function generateQuestionAnalysis() {
             );
 
 
-            // ------------------------------------------
-            // Answer information
-            // ------------------------------------------
-
-            const selected =
-                document.createElement(
-                    "p"
-                );
-
-
-            selected.innerHTML =
-
-                "<strong>Your answer:</strong> " +
-
-                (
-                    q.selectedAnswer
-                        ? q.selectedAnswer
-                        : "Unanswered"
-                );
-
-
-            const correct =
-                document.createElement(
-                    "p"
-                );
-
-
-            correct.innerHTML =
-
-                "<strong>Correct answer:</strong> " +
-
-                q.correctAnswer;
-
-
-            const marks =
-                document.createElement(
-                    "p"
-                );
-
-
-            marks.innerHTML =
-
-                "<strong>Marks:</strong> " +
-
-                formatNumber(
-                    q.marks
-                );
-
-
-            const time =
-                document.createElement(
-                    "p"
-                );
-
-
-            time.innerHTML =
-
-                "<strong>Time spent:</strong> " +
-
-                formatTime(
-                    q.timeSpent
-                );
-
-
-            // ------------------------------------------
-            // Build card
-            // ------------------------------------------
+            // ==========================================
+            // ADD CONTENT TO CARD
+            // ==========================================
 
             card.appendChild(
                 header
@@ -877,24 +961,18 @@ function generateQuestionAnalysis() {
             );
 
 
-            card.appendChild(
-                selected
-            );
-
-
-            card.appendChild(
-                correct
-            );
-
-
-            card.appendChild(
-                marks
-            );
-
-
-            card.appendChild(
-                time
-            );
+            /*
+             * IMPORTANT:
+             *
+             * We intentionally DO NOT add:
+             *
+             * Your answer
+             * Correct answer
+             * Marks
+             * Time spent
+             *
+             * to the question-wise analysis.
+             */
 
 
             questionResults.appendChild(
@@ -911,7 +989,9 @@ function generateQuestionAnalysis() {
 // STATUS TEXT
 // ======================================================
 
-function getStatusText(status) {
+function getStatusText(
+    status
+) {
 
     if (
         status === "correct"
@@ -940,7 +1020,9 @@ function getStatusText(status) {
 // FORMAT NUMBER
 // ======================================================
 
-function formatNumber(value) {
+function formatNumber(
+    value
+) {
 
     const number =
         Number(value);
@@ -970,7 +1052,9 @@ function formatNumber(value) {
 // FORMAT TIME
 // ======================================================
 
-function formatTime(seconds) {
+function formatTime(
+    seconds
+) {
 
     const totalSeconds =
         Math.round(
@@ -993,8 +1077,26 @@ function formatTime(seconds) {
     ) {
 
         return (
+
             remainingSeconds +
+
             " sec"
+
+        );
+
+    }
+
+
+    if (
+        remainingSeconds === 0
+    ) {
+
+        return (
+
+            minutes +
+
+            " min"
+
         );
 
     }
@@ -1012,4 +1114,4 @@ function formatTime(seconds) {
 
     );
 
-}
+                        }
