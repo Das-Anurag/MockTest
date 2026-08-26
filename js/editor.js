@@ -42,7 +42,6 @@ const settingsMessage =
     );
 
 
-
 // ------------------------------------------------------
 // Question form
 // ------------------------------------------------------
@@ -113,7 +112,6 @@ const cancelButton =
     );
 
 
-
 // ------------------------------------------------------
 // Question bank
 // ------------------------------------------------------
@@ -136,6 +134,27 @@ const clearAllButton =
     );
 
 
+// ------------------------------------------------------
+// Import / Export
+// ------------------------------------------------------
+
+const exportButton =
+    document.getElementById(
+        "exportButton"
+    );
+
+
+const importButton =
+    document.getElementById(
+        "importButton"
+    );
+
+
+const importFile =
+    document.getElementById(
+        "importFile"
+    );
+
 
 // ======================================================
 // INITIALIZE EDITOR
@@ -154,26 +173,19 @@ resetForm();
 
 function loadSettings() {
 
-
     const settings =
         getSettings();
 
 
-
     positiveMarks.value =
-
         settings.positiveMarks;
 
 
-
     negativeMarks.value =
-
         settings.negativeMarks;
 
 
-
     testDuration.value =
-
         settings.testDurationMinutes;
 
 }
@@ -186,7 +198,6 @@ function loadSettings() {
 saveSettingsButton.addEventListener(
     "click",
     function() {
-
 
         const positive =
             Number(
@@ -206,11 +217,6 @@ saveSettingsButton.addEventListener(
             );
 
 
-
-        // ----------------------------------------------
-        // Validate settings
-        // ----------------------------------------------
-
         if (
             !Number.isFinite(positive) ||
             positive < 0
@@ -223,7 +229,6 @@ saveSettingsButton.addEventListener(
             return;
 
         }
-
 
 
         if (
@@ -240,7 +245,6 @@ saveSettingsButton.addEventListener(
         }
 
 
-
         if (
             !Number.isFinite(duration) ||
             duration <= 0
@@ -254,11 +258,6 @@ saveSettingsButton.addEventListener(
 
         }
 
-
-
-        // ----------------------------------------------
-        // Save
-        // ----------------------------------------------
 
         saveSettings({
 
@@ -274,10 +273,8 @@ saveSettingsButton.addEventListener(
         });
 
 
-
         settingsMessage.textContent =
             "Test settings saved successfully.";
-
 
 
         setTimeout(
@@ -302,14 +299,8 @@ questionForm.addEventListener(
     "submit",
     function(event) {
 
-
         event.preventDefault();
 
-
-
-        // ----------------------------------------------
-        // Get values
-        // ----------------------------------------------
 
         const text =
             question.value.trim();
@@ -335,11 +326,6 @@ questionForm.addEventListener(
             correctAnswer.value;
 
 
-
-        // ----------------------------------------------
-        // Validation
-        // ----------------------------------------------
-
         if (
             text === ""
         ) {
@@ -353,7 +339,6 @@ questionForm.addEventListener(
             return;
 
         }
-
 
 
         if (
@@ -372,7 +357,6 @@ questionForm.addEventListener(
         }
 
 
-
         if (
             answer === ""
         ) {
@@ -385,11 +369,6 @@ questionForm.addEventListener(
 
         }
 
-
-
-        // ----------------------------------------------
-        // Question object
-        // ----------------------------------------------
 
         const questionData = {
 
@@ -414,15 +393,13 @@ questionForm.addEventListener(
         };
 
 
-
         // ----------------------------------------------
-        // Update existing question
+        // UPDATE
         // ----------------------------------------------
 
         if (
             questionId.value !== ""
         ) {
-
 
             questionData.id =
                 questionId.value;
@@ -440,13 +417,11 @@ questionForm.addEventListener(
         }
 
 
-
         // ----------------------------------------------
-        // Add new question
+        // ADD
         // ----------------------------------------------
 
         else {
-
 
             addQuestion(
                 questionData
@@ -459,11 +434,6 @@ questionForm.addEventListener(
 
         }
 
-
-
-        // ----------------------------------------------
-        // Refresh
-        // ----------------------------------------------
 
         renderQuestions();
 
@@ -479,10 +449,8 @@ questionForm.addEventListener(
 
 function editQuestion(id) {
 
-
     const q =
         getQuestionById(id);
-
 
 
     if (!q) {
@@ -495,11 +463,6 @@ function editQuestion(id) {
 
     }
 
-
-
-    // ----------------------------------------------
-    // Fill form
-    // ----------------------------------------------
 
     questionId.value =
         q.id;
@@ -529,11 +492,6 @@ function editQuestion(id) {
         q.correctAnswer;
 
 
-
-    // ----------------------------------------------
-    // Change form appearance
-    // ----------------------------------------------
-
     formTitle.textContent =
         "Edit Question";
 
@@ -541,11 +499,6 @@ function editQuestion(id) {
     saveButton.textContent =
         "Update Question";
 
-
-
-    // ----------------------------------------------
-    // Scroll to form
-    // ----------------------------------------------
 
     document
         .querySelector(
@@ -568,10 +521,8 @@ function editQuestion(id) {
 
 function deleteQuestionFromEditor(id) {
 
-
     const q =
         getQuestionById(id);
-
 
 
     if (!q) {
@@ -579,7 +530,6 @@ function deleteQuestionFromEditor(id) {
         return;
 
     }
-
 
 
     const confirmed =
@@ -592,7 +542,6 @@ function deleteQuestionFromEditor(id) {
         );
 
 
-
     if (!confirmed) {
 
         return;
@@ -600,18 +549,10 @@ function deleteQuestionFromEditor(id) {
     }
 
 
-
     deleteQuestion(id);
-
 
     renderQuestions();
 
-
-    /*
-     * If the deleted question was
-     * currently being edited,
-     * clear the form.
-     */
 
     if (
         questionId.value === id
@@ -632,10 +573,8 @@ clearAllButton.addEventListener(
     "click",
     function() {
 
-
         const questions =
             getQuestions();
-
 
 
         if (
@@ -649,7 +588,6 @@ clearAllButton.addEventListener(
             return;
 
         }
-
 
 
         const confirmed =
@@ -666,7 +604,6 @@ clearAllButton.addEventListener(
             );
 
 
-
         if (!confirmed) {
 
             return;
@@ -674,15 +611,11 @@ clearAllButton.addEventListener(
         }
 
 
-
         clearAllQuestions();
-
 
         renderQuestions();
 
-
         resetForm();
-
 
 
         alert(
@@ -709,17 +642,13 @@ cancelButton.addEventListener(
 
 function resetForm() {
 
-
     questionForm.reset();
-
 
     questionId.value =
         "";
 
-
     formTitle.textContent =
         "Add Question";
-
 
     saveButton.textContent =
         "Save Question";
@@ -733,15 +662,9 @@ function resetForm() {
 
 function renderQuestions() {
 
-
     const questions =
         getQuestions();
 
-
-
-    // --------------------------------------------------
-    // Count
-    // --------------------------------------------------
 
     if (
         questions.length === 1
@@ -751,30 +674,18 @@ function renderQuestions() {
             "1 question";
 
     }
-
     else {
 
         questionCount.textContent =
-
             questions.length +
             " questions";
 
     }
 
 
-
-    // --------------------------------------------------
-    // Clear container
-    // --------------------------------------------------
-
     questionsContainer.innerHTML =
         "";
 
-
-
-    // --------------------------------------------------
-    // No questions
-    // --------------------------------------------------
 
     if (
         questions.length === 0
@@ -797,14 +708,8 @@ function renderQuestions() {
     }
 
 
-
-    // --------------------------------------------------
-    // Create question cards
-    // --------------------------------------------------
-
     questions.forEach(
         function(q, index) {
-
 
             const card =
                 document.createElement(
@@ -816,11 +721,6 @@ function renderQuestions() {
                 "question-card";
 
 
-
-            // ------------------------------------------
-            // Question
-            // ------------------------------------------
-
             const title =
                 document.createElement(
                     "h3"
@@ -828,15 +728,9 @@ function renderQuestions() {
 
 
             title.textContent =
-
                 "Question " +
                 (index + 1);
 
-
-
-            // ------------------------------------------
-            // Question text
-            // ------------------------------------------
 
             const questionText =
                 document.createElement(
@@ -847,11 +741,6 @@ function renderQuestions() {
             questionText.textContent =
                 q.question;
 
-
-
-            // ------------------------------------------
-            // Options
-            // ------------------------------------------
 
             const options =
                 document.createElement(
@@ -889,11 +778,6 @@ function renderQuestions() {
             `;
 
 
-
-            // ------------------------------------------
-            // Edit button
-            // ------------------------------------------
-
             const editButton =
                 document.createElement(
                     "button"
@@ -917,11 +801,6 @@ function renderQuestions() {
                 }
             );
 
-
-
-            // ------------------------------------------
-            // Delete button
-            // ------------------------------------------
 
             const deleteButton =
                 document.createElement(
@@ -948,11 +827,6 @@ function renderQuestions() {
                 }
             );
 
-
-
-            // ------------------------------------------
-            // Add everything
-            // ------------------------------------------
 
             card.appendChild(
                 title
@@ -990,11 +864,660 @@ function renderQuestions() {
 
 
 // ======================================================
+// EXPORT QUESTIONS
+// ======================================================
+
+exportButton.addEventListener(
+    "click",
+    function() {
+
+        exportQuestions();
+
+    }
+);
+
+
+function exportQuestions() {
+
+    const questions =
+        getQuestions();
+
+
+    if (
+        questions.length === 0
+    ) {
+
+        alert(
+            "There are no questions to export."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Only questions are exported.
+     *
+     * Test settings are intentionally
+     * not included.
+     */
+
+    const backup = {
+
+        format:
+            "MockTest Question Bank",
+
+        version:
+            1,
+
+        exportedAt:
+            new Date().toISOString(),
+
+        questions:
+            questions
+
+    };
+
+
+    const json =
+        JSON.stringify(
+            backup,
+            null,
+            4
+        );
+
+
+    const blob =
+        new Blob(
+            [json],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    const date =
+        new Date()
+            .toISOString()
+            .slice(
+                0,
+                10
+            );
+
+
+    link.download =
+        "MockTest_Questions_" +
+        date +
+        ".json";
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+// ======================================================
+// IMPORT QUESTIONS
+// ======================================================
+
+importButton.addEventListener(
+    "click",
+    function() {
+
+        importFile.click();
+
+    }
+);
+
+
+importFile.addEventListener(
+    "change",
+    function() {
+
+        const file =
+            importFile.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        importQuestions(
+            file
+        );
+
+    }
+);
+
+
+// ======================================================
+// PROCESS IMPORTED FILE
+// ======================================================
+
+function importQuestions(file) {
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(event) {
+
+            try {
+
+                const data =
+                    JSON.parse(
+                        event.target.result
+                    );
+
+
+                const importedQuestions =
+                    validateImportData(
+                        data
+                    );
+
+
+                if (
+                    importedQuestions.length === 0
+                ) {
+
+                    throw new Error(
+                        "No valid questions were found."
+                    );
+
+                }
+
+
+                mergeImportedQuestions(
+                    importedQuestions
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Import error:",
+                    error
+                );
+
+
+                alert(
+
+                    "Import failed.\n\n" +
+
+                    error.message
+
+                );
+
+            }
+
+
+            /*
+             * Reset file input so that
+             * the same file can be selected
+             * again later.
+             */
+
+            importFile.value =
+                "";
+
+        };
+
+
+    reader.onerror =
+        function() {
+
+            alert(
+                "The file could not be read."
+            );
+
+
+            importFile.value =
+                "";
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
+
+}
+
+
+// ======================================================
+// VALIDATE IMPORT DATA
+// ======================================================
+
+function validateImportData(data) {
+
+    let importedQuestions = null;
+
+
+    /*
+     * Expected backup format:
+     *
+     * {
+     *   format: "...",
+     *   version: 1,
+     *   questions: [...]
+     * }
+     *
+     *
+     * We also accept a plain array
+     * for flexibility.
+     */
+
+    if (
+        Array.isArray(data)
+    ) {
+
+        importedQuestions =
+            data;
+
+    }
+
+    else if (
+        data &&
+        Array.isArray(
+            data.questions
+        )
+    ) {
+
+        importedQuestions =
+            data.questions;
+
+    }
+
+    else {
+
+        throw new Error(
+            "The selected file is not a valid MockTest question file."
+        );
+
+    }
+
+
+    const validQuestions =
+        [];
+
+
+    importedQuestions.forEach(
+        function(q, index) {
+
+            try {
+
+                const validated =
+                    validateQuestion(
+                        q
+                    );
+
+
+                validQuestions.push(
+                    validated
+                );
+
+            }
+
+            catch (error) {
+
+                console.warn(
+
+                    "Question " +
+                    (index + 1) +
+                    " skipped:",
+
+                    error.message
+
+                );
+
+            }
+
+        }
+    );
+
+
+    return validQuestions;
+
+}
+
+
+// ======================================================
+// VALIDATE INDIVIDUAL QUESTION
+// ======================================================
+
+function validateQuestion(q) {
+
+    if (
+        !q ||
+        typeof q !== "object"
+    ) {
+
+        throw new Error(
+            "Invalid question object."
+        );
+
+    }
+
+
+    if (
+        typeof q.question !==
+        "string" ||
+
+        q.question.trim() === ""
+    ) {
+
+        throw new Error(
+            "Question text is missing."
+        );
+
+    }
+
+
+    if (
+        !q.options ||
+        typeof q.options !== "object"
+    ) {
+
+        throw new Error(
+            "Options are missing."
+        );
+
+    }
+
+
+    const keys =
+        ["A", "B", "C", "D"];
+
+
+    for (
+        const key of keys
+    ) {
+
+        if (
+            typeof q.options[key] !==
+            "string" ||
+
+            q.options[key].trim() === ""
+        ) {
+
+            throw new Error(
+                "Option " +
+                key +
+                " is missing."
+            );
+
+        }
+
+    }
+
+
+    if (
+        !keys.includes(
+            q.correctAnswer
+        )
+    ) {
+
+        throw new Error(
+            "Correct answer must be A, B, C, or D."
+        );
+
+    }
+
+
+    return {
+
+        id:
+            typeof q.id === "string" &&
+            q.id.trim() !== ""
+
+                ? q.id
+
+                : createQuestionId(),
+
+        question:
+            q.question.trim(),
+
+        options: {
+
+            A:
+                q.options.A.trim(),
+
+            B:
+                q.options.B.trim(),
+
+            C:
+                q.options.C.trim(),
+
+            D:
+                q.options.D.trim()
+
+        },
+
+        correctAnswer:
+            q.correctAnswer
+
+    };
+
+}
+
+
+// ======================================================
+// MERGE IMPORTED QUESTIONS
+// ======================================================
+
+function mergeImportedQuestions(
+    importedQuestions
+) {
+
+    const existingQuestions =
+        getQuestions();
+
+
+    /*
+     * Check whether imported questions
+     * have the same IDs as existing questions.
+     */
+
+    const existingIds =
+        new Set(
+
+            existingQuestions.map(
+                function(q) {
+
+                    return q.id;
+
+                }
+            )
+
+        );
+
+
+    let newQuestions =
+        0;
+
+
+    let duplicateQuestions =
+        0;
+
+
+    const questionsToAdd =
+        [];
+
+
+    importedQuestions.forEach(
+        function(q) {
+
+            /*
+             * If ID already exists,
+             * create a new ID.
+             *
+             * This prevents one question
+             * from accidentally replacing
+             * another.
+             */
+
+            if (
+                existingIds.has(q.id)
+            ) {
+
+                duplicateQuestions++;
+
+
+                q.id =
+                    createQuestionId();
+
+            }
+
+
+            existingIds.add(
+                q.id
+            );
+
+
+            questionsToAdd.push(
+                q
+            );
+
+
+            newQuestions++;
+
+        }
+    );
+
+
+    if (
+        questionsToAdd.length === 0
+    ) {
+
+        alert(
+            "No questions were imported."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+
+            "Import " +
+            questionsToAdd.length +
+            " question(s)?\n\n" +
+
+            "Existing questions will be kept."
+
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    const combined =
+        existingQuestions.concat(
+            questionsToAdd
+        );
+
+
+    saveQuestions(
+        combined
+    );
+
+
+    renderQuestions();
+
+
+    alert(
+
+        newQuestions +
+        " question(s) imported successfully." +
+
+        (
+            duplicateQuestions > 0
+
+                ? "\n\n" +
+                  duplicateQuestions +
+                  " duplicate ID(s) were assigned new IDs."
+
+                : ""
+
+        )
+
+    );
+
+}
+
+
+// ======================================================
+// CREATE QUESTION ID
+// ======================================================
+
+function createQuestionId() {
+
+    return (
+
+        Date.now().toString(
+            36
+        )
+
+        +
+
+        Math.random()
+            .toString(36)
+            .slice(2, 8)
+
+    );
+
+}
+
+
+// ======================================================
 // HTML PROTECTION
 // ======================================================
 
 function escapeHTML(text) {
-
 
     const div =
         document.createElement(
