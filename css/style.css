@@ -412,7 +412,25 @@ button:active,
 
     color: white;
 }
+#clearAllButton {
+    width: 100%;
 
+    margin: 10px 0 20px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #dc2626;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
 
 /* ======================================================
    TEST PAGE
