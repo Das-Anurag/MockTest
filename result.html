@@ -18,254 +18,327 @@
 
 <body>
 
-    <div class="result-container">
+<div class="result-container">
 
 
-        <!-- ========================================= -->
-        <!-- Heading -->
-        <!-- ========================================= -->
+    <!-- ========================================= -->
+    <!-- HEADER -->
+    <!-- ========================================= -->
 
-        <header class="result-header">
+    <header class="result-header">
 
-            <h1>Test Result</h1>
+        <h1>Test Result</h1>
 
-            <p id="submissionStatus">
-                Test completed
-            </p>
+        <p id="submissionStatus"></p>
 
-        </header>
+    </header>
 
 
 
-        <!-- ========================================= -->
-        <!-- Score -->
-        <!-- ========================================= -->
+    <!-- ========================================= -->
+    <!-- SCORE -->
+    <!-- ========================================= -->
 
-        <section class="score-card">
+    <section class="score-card">
 
-            <div class="score-title">
-                Your Score
-            </div>
+        <div class="score-title">
+            Your Score
+        </div>
 
+        <div
+            class="score"
+            id="score">
+            0
+        </div>
 
-            <div
-                id="score"
-                class="score">
+        <div
+            class="percentage"
+            id="percentage">
+            0%
+        </div>
 
-                0 / 0
+    </section>
 
-            </div>
 
 
-            <div
-                id="percentage"
-                class="percentage">
+    <!-- ========================================= -->
+    <!-- QUESTION STATISTICS -->
+    <!-- ========================================= -->
 
-                0%
+    <section class="statistics">
 
-            </div>
+        <div class="stat-card">
 
-        </section>
+            <span>Correct</span>
 
-
-
-        <!-- ========================================= -->
-        <!-- Statistics -->
-        <!-- ========================================= -->
-
-        <section class="statistics">
-
-
-            <div class="stat-card">
-
-                <span>
-                    Total Questions
-                </span>
-
-                <strong id="totalQuestions">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>
-                    Correct
-                </span>
-
-                <strong id="correct">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>
-                    Wrong
-                </span>
-
-                <strong id="wrong">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>
-                    Unanswered
-                </span>
-
-                <strong id="unanswered">
-                    0
-                </strong>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ========================================= -->
-        <!-- Marking -->
-        <!-- ========================================= -->
-
-        <section class="feedback-section">
-
-            <h2>
-                Marking System
-            </h2>
-
-
-            <p id="markingInfo">
-            </p>
-
-        </section>
-
-
-
-        <!-- ========================================= -->
-        <!-- Time Analysis -->
-        <!-- ========================================= -->
-
-        <section class="feedback-section">
-
-
-            <h2>
-                Time Analysis
-            </h2>
-
-
-            <p>
-
-                Average time per question:
-
-                <strong id="averageTime">
-                    0 seconds
-                </strong>
-
-            </p>
-
-
-            <div id="slowQuestions">
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ========================================= -->
-        <!-- Performance -->
-        <!-- ========================================= -->
-
-        <section class="performance-card">
-
-
-            <h2>
-                Performance
-            </h2>
-
-
-            <p id="performanceMessage">
-            </p>
-
-
-        </section>
-
-
-
-        <!-- ========================================= -->
-        <!-- Detailed Results -->
-        <!-- ========================================= -->
-
-        <section class="feedback-section">
-
-
-            <h2>
-                Question-wise Analysis
-            </h2>
-
-
-            <div id="questionResults">
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ========================================= -->
-        <!-- Buttons -->
-        <!-- ========================================= -->
-
-        <div class="result-buttons">
-
-
-            <a
-                href="index.html"
-                class="result-button">
-
-                Back to Home
-
-            </a>
-
-
-            <a
-                href="test.html"
-                class="result-button">
-
-                Take Test Again
-
-            </a>
-
-
-            <a
-                href="editor.html"
-                class="result-button">
-
-                Question Editor
-
-            </a>
-
+            <strong id="correctCount">
+                0
+            </strong>
 
         </div>
 
 
+        <div class="stat-card">
+
+            <span>Wrong</span>
+
+            <strong id="wrongCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Unanswered</span>
+
+            <strong id="unansweredCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Total</span>
+
+            <strong id="totalCount">
+                0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================= -->
+    <!-- MARKING BREAKDOWN -->
+    <!-- ========================================= -->
+
+    <section class="mark-breakdown">
+
+        <h2>
+            Marking Breakdown
+        </h2>
+
+
+        <div class="table-wrapper">
+
+            <table class="mark-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Mark per Question
+                        </th>
+
+                        <th>
+                            Net Mark
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            Correct
+                        </td>
+
+                        <td id="correctMarkPerQuestion">
+                            0
+                        </td>
+
+                        <td id="correctNetMark">
+                            0
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Wrong
+                        </td>
+
+                        <td id="wrongMarkPerQuestion">
+                            0
+                        </td>
+
+                        <td id="wrongNetMark">
+                            0
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Unanswered
+                        </td>
+
+                        <td id="unansweredMarkPerQuestion">
+                            0
+                        </td>
+
+                        <td id="unansweredNetMark">
+                            0
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="total-row">
+
+                        <td>
+                            <strong>Total</strong>
+                        </td>
+
+                        <td id="totalMarkPerQuestion">
+                            —
+                        </td>
+
+                        <td>
+                            <strong id="totalNetMark">
+                                0
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================= -->
+    <!-- PERFORMANCE -->
+    <!-- ========================================= -->
+
+    <section class="performance-card">
+
+        <h2>
+            Performance
+        </h2>
+
+        <p id="performanceMessage"></p>
+
+    </section>
+
+
+
+    <!-- ========================================= -->
+    <!-- TIME ANALYSIS -->
+    <!-- ========================================= -->
+
+    <section class="feedback-section">
+
+        <h2>
+            Time Analysis
+        </h2>
+
+        <p id="averageTime"></p>
+
+        <div id="slowQuestions"></div>
+
+    </section>
+
+
+
+    <!-- ========================================= -->
+    <!-- QUESTION-WISE ANALYSIS -->
+    <!-- ========================================= -->
+
+    <section class="feedback-section">
+
+        <h2>
+            Questions-wise Analysis
+        </h2>
+
+        <p>
+            <span class="legend-blue">
+                Blue text
+            </span>
+            = Your selected answer
+        </p>
+
+        <p>
+            <span class="legend-green">
+                Green background
+            </span>
+            = Actual correct answer
+        </p>
+
+
+        <div id="questionResults">
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================= -->
+    <!-- BUTTONS -->
+    <!-- ========================================= -->
+
+    <div class="result-buttons">
+
+        <a
+            href="test.html"
+            class="result-button">
+
+            Take Test Again
+
+        </a>
+
+
+        <a
+            href="editor.html"
+            class="result-button">
+
+            Question Editor
+
+        </a>
+
+
+        <a
+            href="index.html"
+            class="result-button">
+
+            Back to Home
+
+        </a>
+
     </div>
 
 
+</div>
 
-    <!-- ============================================= -->
-    <!-- JavaScript -->
-    <!-- ============================================= -->
-    <script src="js/storage.js"></script>
+
+
+<script src="js/storage.js"></script>
+
 <script src="js/result.js"></script>
 
 
