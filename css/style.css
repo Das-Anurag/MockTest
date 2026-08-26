@@ -1026,3 +1026,197 @@ button:disabled {
     }
 
 }
+/* ======================================================
+   MARKING BREAKDOWN TABLE
+   ====================================================== */
+
+.mark-breakdown {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.06);
+}
+
+
+.mark-breakdown h2 {
+    margin-top: 0;
+
+    margin-bottom: 15px;
+}
+
+
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.mark-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 500px;
+}
+
+
+.mark-table th,
+.mark-table td {
+    padding: 12px;
+
+    border: 1px solid #dbe2ea;
+
+    text-align: center;
+}
+
+
+.mark-table th {
+    background: #f1f5f9;
+
+    font-weight: bold;
+}
+
+
+.mark-table tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+
+.mark-table .total-row {
+    background: #e8eef7;
+
+    font-weight: bold;
+}
+
+
+/* ======================================================
+   QUESTION-WISE OPTIONS
+   ====================================================== */
+
+.result-options {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin: 15px 0;
+}
+
+
+.result-answer-option {
+    padding: 11px 13px;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+
+/*
+ * Actual correct answer
+ */
+
+.result-answer-option.correct-option {
+    background: #dcfce7;
+
+    border-color: #86efac;
+}
+
+
+/*
+ * User-selected answer
+ *
+ * Blue font.
+ */
+
+.result-answer-option.selected-option {
+    color: #2563eb;
+
+    font-weight: bold;
+}
+
+
+/*
+ * If selected answer is also the
+ * correct answer, it keeps:
+ *
+ * green background
+ * blue text
+ */
+
+.result-answer-option.correct-option.selected-option {
+    background: #dcfce7;
+
+    color: #2563eb;
+
+    font-weight: bold;
+}
+
+
+/* ======================================================
+   LEGEND
+   ====================================================== */
+
+.legend-blue {
+    color: #2563eb;
+
+    font-weight: bold;
+}
+
+
+.legend-green {
+    display: inline-block;
+
+    padding: 2px 6px;
+
+    border-radius: 4px;
+
+    background: #dcfce7;
+
+    font-weight: bold;
+}
+
+
+/* ======================================================
+   MOBILE TABLE
+   ====================================================== */
+
+@media (max-width: 600px) {
+
+    .mark-breakdown {
+        padding: 16px;
+    }
+
+
+    .mark-table {
+        min-width: 450px;
+    }
+
+
+    .mark-table th,
+    .mark-table td {
+        padding: 9px 7px;
+
+        font-size: 14px;
+    }
+
+
+    .result-answer-option {
+        padding: 10px;
+    }
+
+}
