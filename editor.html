@@ -50,8 +50,6 @@
         </p>
 
 
-        <!-- Correct marks -->
-
         <label for="positiveMarks">
             Marks for Correct Answer
         </label>
@@ -64,9 +62,6 @@
             required
         >
 
-
-
-        <!-- Negative marks -->
 
         <label for="negativeMarks">
             Negative Marks for Wrong Answer
@@ -81,9 +76,6 @@
         >
 
 
-
-        <!-- Test duration -->
-
         <label for="testDuration">
             Test Duration (minutes)
         </label>
@@ -95,7 +87,6 @@
             step="1"
             required
         >
-
 
 
         <button
@@ -133,9 +124,6 @@
             >
 
 
-
-            <!-- Question -->
-
             <label for="question">
                 Question
             </label>
@@ -147,9 +135,6 @@
                 required
             ></textarea>
 
-
-
-            <!-- Option A -->
 
             <label for="optionA">
                 Option A
@@ -163,9 +148,6 @@
             >
 
 
-
-            <!-- Option B -->
-
             <label for="optionB">
                 Option B
             </label>
@@ -177,9 +159,6 @@
                 required
             >
 
-
-
-            <!-- Option C -->
 
             <label for="optionC">
                 Option C
@@ -193,9 +172,6 @@
             >
 
 
-
-            <!-- Option D -->
-
             <label for="optionD">
                 Option D
             </label>
@@ -207,9 +183,6 @@
                 required
             >
 
-
-
-            <!-- Correct answer -->
 
             <label for="correctAnswer">
                 Correct Answer
@@ -243,11 +216,7 @@
             </select>
 
 
-
-            <!-- Buttons -->
-
             <div class="button-row">
-
 
                 <button
                     type="submit"
@@ -266,7 +235,6 @@
 
                 </button>
 
-
             </div>
 
 
@@ -282,14 +250,12 @@
 
     <section class="question-list">
 
-
         <h2>
             Question Bank
         </h2>
 
 
-        <div
-            id="questionCount">
+        <div id="questionCount">
 
             0 questions
 
@@ -297,7 +263,58 @@
 
 
 
-        <!-- Clear all -->
+        <!-- ======================================= -->
+        <!-- IMPORT / EXPORT -->
+        <!-- ======================================= -->
+
+        <div class="import-export-section">
+
+            <h3>
+                Question Bank Backup
+            </h3>
+
+            <p>
+                Export your questions as a backup file
+                or import a previously saved backup.
+            </p>
+
+
+            <div class="import-export-buttons">
+
+                <button
+                    type="button"
+                    id="exportButton">
+
+                    Export Questions
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="importButton">
+
+                    Import Questions
+
+                </button>
+
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept=".json,application/json"
+                    hidden
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ======================================= -->
+        <!-- CLEAR ALL -->
+        <!-- ======================================= -->
 
         <button
             type="button"
@@ -309,10 +326,11 @@
 
 
 
-        <!-- Saved questions -->
+        <!-- ======================================= -->
+        <!-- QUESTIONS -->
+        <!-- ======================================= -->
 
-        <div
-            id="questionsContainer">
+        <div id="questionsContainer">
 
         </div>
 
@@ -322,7 +340,7 @@
 
 
     <!-- ========================================= -->
-    <!-- BACK TO HOME -->
+    <!-- BACK HOME -->
     <!-- ========================================= -->
 
     <a
