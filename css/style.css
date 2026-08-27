@@ -1220,3 +1220,20 @@ button:disabled {
     }
 
 }
+/* ======================================================
+   QUESTION / OPTION IMAGES
+   ====================================================== */
+
+.question-option-image {
+    display: block;
+
+    max-width: 100%;
+
+    width: auto;
+
+    height: auto;
+
+    margin-top: 8px;
+
+    object-fit: contain;
+}
