@@ -1,289 +1,161 @@
 // ======================================================
 // Mock Test - Question Editor
+// Compact JSON + Image Support
 // ======================================================
 
 
 // ======================================================
-// HTML ELEMENTS
+// ELEMENTS
 // ======================================================
-
-
-// ------------------------------------------------------
-// Settings
-// ------------------------------------------------------
 
 const positiveMarks =
-    document.getElementById(
-        "positiveMarks"
-    );
-
+    document.getElementById("positiveMarks");
 
 const negativeMarks =
-    document.getElementById(
-        "negativeMarks"
-    );
-
+    document.getElementById("negativeMarks");
 
 const testDuration =
-    document.getElementById(
-        "testDuration"
-    );
-
+    document.getElementById("testDuration");
 
 const saveSettingsButton =
-    document.getElementById(
-        "saveSettingsButton"
-    );
-
+    document.getElementById("saveSettingsButton");
 
 const settingsMessage =
-    document.getElementById(
-        "settingsMessage"
-    );
-
-
-// ------------------------------------------------------
-// Question form
-// ------------------------------------------------------
+    document.getElementById("settingsMessage");
 
 const questionForm =
-    document.getElementById(
-        "questionForm"
-    );
-
+    document.getElementById("questionForm");
 
 const formTitle =
-    document.getElementById(
-        "formTitle"
-    );
-
+    document.getElementById("formTitle");
 
 const questionId =
-    document.getElementById(
-        "questionId"
-    );
-
+    document.getElementById("questionId");
 
 const question =
-    document.getElementById(
-        "question"
-    );
-
+    document.getElementById("question");
 
 const optionA =
-    document.getElementById(
-        "optionA"
-    );
-
+    document.getElementById("optionA");
 
 const optionB =
-    document.getElementById(
-        "optionB"
-    );
-
+    document.getElementById("optionB");
 
 const optionC =
-    document.getElementById(
-        "optionC"
-    );
-
+    document.getElementById("optionC");
 
 const optionD =
-    document.getElementById(
-        "optionD"
-    );
-
+    document.getElementById("optionD");
 
 const correctAnswer =
-    document.getElementById(
-        "correctAnswer"
-    );
-
+    document.getElementById("correctAnswer");
 
 const saveButton =
-    document.getElementById(
-        "saveButton"
-    );
-
+    document.getElementById("saveButton");
 
 const cancelButton =
-    document.getElementById(
-        "cancelButton"
-    );
-
-
-// ------------------------------------------------------
-// Question bank
-// ------------------------------------------------------
+    document.getElementById("cancelButton");
 
 const questionCount =
-    document.getElementById(
-        "questionCount"
-    );
-
+    document.getElementById("questionCount");
 
 const questionsContainer =
-    document.getElementById(
-        "questionsContainer"
-    );
-
+    document.getElementById("questionsContainer");
 
 const clearAllButton =
-    document.getElementById(
-        "clearAllButton"
-    );
-
-
-// ------------------------------------------------------
-// Import / Export
-// ------------------------------------------------------
+    document.getElementById("clearAllButton");
 
 const exportButton =
-    document.getElementById(
-        "exportButton"
-    );
-
+    document.getElementById("exportButton");
 
 const importButton =
-    document.getElementById(
-        "importButton"
-    );
-
+    document.getElementById("importButton");
 
 const importFile =
-    document.getElementById(
-        "importFile"
-    );
+    document.getElementById("importFile");
 
 
 // ======================================================
-// INITIALIZE EDITOR
+// INITIALIZE
 // ======================================================
 
 loadSettings();
-
 renderQuestions();
-
 resetForm();
 
 
 // ======================================================
-// LOAD SETTINGS
+// SETTINGS
 // ======================================================
 
 function loadSettings() {
 
-    const settings =
-        getSettings();
-
+    const s = getSettings();
 
     positiveMarks.value =
-        settings.positiveMarks;
-
+        s.positiveMarks;
 
     negativeMarks.value =
-        settings.negativeMarks;
-
+        s.negativeMarks;
 
     testDuration.value =
-        settings.testDurationMinutes;
+        s.testDurationMinutes;
 
 }
 
 
-// ======================================================
-// SAVE SETTINGS
-// ======================================================
-
 saveSettingsButton.addEventListener(
     "click",
-    function() {
+    function () {
 
-        const positive =
-            Number(
-                positiveMarks.value
-            );
+        const p =
+            Number(positiveMarks.value);
 
+        const n =
+            Number(negativeMarks.value);
 
-        const negative =
-            Number(
-                negativeMarks.value
-            );
+        const d =
+            Number(testDuration.value);
 
+        if (!Number.isFinite(p) || p < 0) {
 
-        const duration =
-            Number(
-                testDuration.value
-            );
-
-
-        if (
-            !Number.isFinite(positive) ||
-            positive < 0
-        ) {
-
-            alert(
-                "Please enter a valid positive mark."
-            );
+            alert("Please enter a valid positive mark.");
 
             return;
 
         }
 
+        if (!Number.isFinite(n) || n < 0) {
 
-        if (
-            !Number.isFinite(negative) ||
-            negative < 0
-        ) {
-
-            alert(
-                "Please enter a valid negative mark."
-            );
+            alert("Please enter a valid negative mark.");
 
             return;
 
         }
 
+        if (!Number.isFinite(d) || d <= 0) {
 
-        if (
-            !Number.isFinite(duration) ||
-            duration <= 0
-        ) {
-
-            alert(
-                "Please enter a valid test duration."
-            );
+            alert("Please enter a valid test duration.");
 
             return;
 
         }
-
 
         saveSettings({
 
-            positiveMarks:
-                positive,
+            positiveMarks: p,
 
-            negativeMarks:
-                negative,
+            negativeMarks: n,
 
-            testDurationMinutes:
-                duration
+            testDurationMinutes: d
 
         });
-
 
         settingsMessage.textContent =
             "Test settings saved successfully.";
 
-
         setTimeout(
-            function() {
-
-                settingsMessage.textContent =
-                    "";
-
-            },
+            () => settingsMessage.textContent = "",
             3000
         );
 
@@ -292,47 +164,36 @@ saveSettingsButton.addEventListener(
 
 
 // ======================================================
-// SAVE / UPDATE QUESTION
+// ADD / UPDATE QUESTION
 // ======================================================
 
 questionForm.addEventListener(
     "submit",
-    function(event) {
+    function (event) {
 
         event.preventDefault();
-
 
         const text =
             question.value.trim();
 
-
         const a =
             optionA.value.trim();
-
 
         const b =
             optionB.value.trim();
 
-
         const c =
             optionC.value.trim();
-
 
         const d =
             optionD.value.trim();
 
-
         const answer =
             correctAnswer.value;
 
+        if (!text) {
 
-        if (
-            text === ""
-        ) {
-
-            alert(
-                "Please enter the question."
-            );
+            alert("Please enter the question.");
 
             question.focus();
 
@@ -340,75 +201,46 @@ questionForm.addEventListener(
 
         }
 
+        if (!a || !b || !c || !d) {
 
-        if (
-            a === "" ||
-            b === "" ||
-            c === "" ||
-            d === ""
-        ) {
-
-            alert(
-                "Please enter all four options."
-            );
+            alert("Please enter all four options.");
 
             return;
 
         }
 
+        if (!answer) {
 
-        if (
-            answer === ""
-        ) {
-
-            alert(
-                "Please select the correct answer."
-            );
+            alert("Please select the correct answer.");
 
             return;
 
         }
 
+        const q = {
 
-        const questionData = {
-
-            question:
-                text,
+            question: text,
 
             options: {
 
                 A: a,
-
                 B: b,
-
                 C: c,
-
                 D: d
 
             },
 
-            correctAnswer:
-                answer
+            correctAnswer: answer
 
         };
 
 
-        // ----------------------------------------------
-        // UPDATE
-        // ----------------------------------------------
+        if (questionId.value) {
 
-        if (
-            questionId.value !== ""
-        ) {
-
-            questionData.id =
+            q.id =
                 questionId.value;
 
-
-            updateQuestion(
-                questionData
-            );
-
+            updateQuestion(q);
 
             alert(
                 "Question updated successfully."
@@ -416,24 +248,15 @@ questionForm.addEventListener(
 
         }
 
-
-        // ----------------------------------------------
-        // ADD
-        // ----------------------------------------------
-
         else {
 
-            addQuestion(
-                questionData
-            );
-
+            addQuestion(q);
 
             alert(
                 "Question added successfully."
             );
 
         }
-
 
         renderQuestions();
 
@@ -452,64 +275,46 @@ function editQuestion(id) {
     const q =
         getQuestionById(id);
 
-
     if (!q) {
 
-        alert(
-            "Question could not be found."
-        );
+        alert("Question could not be found.");
 
         return;
 
     }
 
-
     questionId.value =
         q.id;
 
-
     question.value =
-        q.question;
-
+        mediaText(q.question);
 
     optionA.value =
-        q.options.A;
-
+        mediaText(q.options.A);
 
     optionB.value =
-        q.options.B;
-
+        mediaText(q.options.B);
 
     optionC.value =
-        q.options.C;
-
+        mediaText(q.options.C);
 
     optionD.value =
-        q.options.D;
-
+        mediaText(q.options.D);
 
     correctAnswer.value =
         q.correctAnswer;
 
-
     formTitle.textContent =
         "Edit Question";
-
 
     saveButton.textContent =
         "Update Question";
 
-
     document
-        .querySelector(
-            ".question-section"
-        )
+        .querySelector(".question-section")
         .scrollIntoView({
-
             behavior: "smooth",
-
             block: "start"
-
         });
 
 }
@@ -524,39 +329,20 @@ function deleteQuestionFromEditor(id) {
     const q =
         getQuestionById(id);
 
+    if (!q) return;
 
-    if (!q) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-
+    if (
+        !confirm(
             "Are you sure you want to delete this question?\n\n" +
-
-            q.question
-
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
+            mediaText(q.question)
+        )
+    ) return;
 
     deleteQuestion(id);
 
     renderQuestions();
 
-
-    if (
-        questionId.value === id
-    ) {
+    if (questionId.value === id) {
 
         resetForm();
 
@@ -566,50 +352,32 @@ function deleteQuestionFromEditor(id) {
 
 
 // ======================================================
-// CLEAR ALL QUESTIONS
+// CLEAR ALL
 // ======================================================
 
 clearAllButton.addEventListener(
     "click",
-    function() {
+    function () {
 
-        const questions =
+        const qs =
             getQuestions();
 
+        if (!qs.length) {
+
+            alert("There are no questions to delete.");
+
+            return;
+
+        }
 
         if (
-            questions.length === 0
-        ) {
-
-            alert(
-                "There are no questions to delete."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirm(
-
+            !confirm(
                 "Are you sure you want to delete ALL " +
-
-                questions.length +
-
+                qs.length +
                 " question(s)?\n\n" +
-
                 "This action cannot be undone."
-
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
+            )
+        ) return;
 
         clearAllQuestions();
 
@@ -617,10 +385,7 @@ clearAllButton.addEventListener(
 
         resetForm();
 
-
-        alert(
-            "All questions have been deleted."
-        );
+        alert("All questions have been deleted.");
 
     }
 );
@@ -632,11 +397,7 @@ clearAllButton.addEventListener(
 
 cancelButton.addEventListener(
     "click",
-    function() {
-
-        resetForm();
-
-    }
+    resetForm
 );
 
 
@@ -644,8 +405,7 @@ function resetForm() {
 
     questionForm.reset();
 
-    questionId.value =
-        "";
+    questionId.value = "";
 
     formTitle.textContent =
         "Add Question";
@@ -662,200 +422,128 @@ function resetForm() {
 
 function renderQuestions() {
 
-    const questions =
+    const qs =
         getQuestions();
 
+    questionCount.textContent =
+        qs.length === 1
+            ? "1 question"
+            : qs.length + " questions";
 
-    if (
-        questions.length === 1
-    ) {
+    questionsContainer.innerHTML = "";
 
-        questionCount.textContent =
-            "1 question";
-
-    }
-    else {
-
-        questionCount.textContent =
-            questions.length +
-            " questions";
-
-    }
-
-
-    questionsContainer.innerHTML =
-        "";
-
-
-    if (
-        questions.length === 0
-    ) {
+    if (!qs.length) {
 
         questionsContainer.innerHTML = `
-
             <div class="question-card">
-
-                <p>
-                    No questions have been added yet.
-                </p>
-
+                <p>No questions have been added yet.</p>
             </div>
-
         `;
 
         return;
 
     }
 
-
-    questions.forEach(
-        function(q, index) {
+    qs.forEach(
+        function (q, index) {
 
             const card =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             card.className =
                 "question-card";
 
 
             const title =
-                document.createElement(
-                    "h3"
-                );
-
+                document.createElement("h3");
 
             title.textContent =
-                "Question " +
-                (index + 1);
+                "Question " + (index + 1);
 
 
-            const questionText =
-                document.createElement(
-                    "p"
+            const qDisplay =
+                createMediaElement(
+                    q.question
                 );
-
-
-            questionText.textContent =
-                q.question;
-
 
             const options =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
-            options.innerHTML = `
+            ["A", "B", "C", "D"].forEach(
+                function (key) {
 
-                <p>
-                    <strong>A:</strong>
-                    ${escapeHTML(q.options.A)}
-                </p>
+                    const row =
+                        document.createElement("div");
 
-                <p>
-                    <strong>B:</strong>
-                    ${escapeHTML(q.options.B)}
-                </p>
+                    const label =
+                        document.createElement("strong");
 
-                <p>
-                    <strong>C:</strong>
-                    ${escapeHTML(q.options.C)}
-                </p>
+                    label.textContent =
+                        key + ": ";
 
-                <p>
-                    <strong>D:</strong>
-                    ${escapeHTML(q.options.D)}
-                </p>
+                    row.appendChild(label);
 
-                <p>
-                    <strong>Correct Answer:</strong>
-                    ${q.correctAnswer}
-                </p>
-
-            `;
-
-
-            const editButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            editButton.type =
-                "button";
-
-
-            editButton.textContent =
-                "Edit";
-
-
-            editButton.addEventListener(
-                "click",
-                function() {
-
-                    editQuestion(q.id);
-
-                }
-            );
-
-
-            const deleteButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            deleteButton.type =
-                "button";
-
-
-            deleteButton.textContent =
-                "Delete";
-
-
-            deleteButton.addEventListener(
-                "click",
-                function() {
-
-                    deleteQuestionFromEditor(
-                        q.id
+                    row.appendChild(
+                        createMediaElement(
+                            q.options[key]
+                        )
                     );
 
+                    options.appendChild(row);
+
                 }
             );
 
 
-            card.appendChild(
-                title
+            const answer =
+                document.createElement("p");
+
+            answer.innerHTML =
+                "<strong>Correct Answer:</strong> " +
+                escapeHTML(q.correctAnswer);
+
+
+            const edit =
+                document.createElement("button");
+
+            edit.type = "button";
+
+            edit.textContent = "Edit";
+
+            edit.addEventListener(
+                "click",
+                () => editQuestion(q.id)
             );
 
 
-            card.appendChild(
-                questionText
+            const del =
+                document.createElement("button");
+
+            del.type = "button";
+
+            del.textContent = "Delete";
+
+            del.addEventListener(
+                "click",
+                () =>
+                    deleteQuestionFromEditor(q.id)
             );
 
 
-            card.appendChild(
-                options
-            );
+            card.appendChild(title);
 
+            card.appendChild(qDisplay);
 
-            card.appendChild(
-                editButton
-            );
+            card.appendChild(options);
 
+            card.appendChild(answer);
 
-            card.appendChild(
-                deleteButton
-            );
+            card.appendChild(edit);
 
+            card.appendChild(del);
 
-            questionsContainer.appendChild(
-                card
-            );
+            questionsContainer.appendChild(card);
 
         }
     );
@@ -864,32 +552,23 @@ function renderQuestions() {
 
 
 // ======================================================
-// EXPORT QUESTIONS
+// EXPORT
 // ======================================================
 
 exportButton.addEventListener(
     "click",
-    function() {
-
-        exportQuestions();
-
-    }
+    exportQuestions
 );
 
 
 function exportQuestions() {
 
-    const questions =
+    const qs =
         getQuestions();
 
+    if (!qs.length) {
 
-    if (
-        questions.length === 0
-    ) {
-
-        alert(
-            "There are no questions to export."
-        );
+        alert("There are no questions to export.");
 
         return;
 
@@ -897,138 +576,83 @@ function exportQuestions() {
 
 
     /*
-     * Only questions are exported.
+     * Compact format:
      *
-     * Test settings are intentionally
-     * not included.
+     * [
+     *   [question,A,B,C,D,correct],
+     *   ...
+     * ]
+     *
+     * No IDs are exported because IDs are
+     * unnecessary for the compact question file.
      */
 
-    const backup = {
+    const compact =
+        qs.map(
+            function (q) {
 
-        format:
-            "MockTest Question Bank",
+                return [
 
-        version:
-            1,
+                    compactMedia(q.question),
 
-        exportedAt:
-            new Date().toISOString(),
+                    compactMedia(q.options.A),
 
-        questions:
-            questions
+                    compactMedia(q.options.B),
 
-    };
+                    compactMedia(q.options.C),
 
+                    compactMedia(q.options.D),
 
-    const json =
-        JSON.stringify(
-            backup,
-            null,
-            4
-        );
+                    q.correctAnswer
 
+                ];
 
-    const blob =
-        new Blob(
-            [json],
-            {
-                type:
-                    "application/json"
             }
         );
 
 
-    const url =
-        URL.createObjectURL(
-            blob
-        );
+    const json =
+        JSON.stringify(compact);
 
 
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href =
-        url;
-
-
-    const date =
+    downloadJSON(
+        json,
+        "MockTest_Questions_" +
         new Date()
             .toISOString()
-            .slice(
-                0,
-                10
-            );
-
-
-    link.download =
-        "MockTest_Questions_" +
-        date +
-        ".json";
-
-
-    document.body.appendChild(
-        link
-    );
-
-
-    link.click();
-
-
-    document.body.removeChild(
-        link
-    );
-
-
-    URL.revokeObjectURL(
-        url
+            .slice(0, 10) +
+        ".json"
     );
 
 }
 
 
 // ======================================================
-// IMPORT QUESTIONS
+// IMPORT
 // ======================================================
 
 importButton.addEventListener(
     "click",
-    function() {
-
-        importFile.click();
-
-    }
+    () => importFile.click()
 );
 
 
 importFile.addEventListener(
     "change",
-    function() {
+    function () {
 
         const file =
             importFile.files[0];
 
+        if (file) {
 
-        if (!file) {
-
-            return;
+            importQuestions(file);
 
         }
-
-
-        importQuestions(
-            file
-        );
 
     }
 );
 
-
-// ======================================================
-// PROCESS IMPORTED FILE
-// ======================================================
 
 function importQuestions(file) {
 
@@ -1037,7 +661,7 @@ function importQuestions(file) {
 
 
     reader.onload =
-        function(event) {
+        function (event) {
 
             try {
 
@@ -1046,16 +670,11 @@ function importQuestions(file) {
                         event.target.result
                     );
 
-
-                const importedQuestions =
-                    validateImportData(
-                        data
-                    );
+                const qs =
+                    validateImportData(data);
 
 
-                if (
-                    importedQuestions.length === 0
-                ) {
+                if (!qs.length) {
 
                     throw new Error(
                         "No valid questions were found."
@@ -1063,10 +682,7 @@ function importQuestions(file) {
 
                 }
 
-
-                mergeImportedQuestions(
-                    importedQuestions
-                );
+                mergeImportedQuestions(qs);
 
             }
 
@@ -1077,92 +693,65 @@ function importQuestions(file) {
                     error
                 );
 
-
                 alert(
-
                     "Import failed.\n\n" +
-
                     error.message
-
                 );
 
             }
 
-
-            /*
-             * Reset file input so that
-             * the same file can be selected
-             * again later.
-             */
-
-            importFile.value =
-                "";
+            importFile.value = "";
 
         };
 
 
     reader.onerror =
-        function() {
+        function () {
 
             alert(
                 "The file could not be read."
             );
 
-
-            importFile.value =
-                "";
+            importFile.value = "";
 
         };
 
 
-    reader.readAsText(
-        file
-    );
+    reader.readAsText(file);
 
 }
 
 
 // ======================================================
-// VALIDATE IMPORT DATA
+// VALIDATE IMPORT
 // ======================================================
 
 function validateImportData(data) {
 
-    let importedQuestions = null;
+    let list;
 
 
     /*
-     * Expected backup format:
-     *
-     * {
-     *   format: "...",
-     *   version: 1,
-     *   questions: [...]
-     * }
-     *
-     *
-     * We also accept a plain array
-     * for flexibility.
+     * Plain compact array
      */
 
-    if (
-        Array.isArray(data)
-    ) {
+    if (Array.isArray(data)) {
 
-        importedQuestions =
-            data;
+        list = data;
 
     }
 
+
+    /*
+     * Old backup format
+     */
+
     else if (
         data &&
-        Array.isArray(
-            data.questions
-        )
+        Array.isArray(data.questions)
     ) {
 
-        importedQuestions =
-            data.questions;
+        list = data.questions;
 
     }
 
@@ -1175,23 +764,16 @@ function validateImportData(data) {
     }
 
 
-    const validQuestions =
-        [];
+    const valid = [];
 
 
-    importedQuestions.forEach(
-        function(q, index) {
+    list.forEach(
+        function (item, index) {
 
             try {
 
-                const validated =
-                    validateQuestion(
-                        q
-                    );
-
-
-                validQuestions.push(
-                    validated
+                valid.push(
+                    normalizeQuestion(item)
                 );
 
             }
@@ -1199,13 +781,10 @@ function validateImportData(data) {
             catch (error) {
 
                 console.warn(
-
                     "Question " +
                     (index + 1) +
                     " skipped:",
-
                     error.message
-
                 );
 
             }
@@ -1214,127 +793,434 @@ function validateImportData(data) {
     );
 
 
-    return validQuestions;
+    return valid;
 
 }
 
 
 // ======================================================
-// VALIDATE INDIVIDUAL QUESTION
+// NORMALIZE QUESTION
 // ======================================================
 
-function validateQuestion(q) {
+function normalizeQuestion(q) {
 
-    if (
-        !q ||
-        typeof q !== "object"
-    ) {
+    /*
+     * -----------------------------------------------
+     * NEW COMPACT FORMAT
+     *
+     * [
+     *   question,
+     *   A,
+     *   B,
+     *   C,
+     *   D,
+     *   correct
+     * ]
+     * -----------------------------------------------
+     */
 
-        throw new Error(
-            "Invalid question object."
-        );
+    if (Array.isArray(q)) {
 
-    }
+        if (q.length !== 6) {
 
+            throw new Error(
+                "Compact question must contain exactly 6 items."
+            );
 
-    if (
-        typeof q.question !==
-        "string" ||
+        }
 
-        q.question.trim() === ""
-    ) {
+        const answer =
+            String(q[5]).toUpperCase();
 
-        throw new Error(
-            "Question text is missing."
-        );
-
-    }
-
-
-    if (
-        !q.options ||
-        typeof q.options !== "object"
-    ) {
-
-        throw new Error(
-            "Options are missing."
-        );
-
-    }
-
-
-    const keys =
-        ["A", "B", "C", "D"];
-
-
-    for (
-        const key of keys
-    ) {
 
         if (
-            typeof q.options[key] !==
-            "string" ||
-
-            q.options[key].trim() === ""
+            !["A", "B", "C", "D"].includes(answer)
         ) {
 
             throw new Error(
-                "Option " +
-                key +
-                " is missing."
+                "Correct answer must be A, B, C, or D."
             );
+
+        }
+
+
+        return {
+
+            id: createQuestionId(),
+
+            question:
+                normalizeMedia(q[0]),
+
+            options: {
+
+                A: normalizeMedia(q[1]),
+
+                B: normalizeMedia(q[2]),
+
+                C: normalizeMedia(q[3]),
+
+                D: normalizeMedia(q[4])
+
+            },
+
+            correctAnswer:
+                answer
+
+        };
+
+    }
+
+
+    /*
+     * -----------------------------------------------
+     * OLD FORMAT
+     * -----------------------------------------------
+     */
+
+    if (
+        q &&
+        typeof q === "object"
+    ) {
+
+        if (
+            q.question === undefined
+        ) {
+
+            throw new Error(
+                "Question text is missing."
+            );
+
+        }
+
+
+        if (
+            !q.options ||
+            typeof q.options !== "object"
+        ) {
+
+            throw new Error(
+                "Options are missing."
+            );
+
+        }
+
+
+        const keys =
+            ["A", "B", "C", "D"];
+
+
+        keys.forEach(
+            function (key) {
+
+                if (
+                    q.options[key] === undefined
+                ) {
+
+                    throw new Error(
+                        "Option " +
+                        key +
+                        " is missing."
+                    );
+
+                }
+
+            }
+        );
+
+
+        const answer =
+            String(
+                q.correctAnswer || ""
+            ).toUpperCase();
+
+
+        if (!keys.includes(answer)) {
+
+            throw new Error(
+                "Correct answer must be A, B, C, or D."
+            );
+
+        }
+
+
+        return {
+
+            id:
+                typeof q.id === "string" &&
+                q.id.trim()
+                    ? q.id
+                    : createQuestionId(),
+
+            question:
+                normalizeMedia(
+                    q.question
+                ),
+
+            options: {
+
+                A:
+                    normalizeMedia(
+                        q.options.A
+                    ),
+
+                B:
+                    normalizeMedia(
+                        q.options.B
+                    ),
+
+                C:
+                    normalizeMedia(
+                        q.options.C
+                    ),
+
+                D:
+                    normalizeMedia(
+                        q.options.D
+                    )
+
+            },
+
+            correctAnswer:
+                answer
+
+        };
+
+    }
+
+
+    throw new Error(
+        "Invalid question."
+    );
+
+}
+
+
+// ======================================================
+// MEDIA FORMAT
+// ======================================================
+
+function normalizeMedia(value) {
+
+    /*
+     * Plain text
+     */
+
+    if (
+        typeof value === "string"
+    ) {
+
+        if (!value.trim()) {
+
+            throw new Error(
+                "Empty text is not allowed."
+            );
+
+        }
+
+        return value.trim();
+
+    }
+
+
+    /*
+     * Image or text + image
+     *
+     * {"i":"image.png"}
+     *
+     * {"t":"Text","i":"image.png"}
+     */
+
+    if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    ) {
+
+        const text =
+            typeof value.t === "string"
+                ? value.t.trim()
+                : "";
+
+        const image =
+            typeof value.i === "string"
+                ? value.i.trim()
+                : "";
+
+
+        if (!text && !image) {
+
+            throw new Error(
+                "Media object is empty."
+            );
+
+        }
+
+
+        return {
+
+            ...(text ? { t: text } : {}),
+
+            ...(image ? { i: image } : {})
+
+        };
+
+    }
+
+
+    throw new Error(
+        "Invalid text/image value."
+    );
+
+}
+
+
+// ======================================================
+// COMPACT MEDIA
+// ======================================================
+
+function compactMedia(value) {
+
+    if (
+        typeof value === "string"
+    ) {
+
+        return value;
+
+    }
+
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        const obj = {};
+
+        if (value.t) {
+
+            obj.t =
+                value.t;
+
+        }
+
+        if (value.i) {
+
+            obj.i =
+                value.i;
+
+        }
+
+        return obj;
+
+    }
+
+
+    return "";
+
+}
+
+
+// ======================================================
+// DISPLAY MEDIA
+// ======================================================
+
+function createMediaElement(value) {
+
+    const wrapper =
+        document.createElement("div");
+
+
+    if (
+        typeof value === "string"
+    ) {
+
+        wrapper.textContent =
+            value;
+
+        return wrapper;
+
+    }
+
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        if (value.t) {
+
+            const text =
+                document.createElement("div");
+
+            text.textContent =
+                value.t;
+
+            wrapper.appendChild(text);
+
+        }
+
+
+        if (value.i) {
+
+            const image =
+                document.createElement("img");
+
+            image.src =
+                value.i;
+
+       image.alt =
+                value.t || "Question image";
+
+            image.style.maxWidth =
+                "100%";
+
+            image.style.height =
+                "auto";
+
+            image.style.display =
+                "block";
+
+            image.style.marginTop =
+                "8px";
+
+            wrapper.appendChild(image);
 
         }
 
     }
 
 
+    return wrapper;
+
+}
+
+
+// ======================================================
+// MEDIA → TEXT
+// ======================================================
+
+function mediaText(value) {
+
     if (
-        !keys.includes(
-            q.correctAnswer
-        )
+        typeof value === "string"
     ) {
 
-        throw new Error(
-            "Correct answer must be A, B, C, or D."
-        );
+        return value;
 
     }
 
 
-    return {
+    if (
+        value &&
+        typeof value === "object"
+    ) {
 
-        id:
-            typeof q.id === "string" &&
-            q.id.trim() !== ""
+        return value.t || "";
 
-                ? q.id
+    }
 
-                : createQuestionId(),
 
-        question:
-            q.question.trim(),
-
-        options: {
-
-            A:
-                q.options.A.trim(),
-
-            B:
-                q.options.B.trim(),
-
-            C:
-                q.options.C.trim(),
-
-            D:
-                q.options.D.trim()
-
-        },
-
-        correctAnswer:
-            q.correctAnswer
-
-    };
+    return "";
 
 }
 
@@ -1343,146 +1229,71 @@ function validateQuestion(q) {
 // MERGE IMPORTED QUESTIONS
 // ======================================================
 
-function mergeImportedQuestions(
-    importedQuestions
-) {
+function mergeImportedQuestions(imported) {
 
-    const existingQuestions =
+    const existing =
         getQuestions();
 
 
-    /*
-     * Check whether imported questions
-     * have the same IDs as existing questions.
-     */
-
-    const existingIds =
+    const ids =
         new Set(
-
-            existingQuestions.map(
-                function(q) {
-
-                    return q.id;
-
-                }
+            existing.map(
+                q => q.id
             )
-
         );
 
 
-    let newQuestions =
-        0;
+    let duplicates = 0;
 
 
-    let duplicateQuestions =
-        0;
+    imported.forEach(
+        function (q) {
 
-
-    const questionsToAdd =
-        [];
-
-
-    importedQuestions.forEach(
-        function(q) {
-
-            /*
-             * If ID already exists,
-             * create a new ID.
-             *
-             * This prevents one question
-             * from accidentally replacing
-             * another.
-             */
-
-            if (
-                existingIds.has(q.id)
-            ) {
-
-                duplicateQuestions++;
-
+            if (ids.has(q.id)) {
 
                 q.id =
                     createQuestionId();
 
+                duplicates++;
+
             }
 
+            ids.add(q.id);
 
-            existingIds.add(
-                q.id
-            );
-
-
-            questionsToAdd.push(
-                q
-            );
-
-
-            newQuestions++;
+            existing.push(q);
 
         }
     );
 
 
-    if (
-        questionsToAdd.length === 0
-    ) {
-
-        alert(
-            "No questions were imported."
-        );
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-
-            "Import " +
-            questionsToAdd.length +
-            " question(s)?\n\n" +
-
-            "Existing questions will be kept."
-
-        );
-
-
-    if (!confirmed) {
+    if (!confirm(
+        "Import " +
+        imported.length +
+        " question(s)?\n\n" +
+        "Existing questions will be kept."
+    )) {
 
         return;
 
     }
 
 
-    const combined =
-        existingQuestions.concat(
-            questionsToAdd
-        );
-
-
-    saveQuestions(
-        combined
-    );
-
+    saveQuestions(existing);
 
     renderQuestions();
 
 
     alert(
 
-        newQuestions +
+        imported.length +
         " question(s) imported successfully." +
 
         (
-            duplicateQuestions > 0
-
+            duplicates
                 ? "\n\n" +
-                  duplicateQuestions +
-                  " duplicate ID(s) were assigned new IDs."
-
+                  duplicates +
+                  " duplicate ID(s) received new IDs."
                 : ""
-
         )
 
     );
@@ -1491,18 +1302,60 @@ function mergeImportedQuestions(
 
 
 // ======================================================
-// CREATE QUESTION ID
+// DOWNLOAD JSON
+// ======================================================
+
+function downloadJSON(
+    json,
+    filename
+) {
+
+    const blob =
+        new Blob(
+            [json],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        url;
+
+    link.download =
+        filename;
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+// ======================================================
+// CREATE ID
 // ======================================================
 
 function createQuestionId() {
 
     return (
 
-        Date.now().toString(
-            36
-        )
-
-        +
+        Date.now().toString(36) +
 
         Math.random()
             .toString(36)
@@ -1514,21 +1367,17 @@ function createQuestionId() {
 
 
 // ======================================================
-// HTML PROTECTION
+// HTML ESCAPING
 // ======================================================
 
 function escapeHTML(text) {
 
     const div =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     div.textContent =
         text;
 
-
     return div.innerHTML;
 
-}
+        }
