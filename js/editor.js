@@ -1274,107 +1274,13 @@ function validateQuestion(q) {
         if (
             typeof q.options[key] !==
             "string" ||
-// ======================================================
-// VALIDATE INDIVIDUAL QUESTION
-// ======================================================
 
-function validateQuestion(q) {
-
-    /*
-     * Compact JSON format:
-     *
-     * [
-     *     "Question",
-     *     "Option A",
-     *     "Option B",
-     *     "Option C",
-     *     "Option D",
-     *     "B"
-     * ]
-     *
-     * Position:
-     *
-     * [0] = Question
-     * [1] = Option A
-     * [2] = Option B
-     * [3] = Option C
-     * [4] = Option D
-     * [5] = Correct Answer
-     */
-
-
-    // --------------------------------------------------
-    // Check that the question is an array
-    // --------------------------------------------------
-
-    if (
-        !Array.isArray(q)
-    ) {
-
-        throw new Error(
-            "Question must be an array."
-        );
-
-    }
-
-
-    // --------------------------------------------------
-    // Check exactly 6 elements
-    // --------------------------------------------------
-
-    if (
-        q.length !== 6
-    ) {
-
-        throw new Error(
-            "Each question must contain exactly 6 items."
-        );
-
-    }
-
-
-    // --------------------------------------------------
-    // Question text
-    // --------------------------------------------------
-
-    if (
-        typeof q[0] !== "string" ||
-        q[0].trim() === ""
-    ) {
-
-        throw new Error(
-            "Question text is missing."
-        );
-
-    }
-
-
-    // --------------------------------------------------
-    // Options
-    // --------------------------------------------------
-
-    const optionKeys = [
-        "A",
-        "B",
-        "C",
-        "D"
-    ];
-
-
-    for (
-        let i = 1;
-        i <= 4;
-        i++
-    ) {
-
-        if (
-            typeof q[i] !== "string" ||
-            q[i].trim() === ""
+            q.options[key].trim() === ""
         ) {
 
             throw new Error(
                 "Option " +
-                optionKeys[i - 1] +
+                key +
                 " is missing."
             );
 
@@ -1383,30 +1289,9 @@ function validateQuestion(q) {
     }
 
 
-    // --------------------------------------------------
-    // Correct answer
-    // --------------------------------------------------
-
     if (
-        typeof q[5] !== "string"
-    ) {
-
-        throw new Error(
-            "Correct answer is missing."
-        );
-
-    }
-
-
-    const answer =
-        q[5]
-            .trim()
-            .toUpperCase();
-
-
-    if (
-        !optionKeys.includes(
-            answer
+        !keys.includes(
+            q.correctAnswer
         )
     ) {
 
@@ -1417,44 +1302,43 @@ function validateQuestion(q) {
     }
 
 
-    // --------------------------------------------------
-    // Convert compact format into the
-    // internal format used by the website
-    // --------------------------------------------------
-
     return {
 
         id:
-            createQuestionId(),
+            typeof q.id === "string" &&
+            q.id.trim() !== ""
 
+                ? q.id
+
+                : createQuestionId(),
 
         question:
-            q[0].trim(),
-
+            q.question.trim(),
 
         options: {
 
             A:
-                q[1].trim(),
+                q.options.A.trim(),
 
             B:
-                q[2].trim(),
+                q.options.B.trim(),
 
             C:
-                q[3].trim(),
+                q.options.C.trim(),
 
             D:
-                q[4].trim()
+                q.options.D.trim()
 
         },
 
-
         correctAnswer:
-            answer
+            q.correctAnswer
 
     };
 
 }
+
+
 // ======================================================
 // MERGE IMPORTED QUESTIONS
 // ======================================================
