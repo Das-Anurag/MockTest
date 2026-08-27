@@ -1,121 +1,116 @@
 // ======================================================
 // Mock Test - Result / Feedback Page
+// Text + Image Support
 // ======================================================
 
 
 // ======================================================
-// GET SAVED RESULT
+// GET RESULT
 // ======================================================
 
-const savedResult =
-    localStorage.getItem(
-        "mockTestLastResult"
+const resultData =
+    JSON.parse(
+        localStorage.getItem(
+            "mockTestLastResult"
+        )
     );
 
 
-if (!savedResult) {
+// ======================================================
+// CHECK RESULT
+// ======================================================
+
+if (!resultData) {
 
     document.body.innerHTML = `
 
-        <div class="result-container">
+        <main class="container">
 
-            <section class="result-header">
+            <h1>No Result Available</h1>
 
-                <h1>
-                    No Result Available
-                </h1>
+            <p>
+                Please complete a test first.
+            </p>
 
-                <p>
-                    Please take a test first.
-                </p>
+            <a href="index.html">
+                Go to Home
+            </a>
 
-                <a
-                    href="index.html"
-                    class="result-button">
-
-                    Back to Home
-
-                </a>
-
-            </section>
-
-        </div>
+        </main>
 
     `;
 
-    throw new Error(
-        "No test result found."
-    );
+    throw new Error("No result available.");
 
 }
 
 
-// Convert saved JSON into JavaScript object
-
-const result =
-    JSON.parse(
-        savedResult
-    );
-
-
 // ======================================================
-// GET SETTINGS
+// SETTINGS
 // ======================================================
-
-const settings =
-    getSettings();
-
-
-// ======================================================
-// BASIC TEST INFORMATION
-// ======================================================
-
-const totalQuestions =
-    Number(
-        result.totalQuestions || 0
-    );
-
-
-const correct =
-    Number(
-        result.correct || 0
-    );
-
-
-const wrong =
-    Number(
-        result.wrong || 0
-    );
-
-
-const unanswered =
-    Number(
-        result.unanswered || 0
-    );
-
-
-const score =
-    Number(
-        result.score || 0
-    );
-
-
-const percentage =
-    Number(
-        result.percentage || 0
-    );
-
 
 const positiveMarks =
     Number(
-        result.positiveMarks || 0
+        resultData.positiveMarks
     );
-
 
 const negativeMarks =
     Number(
-        result.negativeMarks || 0
+        resultData.negativeMarks
     );
+
+const totalQuestions =
+    Number(
+        resultData.totalQuestions
+    );
+
+
+// ======================================================
+// CALCULATE AVERAGE TIME
+// ======================================================
+//
+// Required formula:
+//
+// Average Time = Total Given Time
+//                -----------------
+//                Number of Questions
+//
+// The test duration is stored in settings.
+//
+// ======================================================
+
+let totalGivenTime = 0;
+
+if (typeof getSettings === "function") {
+
+    const settings =
+        getSettings();
+
+    totalGivenTime =
+        Number(
+            settings.testDurationMinutes
+        );
+
+}
+
+
+// Average time in minutes
+
+const averageTimeMinutes =
+
+    totalQuestions > 0
+
+        ? totalGivenTime /
+          totalQuestions
+
+        : 0;
+
+
+// Average time in seconds
+
+const averageTimeSeconds =
+
+    averageTimeMinutes * 60;
 
 
 // ======================================================
@@ -123,22 +118,38 @@ const negativeMarks =
 // ======================================================
 
 const scoreElement =
-    document.getElementById(
-        "score"
-    );
-
+    document.getElementById("score");
 
 const percentageElement =
+    document.getElementById("percentage");
+
+const correctElement =
+    document.getElementById("correct");
+
+const wrongElement =
+    document.getElementById("wrong");
+
+const unansweredElement =
+    document.getElementById("unanswered");
+
+const totalQuestionsElement =
+    document.getElementById("totalQuestions");
+
+const markingTable =
+    document.getElementById("markingTable");
+
+const averageTimeElement =
+    document.getElementById("averageTime");
+
+const slowQuestionsContainer =
     document.getElementById(
-        "percentage"
+        "slowQuestions"
     );
 
-
-const submissionStatus =
+const questionAnalysis =
     document.getElementById(
-        "submissionStatus"
+        "questionAnalysis"
     );
-
 
 const performanceMessage =
     document.getElementById(
@@ -146,103 +157,15 @@ const performanceMessage =
     );
 
 
-const averageTime =
-    document.getElementById(
-        "averageTime"
-    );
-
-
-const slowQuestions =
-    document.getElementById(
-        "slowQuestions"
-    );
-
-
-const questionResults =
-    document.getElementById(
-        "questionResults"
-    );
-
-
 // ======================================================
-// MARKING TABLE ELEMENTS
-// ======================================================
-
-const correctQuestionCount =
-    document.getElementById(
-        "correctQuestionCount"
-    );
-
-
-const wrongQuestionCount =
-    document.getElementById(
-        "wrongQuestionCount"
-    );
-
-
-const unansweredQuestionCount =
-    document.getElementById(
-        "unansweredQuestionCount"
-    );
-
-
-const totalQuestionCount =
-    document.getElementById(
-        "totalQuestionCount"
-    );
-
-
-const correctMarkPerQuestion =
-    document.getElementById(
-        "correctMarkPerQuestion"
-    );
-
-
-const wrongMarkPerQuestion =
-    document.getElementById(
-        "wrongMarkPerQuestion"
-    );
-
-
-const unansweredMarkPerQuestion =
-    document.getElementById(
-        "unansweredMarkPerQuestion"
-    );
-
-
-const correctNetMark =
-    document.getElementById(
-        "correctNetMark"
-    );
-
-
-const wrongNetMark =
-    document.getElementById(
-        "wrongNetMark"
-    );
-
-
-const unansweredNetMark =
-    document.getElementById(
-        "unansweredNetMark"
-    );
-
-
-const totalNetMark =
-    document.getElementById(
-        "totalNetMark"
-    );
-
-
-// ======================================================
-// DISPLAY SCORE
+// BASIC RESULT
 // ======================================================
 
 if (scoreElement) {
 
     scoreElement.textContent =
         formatNumber(
-            score
+            resultData.score
         );
 
 }
@@ -251,33 +174,42 @@ if (scoreElement) {
 if (percentageElement) {
 
     percentageElement.textContent =
+
         formatNumber(
-            percentage
+            resultData.percentage
         ) + "%";
 
 }
 
 
-// ======================================================
-// SUBMISSION STATUS
-// ======================================================
+if (correctElement) {
 
-if (submissionStatus) {
+    correctElement.textContent =
+        resultData.correct;
 
-    if (
-        result.submittedAutomatically
-    ) {
+}
 
-        submissionStatus.textContent =
-            "The test was automatically submitted because the time ended.";
 
-    }
-    else {
+if (wrongElement) {
 
-        submissionStatus.textContent =
-            "The test was submitted manually.";
+    wrongElement.textContent =
+        resultData.wrong;
 
-    }
+}
+
+
+if (unansweredElement) {
+
+    unansweredElement.textContent =
+        resultData.unanswered;
+
+}
+
+
+if (totalQuestionsElement) {
+
+    totalQuestionsElement.textContent =
+        totalQuestions;
 
 }
 
@@ -286,135 +218,605 @@ if (submissionStatus) {
 // MARKING BREAKDOWN
 // ======================================================
 
+if (markingTable) {
 
-// ------------------------------------------------------
-// Number of questions
-// ------------------------------------------------------
+    markingTable.innerHTML = `
 
-if (correctQuestionCount) {
+        <thead>
 
-    correctQuestionCount.textContent =
-        correct;
+            <tr>
+
+                <th>Category</th>
+
+                <th>No. of Questions</th>
+
+                <th>Mark / Question</th>
+
+                <th>Net Marks</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Correct</td>
+
+                <td>
+                    ${resultData.correct}
+                </td>
+
+                <td>
+                    ${formatNumber(
+                        positiveMarks
+                    )}
+                </td>
+
+                <td>
+                    ${formatNumber(
+                        resultData.correct *
+                        positiveMarks
+                    )}
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Wrong</td>
+
+                <td>
+                    ${resultData.wrong}
+                </td>
+
+                <td>
+                    -${formatNumber(
+                        negativeMarks
+                    )}
+                </td>
+
+                <td>
+                    ${formatNumber(
+                        resultData.wrong *
+                        -negativeMarks
+                    )}
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Unanswered</td>
+
+                <td>
+                    ${resultData.unanswered}
+                </td>
+
+                <td>
+                    0
+                </td>
+
+                <td>
+                    0
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td><strong>Total</strong></td>
+
+                <td>
+                    <strong>
+                        ${totalQuestions}
+                    </strong>
+                </td>
+
+                <td>
+                    —
+                </td>
+
+                <td>
+                    <strong>
+                        ${formatNumber(
+                            resultData.score
+                        )}
+                    </strong>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    `;
 
 }
 
 
-if (wrongQuestionCount) {
+// ======================================================
+// AVERAGE TIME
+// ======================================================
 
-    wrongQuestionCount.textContent =
-        wrong;
+if (averageTimeElement) {
 
-}
-
-
-if (unansweredQuestionCount) {
-
-    unansweredQuestionCount.textContent =
-        unanswered;
-
-}
-
-
-if (totalQuestionCount) {
-
-    totalQuestionCount.textContent =
-        totalQuestions;
-
-}
-
-
-// ------------------------------------------------------
-// Mark per question
-// ------------------------------------------------------
-
-if (correctMarkPerQuestion) {
-
-    correctMarkPerQuestion.textContent =
-        formatNumber(
-            positiveMarks
+    averageTimeElement.textContent =
+        formatTime(
+            averageTimeSeconds
         );
 
 }
 
 
-if (wrongMarkPerQuestion) {
+// ======================================================
+// FIND QUESTIONS TAKING MORE THAN
+// AVERAGE TIME
+// ======================================================
 
-    wrongMarkPerQuestion.textContent =
-        formatNumber(
-            -negativeMarks
-        );
-
-}
+const slowQuestions = [];
 
 
-if (unansweredMarkPerQuestion) {
+if (
+    Array.isArray(
+        resultData.questionResults
+    )
+) {
 
-    unansweredMarkPerQuestion.textContent =
-        "0";
+    resultData.questionResults.forEach(
+        function(q, index) {
 
-}
-
-
-// ------------------------------------------------------
-// Net marks
-// ------------------------------------------------------
-
-const correctNet =
-    correct *
-    positiveMarks;
+            const time =
+                Number(
+                    q.timeSpent || 0
+                );
 
 
-const wrongNet =
-    wrong *
-    (-negativeMarks);
+            if (
+                time >
+                averageTimeSeconds
+            ) {
 
+                slowQuestions.push({
 
-const unansweredNet =
-    0;
+                    index:
+                        index,
 
+                    question:
+                        q.question,
 
-const totalNet =
-    correctNet +
-    wrongNet +
-    unansweredNet;
+                    time:
+                        time
 
+                });
 
-if (correctNetMark) {
+            }
 
-    correctNetMark.textContent =
-        formatNumber(
-            correctNet
-        );
+        }
+    );
 
 }
 
 
-if (wrongNetMark) {
+// ======================================================
+// DISPLAY SLOW QUESTIONS
+// ======================================================
 
-    wrongNetMark.textContent =
-        formatNumber(
-            wrongNet
+if (slowQuestionsContainer) {
+
+    slowQuestionsContainer.innerHTML = "";
+
+
+    if (!slowQuestions.length) {
+
+        slowQuestionsContainer.innerHTML = `
+
+            <p>
+                You did not spend more than the
+                average time on any question.
+            </p>
+
+        `;
+
+    }
+
+    else {
+
+        const list =
+            document.createElement("ul");
+
+
+        slowQuestions.forEach(
+            function(q) {
+
+                const li =
+                    document.createElement("li");
+
+
+                li.textContent =
+
+                    "Question " +
+                    (q.index + 1) +
+                    " — " +
+                    formatTime(q.time);
+
+
+                list.appendChild(li);
+
+            }
         );
+
+
+        slowQuestionsContainer.appendChild(
+            list
+        );
+
+    }
 
 }
 
 
-if (unansweredNetMark) {
+// ======================================================
+// QUESTION-WISE ANALYSIS
+// ======================================================
 
-    unansweredNetMark.textContent =
-        formatNumber(
-            unansweredNet
+if (questionAnalysis) {
+
+    questionAnalysis.innerHTML = "";
+
+
+    if (
+        !Array.isArray(
+            resultData.questionResults
+        ) ||
+        resultData.questionResults.length === 0
+    ) {
+
+        questionAnalysis.innerHTML = `
+
+            <p>
+                No question-wise analysis is available.
+            </p>
+
+        `;
+
+    }
+
+    else {
+
+        resultData.questionResults.forEach(
+            function(q, index) {
+
+                createQuestionAnalysis(
+                    q,
+                    index,
+                    questionAnalysis
+                );
+
+            }
         );
+
+    }
 
 }
 
 
-if (totalNetMark) {
+// ======================================================
+// CREATE QUESTION ANALYSIS
+// ======================================================
 
-    totalNetMark.textContent =
-        formatNumber(
-            totalNet
+function createQuestionAnalysis(
+    q,
+    index,
+    container
+) {
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "question-analysis";
+
+
+    // ==================================================
+    // QUESTION NUMBER
+    // ==================================================
+
+    const heading =
+        document.createElement("h3");
+
+
+    heading.textContent =
+        "Question " + (index + 1);
+
+
+    card.appendChild(
+        heading
+    );
+
+
+    // ==================================================
+    // QUESTION
+    // ==================================================
+
+    const questionBox =
+        document.createElement("div");
+
+
+    questionBox.className =
+        "analysis-question";
+
+
+    appendMedia(
+        questionBox,
+        q.question,
+        "Question image"
+    );
+
+
+    card.appendChild(
+        questionBox
+    );
+
+
+    // ==================================================
+    // OPTIONS
+    // ==================================================
+
+    const options =
+        document.createElement("div");
+
+
+    options.className =
+        "analysis-options";
+
+
+    ["A", "B", "C", "D"].forEach(
+        function(key) {
+
+            const option =
+                document.createElement("div");
+
+
+            option.className =
+                "analysis-option";
+
+
+            // ------------------------------------------
+            // CORRECT ANSWER
+            // ------------------------------------------
+
+            if (
+                key === q.correctAnswer
+            ) {
+
+                option.classList.add(
+                    "correct-option"
+                );
+
+            }
+
+
+            // ------------------------------------------
+            // USER SELECTED ANSWER
+            // ------------------------------------------
+
+            if (
+                key === q.selectedAnswer
+            ) {
+
+                option.classList.add(
+                    "selected-option"
+                );
+
+            }
+
+
+            // ------------------------------------------
+            // OPTION LETTER
+            // ------------------------------------------
+
+            const letter =
+                document.createElement("strong");
+
+
+            letter.textContent =
+                key + ". ";
+
+
+            option.appendChild(
+                letter
+            );
+
+
+            // ------------------------------------------
+            // OPTION CONTENT
+            // ------------------------------------------
+
+            const content =
+                document.createElement("span");
+
+
+            appendMedia(
+                content,
+                q.options[key],
+                "Option " + key + " image"
+            );
+
+
+            option.appendChild(
+                content
+            );
+
+
+            options.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    card.appendChild(
+        options
+    );
+
+
+    // ==================================================
+    // RESULT STATUS
+    // ==================================================
+
+    const status =
+        document.createElement("p");
+
+
+    status.className =
+        "analysis-status";
+
+
+    if (
+        q.status === "correct"
+    ) {
+
+        status.textContent =
+            "Correct";
+
+        status.classList.add(
+            "status-correct"
         );
+
+    }
+
+    else if (
+        q.status === "wrong"
+    ) {
+
+        status.textContent =
+            "Wrong";
+
+        status.classList.add(
+            "status-wrong"
+        );
+
+    }
+
+    else {
+
+        status.textContent =
+            "Unanswered";
+
+        status.classList.add(
+            "status-unanswered"
+        );
+
+    }
+
+
+    card.appendChild(
+        status
+    );
+
+
+    container.appendChild(
+        card
+    );
+
+}
+
+
+// ======================================================
+// MEDIA DISPLAY
+// ======================================================
+
+function appendMedia(
+    container,
+    value,
+    imageAlt
+) {
+
+    /*
+     * Plain text
+     */
+
+    if (
+        typeof value === "string"
+    ) {
+
+        container.textContent =
+            value;
+
+        return;
+
+    }
+
+
+    /*
+     * Image / Text + Image
+     */
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        // --------------------------------------------
+        // TEXT
+        // --------------------------------------------
+
+        if (value.t) {
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+
+            text.textContent =
+                value.t;
+
+
+            container.appendChild(
+                text
+            );
+
+        }
+
+
+        // --------------------------------------------
+        // IMAGE
+        // --------------------------------------------
+
+        if (value.i) {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                value.i;
+
+
+            image.alt =
+                imageAlt;
+
+
+            image.className =
+                "question-option-image";
+
+
+            container.appendChild(
+                image
+            );
+
+        }
+
+    }
 
 }
 
@@ -423,595 +825,55 @@ if (totalNetMark) {
 // PERFORMANCE MESSAGE
 // ======================================================
 
-generatePerformanceMessage();
+if (performanceMessage) {
 
-
-// ======================================================
-// TIME ANALYSIS
-// ======================================================
-
-generateTimeAnalysis();
-
-
-// ======================================================
-// QUESTION-WISE ANALYSIS
-// ======================================================
-
-generateQuestionAnalysis();
-
-
-// ======================================================
-// PERFORMANCE MESSAGE FUNCTION
-// ======================================================
-
-function generatePerformanceMessage() {
-
-    if (!performanceMessage) {
-
-        return;
-
-    }
+    const percentage =
+        Number(
+            resultData.percentage
+        );
 
 
     let message;
 
 
-    if (
-        percentage >= 90
-    ) {
+    if (percentage >= 90) {
 
         message =
-            "Outstanding performance! You have demonstrated excellent accuracy and a very strong understanding of the questions.";
+            "Excellent performance! Your preparation and accuracy are outstanding.";
 
     }
 
-    else if (
-        percentage >= 75
-    ) {
+    else if (percentage >= 75) {
 
         message =
-            "Excellent performance! You have demonstrated a strong understanding of the subject.";
+            "Very good performance! You have demonstrated strong understanding and accuracy.";
 
     }
 
-    else if (
-        percentage >= 60
-    ) {
+    else if (percentage >= 60) {
 
         message =
-            "Good performance! Your overall understanding is satisfactory, but there is still room for improvement.";
+            "Good performance! With a little more practice, you can improve your score further.";
 
     }
 
-    else if (
-        percentage >= 40
-    ) {
+    else if (percentage >= 40) {
 
         message =
-            "Fair performance. Review the questions you answered incorrectly and strengthen those areas.";
+            "Your performance is satisfactory, but more practice is needed to improve accuracy.";
 
     }
 
     else {
 
         message =
-            "You need more practice. Review the incorrect and unanswered questions carefully and try the test again.";
+            "You should review the topics carefully and practice more questions before your next test.";
 
     }
 
 
     performanceMessage.textContent =
         message;
-
-}
-
-
-// ======================================================
-// TIME ANALYSIS
-// ======================================================
-
-function generateTimeAnalysis() {
-
-    if (!averageTime) {
-
-        return;
-
-    }
-
-
-    const questionData =
-        result.questionResults || [];
-
-
-    if (
-        totalQuestions === 0
-    ) {
-
-        averageTime.textContent =
-            "Average time cannot be calculated because there are no questions.";
-
-        if (slowQuestions) {
-
-            slowQuestions.innerHTML =
-                "";
-
-        }
-
-        return;
-
-    }
-
-
-    // ==================================================
-    // TOTAL GIVEN TIME
-    // ==================================================
-
-    /*
-     * The test duration is obtained from
-     * the saved settings.
-     *
-     * Example:
-     *
-     * testDurationMinutes = 20
-     *
-     * Therefore:
-     *
-     * Total given time = 20 minutes
-     */
-
-    const totalGivenTimeMinutes =
-        Number(
-            settings.testDurationMinutes
-        );
-
-
-    const totalGivenTimeSeconds =
-        totalGivenTimeMinutes *
-        60;
-
-
-    // ==================================================
-    // AVERAGE TIME
-    // ==================================================
-
-    /*
-     * IMPORTANT:
-     *
-     * Average Time =
-     *
-     * Total Given Time
-     * ----------------
-     * Number of Questions
-     *
-     */
-
-    const averageTimeSeconds =
-        totalGivenTimeSeconds /
-        totalQuestions;
-
-
-    const averageTimeMinutes =
-        averageTimeSeconds /
-        60;
-
-
-    averageTime.textContent =
-
-        "Average time per question: " +
-
-        formatTime(
-            averageTimeSeconds
-        );
-
-
-    // ==================================================
-    // FIND QUESTIONS ABOVE AVERAGE
-    // ==================================================
-
-    const slow =
-        questionData.filter(
-            function(q) {
-
-                return Number(
-                    q.timeSpent || 0
-                ) > averageTimeSeconds;
-
-            }
-        );
-
-
-    if (!slowQuestions) {
-
-        return;
-
-    }
-
-
-    slowQuestions.innerHTML =
-        "";
-
-
-    if (
-        slow.length === 0
-    ) {
-
-        slowQuestions.innerHTML = `
-
-            <p>
-                No question took more than the average time.
-            </p>
-
-        `;
-
-        return;
-
-    }
-
-
-    const heading =
-        document.createElement(
-            "p"
-        );
-
-
-    heading.innerHTML =
-        "<strong>Questions that took more than the average time:</strong>";
-
-
-    slowQuestions.appendChild(
-        heading
-    );
-
-
-    const list =
-        document.createElement(
-            "ul"
-        );
-
-
-    slow.forEach(
-        function(q) {
-
-            const li =
-                document.createElement(
-                    "li"
-                );
-
-
-            li.textContent =
-
-                "Question " +
-
-                (
-                    Number(
-                        q.questionIndex
-                    ) + 1
-                ) +
-
-                " — " +
-
-                formatTime(
-                    q.timeSpent
-                );
-
-
-            list.appendChild(
-                li
-            );
-
-        }
-    );
-
-
-    slowQuestions.appendChild(
-        list
-    );
-
-}
-
-
-// ======================================================
-// QUESTION-WISE ANALYSIS
-// ======================================================
-
-function generateQuestionAnalysis() {
-
-    if (!questionResults) {
-
-        return;
-
-    }
-
-
-    questionResults.innerHTML =
-        "";
-
-
-    const questions =
-        result.questionResults || [];
-
-
-    questions.forEach(
-        function(q, index) {
-
-
-            // ==========================================
-            // QUESTION CARD
-            // ==========================================
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "result-question-card";
-
-
-            // ==========================================
-            // QUESTION HEADER
-            // ==========================================
-
-            const header =
-                document.createElement(
-                    "div"
-                );
-
-
-            header.className =
-                "result-question-header";
-
-
-            const title =
-                document.createElement(
-                    "strong"
-                );
-
-
-            title.textContent =
-
-                "Question " +
-
-                (
-                    index + 1
-                );
-
-
-            const status =
-                document.createElement(
-                    "span"
-                );
-
-
-            status.textContent =
-                getStatusText(
-                    q.status
-                );
-
-
-            header.appendChild(
-                title
-            );
-
-
-            header.appendChild(
-                status
-            );
-
-
-            // ==========================================
-            // QUESTION TEXT
-            // ==========================================
-
-            const questionText =
-                document.createElement(
-                    "div"
-                );
-
-
-            questionText.className =
-                "result-question-text";
-
-
-            questionText.textContent =
-                q.question;
-
-
-            // ==========================================
-            // OPTIONS
-            // ==========================================
-
-            const optionsContainer =
-                document.createElement(
-                    "div"
-                );
-
-
-            optionsContainer.className =
-                "result-options";
-
-
-            const optionKeys =
-                [
-                    "A",
-                    "B",
-                    "C",
-                    "D"
-                ];
-
-
-            optionKeys.forEach(
-                function(key) {
-
-
-                    const option =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    option.className =
-                        "result-answer-option";
-
-
-                    // ----------------------------------
-                    // Option label
-                    // ----------------------------------
-
-                    const label =
-                        document.createElement(
-                            "strong"
-                        );
-
-
-                    label.textContent =
-                        key + ". ";
-
-
-                    // ----------------------------------
-                    // Option text
-                    // ----------------------------------
-
-                    const text =
-                        document.createElement(
-                            "span"
-                        );
-
-
-                    text.textContent =
-                        q.options[key];
-
-
-                    option.appendChild(
-                        label
-                    );
-
-
-                    option.appendChild(
-                        text
-                    );
-
-
-                    // ----------------------------------
-                    // Actual correct answer
-                    // ----------------------------------
-
-                    if (
-                        key ===
-                        q.correctAnswer
-                    ) {
-
-                        option.classList.add(
-                            "correct-option"
-                        );
-
-                    }
-
-
-                    // ----------------------------------
-                    // User selected answer
-                    // ----------------------------------
-
-                    if (
-                        key ===
-                        q.selectedAnswer
-                    ) {
-
-                        option.classList.add(
-                            "selected-option"
-                        );
-
-                    }
-
-
-                    /*
-                     * If the selected answer is also
-                     * the correct answer:
-                     *
-                     * Green background
-                     * +
-                     * Blue text
-                     */
-
-                    optionsContainer.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-
-            // ==========================================
-            // ADD CONTENT TO CARD
-            // ==========================================
-
-            card.appendChild(
-                header
-            );
-
-
-            card.appendChild(
-                questionText
-            );
-
-
-            card.appendChild(
-                optionsContainer
-            );
-
-
-            /*
-             * IMPORTANT:
-             *
-             * We intentionally DO NOT add:
-             *
-             * Your answer
-             * Correct answer
-             * Marks
-             * Time spent
-             *
-             * to the question-wise analysis.
-             */
-
-
-            questionResults.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// STATUS TEXT
-// ======================================================
-
-function getStatusText(
-    status
-) {
-
-    if (
-        status === "correct"
-    ) {
-
-        return "Correct";
-
-    }
-
-
-    if (
-        status === "wrong"
-    ) {
-
-        return "Wrong";
-
-    }
-
-
-    return "Unanswered";
 
 }
 
@@ -1024,26 +886,20 @@ function formatNumber(
     value
 ) {
 
-    const number =
+    const n =
         Number(value);
 
 
     if (
-        Number.isInteger(
-            number
-        )
+        Number.isInteger(n)
     ) {
 
-        return String(
-            number
-        );
+        return String(n);
 
     }
 
 
-    return number.toFixed(
-        2
-    );
+    return n.toFixed(2);
 
 }
 
@@ -1056,47 +912,30 @@ function formatTime(
     seconds
 ) {
 
-    const totalSeconds =
-        Math.round(
-            Number(seconds) || 0
+    seconds =
+        Math.max(
+            0,
+            Math.round(
+                Number(seconds) || 0
+            )
         );
 
 
     const minutes =
         Math.floor(
-            totalSeconds / 60
+            seconds / 60
         );
 
 
-    const remainingSeconds =
-        totalSeconds % 60;
+    const remaining =
+        seconds % 60;
 
 
-    if (
-        minutes === 0
-    ) {
+    if (minutes === 0) {
 
         return (
-
-            remainingSeconds +
-
+            remaining +
             " sec"
-
-        );
-
-    }
-
-
-    if (
-        remainingSeconds === 0
-    ) {
-
-        return (
-
-            minutes +
-
-            " min"
-
         );
 
     }
@@ -1105,13 +944,10 @@ function formatTime(
     return (
 
         minutes +
-
         " min " +
-
-        remainingSeconds +
-
+        remaining +
         " sec"
 
     );
 
-                        }
+                }
