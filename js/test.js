@@ -1,21 +1,19 @@
 // ======================================================
 // Mock Test - Test Engine
+// Text + Image Support
 // ======================================================
 
-// ------------------------------------------------------
-// Test configuration
-// ------------------------------------------------------
 
-// ------------------------------------------------------
-// Questions
-// ------------------------------------------------------
+// ======================================================
+// QUESTIONS
+// ======================================================
 
 const questions = getQuestions();
 
 
-// ------------------------------------------------------
-// Test state
-// ------------------------------------------------------
+// ======================================================
+// TEST STATE
+// ======================================================
 
 let currentQuestionIndex = 0;
 
@@ -23,7 +21,7 @@ let answers = {};
 
 let timeSpent = {};
 
-let questionStartTime = Date.now();
+let questionStartTime = null;
 
 let remainingSeconds = 0;
 
@@ -32,56 +30,33 @@ let timerInterval = null;
 let testSubmitted = false;
 
 
-// ------------------------------------------------------
-// HTML elements
-// ------------------------------------------------------
+// ======================================================
+// HTML ELEMENTS
+// ======================================================
 
 const progressText =
-    document.getElementById(
-        "progressText"
-    );
-
+    document.getElementById("progressText");
 
 const timer =
-    document.getElementById(
-        "timer"
-    );
-
+    document.getElementById("timer");
 
 const questionNumber =
-    document.getElementById(
-        "questionNumber"
-    );
-
+    document.getElementById("questionNumber");
 
 const questionText =
-    document.getElementById(
-        "questionText"
-    );
-
+    document.getElementById("questionText");
 
 const optionsContainer =
-    document.getElementById(
-        "optionsContainer"
-    );
-
+    document.getElementById("optionsContainer");
 
 const previousButton =
-    document.getElementById(
-        "previousButton"
-    );
-
+    document.getElementById("previousButton");
 
 const nextButton =
-    document.getElementById(
-        "nextButton"
-    );
-
+    document.getElementById("nextButton");
 
 const submitButton =
-    document.getElementById(
-        "submitButton"
-    );
+    document.getElementById("submitButton");
 
 
 // ======================================================
@@ -90,10 +65,8 @@ const submitButton =
 
 if (questions.length === 0) {
 
-
     questionText.textContent =
         "No questions are available.";
-
 
     optionsContainer.innerHTML = `
 
@@ -104,17 +77,14 @@ if (questions.length === 0) {
 
     `;
 
-
     previousButton.disabled = true;
 
     nextButton.disabled = true;
 
     submitButton.disabled = true;
 
-
 }
 else {
-
 
     initializeTest();
 
@@ -124,44 +94,33 @@ else {
 // ======================================================
 // INITIALIZE TEST
 // ======================================================
+
 function initializeTest() {
 
     currentQuestionIndex = 0;
 
-
-    /*
-     * Get the test duration from
-     * the saved test settings.
-     */
-
     const settings =
         getSettings();
 
-
     remainingSeconds =
-
         Number(
             settings.testDurationMinutes
         ) * 60;
 
-
-    questionStartTime =
-        Date.now();
-
+    questionStartTime = null;
 
     displayQuestion();
-
 
     startTimer();
 
 }
+
 
 // ======================================================
 // DISPLAY QUESTION
 // ======================================================
 
 function displayQuestion() {
-
 
     if (testSubmitted) {
 
@@ -171,11 +130,7 @@ function displayQuestion() {
 
 
     /*
-     * Save the time spent on the question
-     * that was previously displayed.
-     *
-     * The first question has no previous
-     * question, so its initial time is zero.
+     * Save time for the previous question.
      */
 
     if (
@@ -191,7 +146,6 @@ function displayQuestion() {
         Date.now();
 
 
-
     const q =
         questions[
             currentQuestionIndex
@@ -200,7 +154,6 @@ function displayQuestion() {
 
     const number =
         currentQuestionIndex + 1;
-
 
 
     progressText.textContent =
@@ -213,24 +166,37 @@ function displayQuestion() {
         `Question ${number}`;
 
 
-    questionText.textContent =
-        q.question;
+    // ==================================================
+    // QUESTION
+    // ==================================================
+
+    questionText.innerHTML = "";
+
+    appendMedia(
+        questionText,
+        q.question,
+        "Question image"
+    );
 
 
+    // ==================================================
+    // OPTIONS
+    // ==================================================
 
-    optionsContainer.innerHTML =
-        "";
-
+    optionsContainer.innerHTML = "";
 
 
     const optionKeys =
-        ["A", "B", "C", "D"];
-
+        [
+            "A",
+            "B",
+            "C",
+            "D"
+        ];
 
 
     optionKeys.forEach(
         function(key) {
-
 
             const label =
                 document.createElement(
@@ -242,6 +208,9 @@ function displayQuestion() {
                 "answer-option";
 
 
+            // ------------------------------------------
+            // RADIO BUTTON
+            // ------------------------------------------
 
             const radio =
                 document.createElement(
@@ -252,21 +221,12 @@ function displayQuestion() {
             radio.type =
                 "radio";
 
-
             radio.name =
                 "answer";
-
 
             radio.value =
                 key;
 
-
-
-            /*
-             * Restore previously selected
-             * answer when returning to
-             * this question.
-             */
 
             radio.checked =
 
@@ -275,11 +235,9 @@ function displayQuestion() {
                 ] === key;
 
 
-
             radio.addEventListener(
                 "change",
                 function() {
-
 
                     answers[
                         currentQuestionIndex
@@ -289,16 +247,21 @@ function displayQuestion() {
             );
 
 
+            // ------------------------------------------
+            // OPTION CONTENT
+            // ------------------------------------------
 
-            const text =
+            const content =
                 document.createElement(
                     "span"
                 );
 
 
-            text.textContent =
-                q.options[key];
-
+            appendMedia(
+                content,
+                q.options[key],
+                "Option " + key + " image"
+            );
 
 
             label.appendChild(
@@ -307,7 +270,7 @@ function displayQuestion() {
 
 
             label.appendChild(
-                text
+                content
             );
 
 
@@ -319,20 +282,18 @@ function displayQuestion() {
     );
 
 
-
-    /*
-     * Previous button
-     */
+    // ==================================================
+    // PREVIOUS
+    // ==================================================
 
     previousButton.disabled =
 
         currentQuestionIndex === 0;
 
 
-
-    /*
-     * Next button
-     */
+    // ==================================================
+    // NEXT
+    // ==================================================
 
     nextButton.disabled =
 
@@ -343,15 +304,115 @@ function displayQuestion() {
 
 
 // ======================================================
-// SAVE TIME FOR CURRENT QUESTION
+// MEDIA DISPLAY
+// ======================================================
+
+function appendMedia(
+    container,
+    value,
+    imageAlt
+) {
+
+    /*
+     * -----------------------------------------------
+     * Plain text
+     * -----------------------------------------------
+     */
+
+    if (
+        typeof value === "string"
+    ) {
+
+        container.textContent =
+            value;
+
+        return;
+
+    }
+
+
+    /*
+     * -----------------------------------------------
+     * Image / Text + Image
+     *
+     * {
+     *     t: "text",
+     *     i: "image.png"
+     * }
+     * -----------------------------------------------
+     */
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        // --------------------------------------------
+        // TEXT
+        // --------------------------------------------
+
+        if (value.t) {
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+            text.textContent =
+                value.t;
+
+            container.appendChild(
+                text
+            );
+
+        }
+
+
+        // --------------------------------------------
+        // IMAGE
+        // --------------------------------------------
+
+        if (value.i) {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                value.i;
+
+
+            image.alt =
+                imageAlt;
+
+
+            image.className =
+                "question-option-image";
+
+
+            container.appendChild(
+                image
+            );
+
+        }
+
+    }
+
+}
+
+
+// ======================================================
+// SAVE CURRENT QUESTION TIME
 // ======================================================
 
 function saveCurrentQuestionTime() {
 
-
     if (
         questions.length === 0 ||
-        testSubmitted
+        testSubmitted ||
+        questionStartTime === null
     ) {
 
         return;
@@ -368,7 +429,6 @@ function saveCurrentQuestionTime() {
         Math.floor(
             elapsed / 1000
         );
-
 
 
     timeSpent[
@@ -391,7 +451,6 @@ function saveCurrentQuestionTime() {
 
 function goToQuestion(index) {
 
-
     if (
         index < 0 ||
         index >= questions.length
@@ -412,13 +471,12 @@ function goToQuestion(index) {
 
 
 // ======================================================
-// PREVIOUS BUTTON
+// PREVIOUS
 // ======================================================
 
 previousButton.addEventListener(
     "click",
     function() {
-
 
         goToQuestion(
             currentQuestionIndex - 1
@@ -429,13 +487,12 @@ previousButton.addEventListener(
 
 
 // ======================================================
-// NEXT BUTTON
+// NEXT
 // ======================================================
 
 nextButton.addEventListener(
     "click",
     function() {
-
 
         goToQuestion(
             currentQuestionIndex + 1
@@ -451,16 +508,12 @@ nextButton.addEventListener(
 
 function startTimer() {
 
-
     updateTimerDisplay();
 
 
-
     timerInterval =
-
         setInterval(
             function() {
-
 
                 if (testSubmitted) {
 
@@ -469,30 +522,20 @@ function startTimer() {
                 }
 
 
-
                 remainingSeconds--;
-
 
 
                 updateTimerDisplay();
 
 
-
-                /*
-                 * When the timer reaches zero,
-                 * submit automatically.
-                 */
-
                 if (
                     remainingSeconds <= 0
                 ) {
-
 
                     remainingSeconds = 0;
 
 
                     updateTimerDisplay();
-
 
 
                     clearInterval(
@@ -517,7 +560,6 @@ function startTimer() {
 
 function updateTimerDisplay() {
 
-
     const minutes =
         Math.floor(
             remainingSeconds / 60
@@ -528,7 +570,6 @@ function updateTimerDisplay() {
         remainingSeconds % 60;
 
 
-
     timer.textContent =
 
         String(minutes).padStart(
@@ -536,7 +577,9 @@ function updateTimerDisplay() {
             "0"
         )
 
-        + ":" +
+        + ":"
+
+        +
 
         String(seconds).padStart(
             2,
@@ -554,7 +597,6 @@ submitButton.addEventListener(
     "click",
     function() {
 
-
         if (testSubmitted) {
 
             return;
@@ -571,7 +613,6 @@ submitButton.addEventListener(
             ).length;
 
 
-
         const message =
 
             `You have ${unanswered} unanswered question(s).\n\n` +
@@ -579,11 +620,9 @@ submitButton.addEventListener(
             `Are you sure you want to submit the test?`;
 
 
-
         if (
             confirm(message)
         ) {
-
 
             submitTest(false);
 
@@ -601,7 +640,6 @@ function submitTest(
     autoSubmitted
 ) {
 
-
     if (testSubmitted) {
 
         return;
@@ -612,25 +650,21 @@ function submitTest(
     testSubmitted = true;
 
 
-
     clearInterval(
         timerInterval
     );
 
 
-
     /*
-     * Save the time spent on the
-     * question currently displayed.
+     * Save time spent on the question
+     * currently displayed.
      */
 
     saveCurrentQuestionTime();
 
 
-
     const settings =
         getSettings();
-
 
 
     let score = 0;
@@ -642,21 +676,15 @@ function submitTest(
     let unanswered = 0;
 
 
-
     const questionResults =
         [];
-
 
 
     questions.forEach(
         function(q, index) {
 
-
             const selected =
-
-                answers[index] ||
-                null;
-
+                answers[index] || null;
 
 
             let marks = 0;
@@ -665,44 +693,36 @@ function submitTest(
                 "unanswered";
 
 
-
-            /*
-             * Unanswered
-             */
+            // ------------------------------------------
+            // UNANSWERED
+            // ------------------------------------------
 
             if (
                 selected === null
             ) {
 
-
                 unanswered++;
-
 
                 marks = 0;
 
             }
 
 
-
-            /*
-             * Correct
-             */
+            // ------------------------------------------
+            // CORRECT
+            // ------------------------------------------
 
             else if (
                 selected ===
                 q.correctAnswer
             ) {
 
-
                 correct++;
 
-
                 marks =
-
                     Number(
                         settings.positiveMarks
                     );
-
 
                 status =
                     "correct";
@@ -710,16 +730,13 @@ function submitTest(
             }
 
 
-
-            /*
-             * Wrong
-             */
+            // ------------------------------------------
+            // WRONG
+            // ------------------------------------------
 
             else {
 
-
                 wrong++;
-
 
                 marks =
 
@@ -727,16 +744,13 @@ function submitTest(
                         settings.negativeMarks
                     );
 
-
                 status =
                     "wrong";
 
             }
 
 
-
             score += marks;
-
 
 
             questionResults.push({
@@ -744,34 +758,26 @@ function submitTest(
                 questionIndex:
                     index,
 
-
                 questionId:
                     q.id,
-
 
                 question:
                     q.question,
 
-
                 selectedAnswer:
                     selected,
-
 
                 correctAnswer:
                     q.correctAnswer,
 
-
                 options:
                     q.options,
-
 
                 status:
                     status,
 
-
                 marks:
                     marks,
-
 
                 timeSpent:
                     timeSpent[index] || 0
@@ -782,10 +788,9 @@ function submitTest(
     );
 
 
-
-    /*
-     * Total possible marks
-     */
+    // ==================================================
+    // TOTAL POSSIBLE MARKS
+    // ==================================================
 
     const totalPossibleMarks =
 
@@ -796,10 +801,9 @@ function submitTest(
         );
 
 
-
-    /*
-     * Percentage
-     */
+    // ==================================================
+    // PERCENTAGE
+    // ==================================================
 
     const percentage =
 
@@ -813,61 +817,48 @@ function submitTest(
             ) * 100;
 
 
-
-    /*
-     * Final result object
-     */
+    // ==================================================
+    // FINAL RESULT
+    // ==================================================
 
     const result = {
-
 
         totalQuestions:
             questions.length,
 
-
         correct:
             correct,
-
 
         wrong:
             wrong,
 
-
         unanswered:
             unanswered,
-
 
         score:
             score,
 
-
         totalPossibleMarks:
             totalPossibleMarks,
 
-
         percentage:
             percentage,
-
 
         positiveMarks:
             Number(
                 settings.positiveMarks
             ),
 
-
         negativeMarks:
             Number(
                 settings.negativeMarks
             ),
 
-
         questionResults:
             questionResults,
 
-
         submittedAutomatically:
             autoSubmitted,
-
 
         date:
             new Date().toISOString()
@@ -875,24 +866,24 @@ function submitTest(
     };
 
 
-
-    /*
-     * Save result
-     */
+    // ==================================================
+    // SAVE RESULT
+    // ==================================================
 
     localStorage.setItem(
 
         "mockTestLastResult",
 
-        JSON.stringify(result)
+        JSON.stringify(
+            result
+        )
 
     );
 
 
-
-    /*
-     * Go to feedback page
-     */
+    // ==================================================
+    // OPEN RESULT PAGE
+    // ==================================================
 
     window.location.href =
         "result.html";
