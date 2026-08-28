@@ -1,6 +1,6 @@
 // ======================================================
 // Mock Test - Question Editor
-// Compact JSON + Image Support
+// Text + Image Support
 // ======================================================
 
 
@@ -8,71 +8,157 @@
 // ELEMENTS
 // ======================================================
 
-const positiveMarks =
-    document.getElementById("positiveMarks");
-
-const negativeMarks =
-    document.getElementById("negativeMarks");
-
-const testDuration =
-    document.getElementById("testDuration");
-
-const saveSettingsButton =
-    document.getElementById("saveSettingsButton");
-
-const settingsMessage =
-    document.getElementById("settingsMessage");
-
 const questionForm =
     document.getElementById("questionForm");
-
-const formTitle =
-    document.getElementById("formTitle");
 
 const questionId =
     document.getElementById("questionId");
 
-const question =
+const questionInput =
     document.getElementById("question");
-
-const optionA =
-    document.getElementById("optionA");
-
-const optionB =
-    document.getElementById("optionB");
-
-const optionC =
-    document.getElementById("optionC");
-
-const optionD =
-    document.getElementById("optionD");
 
 const correctAnswer =
     document.getElementById("correctAnswer");
 
-const saveButton =
-    document.getElementById("saveButton");
-
-const cancelButton =
-    document.getElementById("cancelButton");
+const questionsContainer =
+    document.getElementById(
+        "questionsContainer"
+    );
 
 const questionCount =
-    document.getElementById("questionCount");
+    document.getElementById(
+        "questionCount"
+    );
 
-const questionsContainer =
-    document.getElementById("questionsContainer");
+const formTitle =
+    document.getElementById(
+        "formTitle"
+    );
 
-const clearAllButton =
-    document.getElementById("clearAllButton");
+const cancelButton =
+    document.getElementById(
+        "cancelButton"
+    );
 
 const exportButton =
-    document.getElementById("exportButton");
+    document.getElementById(
+        "exportButton"
+    );
 
 const importButton =
-    document.getElementById("importButton");
+    document.getElementById(
+        "importButton"
+    );
 
 const importFile =
-    document.getElementById("importFile");
+    document.getElementById(
+        "importFile"
+    );
+
+const clearAllButton =
+    document.getElementById(
+        "clearAllButton"
+    );
+
+
+// ======================================================
+// IMAGE INPUTS
+// ======================================================
+
+const imageInputs = {
+
+    question:
+        document.getElementById(
+            "questionImage"
+        ),
+
+    A:
+        document.getElementById(
+            "optionAImage"
+        ),
+
+    B:
+        document.getElementById(
+            "optionBImage"
+        ),
+
+    C:
+        document.getElementById(
+            "optionCImage"
+        ),
+
+    D:
+        document.getElementById(
+            "optionDImage"
+        )
+
+};
+
+
+// ======================================================
+// IMAGE PREVIEWS
+// ======================================================
+
+const imagePreviews = {
+
+    question:
+        document.getElementById(
+            "questionImagePreview"
+        ),
+
+    A:
+        document.getElementById(
+            "optionAImagePreview"
+        ),
+
+    B:
+        document.getElementById(
+            "optionBImagePreview"
+        ),
+
+    C:
+        document.getElementById(
+            "optionCImagePreview"
+        ),
+
+    D:
+        document.getElementById(
+            "optionDImagePreview"
+        )
+
+};
+
+
+// ======================================================
+// CURRENT IMAGE DATA
+// ======================================================
+//
+// These contain images currently belonging to
+// the question being edited.
+//
+// ======================================================
+
+let currentImages = {
+
+    question: null,
+
+    A: null,
+
+    B: null,
+
+    C: null,
+
+    D: null
+
+};
+
+
+// ======================================================
+// GET QUESTIONS
+// ======================================================
+
+let questions =
+    getQuestions();
 
 
 // ======================================================
@@ -80,471 +166,44 @@ const importFile =
 // ======================================================
 
 loadSettings();
+
 renderQuestions();
-resetForm();
+
+setupImageInputs();
 
 
 // ======================================================
-// SETTINGS
+// IMAGE INPUT EVENTS
 // ======================================================
 
-function loadSettings() {
+function setupImageInputs() {
 
-    const s = getSettings();
+    Object.keys(
+        imageInputs
+    ).forEach(
+        function(key) {
 
-    positiveMarks.value =
-        s.positiveMarks;
+            const input =
+                imageInputs[key];
 
-    negativeMarks.value =
-        s.negativeMarks;
+            if (!input) {
 
-    testDuration.value =
-        s.testDurationMinutes;
+                return;
 
-}
+            }
 
 
-saveSettingsButton.addEventListener(
-    "click",
-    function () {
+            input.addEventListener(
+                "change",
+                function() {
 
-        const p =
-            Number(positiveMarks.value);
-
-        const n =
-            Number(negativeMarks.value);
-
-        const d =
-            Number(testDuration.value);
-
-        if (!Number.isFinite(p) || p < 0) {
-
-            alert("Please enter a valid positive mark.");
-
-            return;
-
-        }
-
-        if (!Number.isFinite(n) || n < 0) {
-
-            alert("Please enter a valid negative mark.");
-
-            return;
-
-        }
-
-        if (!Number.isFinite(d) || d <= 0) {
-
-            alert("Please enter a valid test duration.");
-
-            return;
-
-        }
-
-        saveSettings({
-
-            positiveMarks: p,
-
-            negativeMarks: n,
-
-            testDurationMinutes: d
-
-        });
-
-        settingsMessage.textContent =
-            "Test settings saved successfully.";
-
-        setTimeout(
-            () => settingsMessage.textContent = "",
-            3000
-        );
-
-    }
-);
-
-
-// ======================================================
-// ADD / UPDATE QUESTION
-// ======================================================
-
-questionForm.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-        const text =
-            question.value.trim();
-
-        const a =
-            optionA.value.trim();
-
-        const b =
-            optionB.value.trim();
-
-        const c =
-            optionC.value.trim();
-
-        const d =
-            optionD.value.trim();
-
-        const answer =
-            correctAnswer.value;
-
-        if (!text) {
-
-            alert("Please enter the question.");
-
-            question.focus();
-
-            return;
-
-        }
-
-        if (!a || !b || !c || !d) {
-
-            alert("Please enter all four options.");
-
-            return;
-
-        }
-
-        if (!answer) {
-
-            alert("Please select the correct answer.");
-
-            return;
-
-        }
-
-        const q = {
-
-            question: text,
-
-            options: {
-
-                A: a,
-                B: b,
-                C: c,
-                D: d
-
-            },
-
-            correctAnswer: answer
-
-        };
-
-
-        if (questionId.value) {
-
-            q.id =
-                questionId.value;
-
-            updateQuestion(q);
-
-            alert(
-                "Question updated successfully."
-            );
-
-        }
-
-        else {
-
-            addQuestion(q);
-
-            alert(
-                "Question added successfully."
-            );
-
-        }
-
-        renderQuestions();
-
-        resetForm();
-
-    }
-);
-
-
-// ======================================================
-// EDIT QUESTION
-// ======================================================
-
-function editQuestion(id) {
-
-    const q =
-        getQuestionById(id);
-
-    if (!q) {
-
-        alert("Question could not be found.");
-
-        return;
-
-    }
-
-    questionId.value =
-        q.id;
-
-    question.value =
-        mediaText(q.question);
-
-    optionA.value =
-        mediaText(q.options.A);
-
-    optionB.value =
-        mediaText(q.options.B);
-
-    optionC.value =
-        mediaText(q.options.C);
-
-    optionD.value =
-        mediaText(q.options.D);
-
-    correctAnswer.value =
-        q.correctAnswer;
-
-    formTitle.textContent =
-        "Edit Question";
-
-    saveButton.textContent =
-        "Update Question";
-
-    document
-        .querySelector(".question-section")
-        .scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-}
-
-
-// ======================================================
-// DELETE QUESTION
-// ======================================================
-
-function deleteQuestionFromEditor(id) {
-
-    const q =
-        getQuestionById(id);
-
-    if (!q) return;
-
-    if (
-        !confirm(
-            "Are you sure you want to delete this question?\n\n" +
-            mediaText(q.question)
-        )
-    ) return;
-
-    deleteQuestion(id);
-
-    renderQuestions();
-
-    if (questionId.value === id) {
-
-        resetForm();
-
-    }
-
-}
-
-
-// ======================================================
-// CLEAR ALL
-// ======================================================
-
-clearAllButton.addEventListener(
-    "click",
-    function () {
-
-        const qs =
-            getQuestions();
-
-        if (!qs.length) {
-
-            alert("There are no questions to delete.");
-
-            return;
-
-        }
-
-        if (
-            !confirm(
-                "Are you sure you want to delete ALL " +
-                qs.length +
-                " question(s)?\n\n" +
-                "This action cannot be undone."
-            )
-        ) return;
-
-        clearAllQuestions();
-
-        renderQuestions();
-
-        resetForm();
-
-        alert("All questions have been deleted.");
-
-    }
-);
-
-
-// ======================================================
-// RESET FORM
-// ======================================================
-
-cancelButton.addEventListener(
-    "click",
-    resetForm
-);
-
-
-function resetForm() {
-
-    questionForm.reset();
-
-    questionId.value = "";
-
-    formTitle.textContent =
-        "Add Question";
-
-    saveButton.textContent =
-        "Save Question";
-
-}
-
-
-// ======================================================
-// DISPLAY QUESTIONS
-// ======================================================
-
-function renderQuestions() {
-
-    const qs =
-        getQuestions();
-
-    questionCount.textContent =
-        qs.length === 1
-            ? "1 question"
-            : qs.length + " questions";
-
-    questionsContainer.innerHTML = "";
-
-    if (!qs.length) {
-
-        questionsContainer.innerHTML = `
-            <div class="question-card">
-                <p>No questions have been added yet.</p>
-            </div>
-        `;
-
-        return;
-
-    }
-
-    qs.forEach(
-        function (q, index) {
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "question-card";
-
-
-            const title =
-                document.createElement("h3");
-
-            title.textContent =
-                "Question " + (index + 1);
-
-
-            const qDisplay =
-                createMediaElement(
-                    q.question
-                );
-
-            const options =
-                document.createElement("div");
-
-
-            ["A", "B", "C", "D"].forEach(
-                function (key) {
-
-                    const row =
-                        document.createElement("div");
-
-                    const label =
-                        document.createElement("strong");
-
-                    label.textContent =
-                        key + ": ";
-
-                    row.appendChild(label);
-
-                    row.appendChild(
-                        createMediaElement(
-                            q.options[key]
-                        )
+                    handleImageSelect(
+                        key
                     );
-
-                    options.appendChild(row);
 
                 }
             );
 
-
-            const answer =
-                document.createElement("p");
-
-            answer.innerHTML =
-                "<strong>Correct Answer:</strong> " +
-                escapeHTML(q.correctAnswer);
-
-
-            const edit =
-                document.createElement("button");
-
-            edit.type = "button";
-
-            edit.textContent = "Edit";
-
-            edit.addEventListener(
-                "click",
-                () => editQuestion(q.id)
-            );
-
-
-            const del =
-                document.createElement("button");
-
-            del.type = "button";
-
-            del.textContent = "Delete";
-
-            del.addEventListener(
-                "click",
-                () =>
-                    deleteQuestionFromEditor(q.id)
-            );
-
-
-            card.appendChild(title);
-
-            card.appendChild(qDisplay);
-
-            card.appendChild(options);
-
-            card.appendChild(answer);
-
-            card.appendChild(edit);
-
-            card.appendChild(del);
-
-            questionsContainer.appendChild(card);
-
         }
     );
 
@@ -552,654 +211,269 @@ function renderQuestions() {
 
 
 // ======================================================
-// EXPORT
+// IMAGE SELECTION
 // ======================================================
 
-exportButton.addEventListener(
-    "click",
-    exportQuestions
-);
+function handleImageSelect(
+    key
+) {
+
+    const input =
+        imageInputs[key];
+
+    const file =
+        input.files[0];
 
 
-function exportQuestions() {
-
-    const qs =
-        getQuestions();
-
-    if (!qs.length) {
-
-        alert("There are no questions to export.");
+    if (!file) {
 
         return;
 
     }
 
 
-    /*
-     * Compact format:
-     *
-     * [
-     *   [question,A,B,C,D,correct],
-     *   ...
-     * ]
-     *
-     * No IDs are exported because IDs are
-     * unnecessary for the compact question file.
-     */
+    if (
+        !file.type.startsWith(
+            "image/"
+        )
+    ) {
 
-    const compact =
-        qs.map(
-            function (q) {
-
-                return [
-
-                    compactMedia(q.question),
-
-                    compactMedia(q.options.A),
-
-                    compactMedia(q.options.B),
-
-                    compactMedia(q.options.C),
-
-                    compactMedia(q.options.D),
-
-                    q.correctAnswer
-
-                ];
-
-            }
+        alert(
+            "Please select an image file."
         );
 
+        input.value = "";
 
-    const json =
-        JSON.stringify(compact);
-
-
-    downloadJSON(
-        json,
-        "MockTest_Questions_" +
-        new Date()
-            .toISOString()
-            .slice(0, 10) +
-        ".json"
-    );
-
-}
-
-
-// ======================================================
-// IMPORT
-// ======================================================
-
-importButton.addEventListener(
-    "click",
-    () => importFile.click()
-);
-
-
-importFile.addEventListener(
-    "change",
-    function () {
-
-        const file =
-            importFile.files[0];
-
-        if (file) {
-
-            importQuestions(file);
-
-        }
+        return;
 
     }
-);
 
-
-function importQuestions(file) {
 
     const reader =
         new FileReader();
 
 
     reader.onload =
-        function (event) {
+        function(event) {
 
-            try {
-
-                const data =
-                    JSON.parse(
-                        event.target.result
-                    );
-
-                const qs =
-                    validateImportData(data);
+            currentImages[key] =
+                event.target.result;
 
 
-                if (!qs.length) {
-
-                    throw new Error(
-                        "No valid questions were found."
-                    );
-
-                }
-
-                mergeImportedQuestions(qs);
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Import error:",
-                    error
-                );
-
-                alert(
-                    "Import failed.\n\n" +
-                    error.message
-                );
-
-            }
-
-            importFile.value = "";
-
-        };
-
-
-    reader.onerror =
-        function () {
-
-            alert(
-                "The file could not be read."
+            showImagePreview(
+                key,
+                currentImages[key]
             );
 
-            importFile.value = "";
-
         };
 
 
-    reader.readAsText(file);
-
-}
-
-
-// ======================================================
-// VALIDATE IMPORT
-// ======================================================
-
-function validateImportData(data) {
-
-    let list;
-
-
-    /*
-     * Plain compact array
-     */
-
-    if (Array.isArray(data)) {
-
-        list = data;
-
-    }
-
-
-    /*
-     * Old backup format
-     */
-
-    else if (
-        data &&
-        Array.isArray(data.questions)
-    ) {
-
-        list = data.questions;
-
-    }
-
-    else {
-
-        throw new Error(
-            "The selected file is not a valid MockTest question file."
-        );
-
-    }
-
-
-    const valid = [];
-
-
-    list.forEach(
-        function (item, index) {
-
-            try {
-
-                valid.push(
-                    normalizeQuestion(item)
-                );
-
-            }
-
-            catch (error) {
-
-                console.warn(
-                    "Question " +
-                    (index + 1) +
-                    " skipped:",
-                    error.message
-                );
-
-            }
-
-        }
+    reader.readAsDataURL(
+        file
     );
 
-
-    return valid;
-
 }
 
 
 // ======================================================
-// NORMALIZE QUESTION
+// SHOW IMAGE PREVIEW
 // ======================================================
 
-function normalizeQuestion(q) {
+function showImagePreview(
+    key,
+    src
+) {
 
-    /*
-     * -----------------------------------------------
-     * NEW COMPACT FORMAT
-     *
-     * [
-     *   question,
-     *   A,
-     *   B,
-     *   C,
-     *   D,
-     *   correct
-     * ]
-     * -----------------------------------------------
-     */
-
-    if (Array.isArray(q)) {
-
-        if (q.length !== 6) {
-
-            throw new Error(
-                "Compact question must contain exactly 6 items."
-            );
-
-        }
-
-        const answer =
-            String(q[5]).toUpperCase();
+    const preview =
+        imagePreviews[key];
 
 
-        if (
-            !["A", "B", "C", "D"].includes(answer)
-        ) {
+    if (!preview) {
 
-            throw new Error(
-                "Correct answer must be A, B, C, or D."
-            );
-
-        }
-
-
-        return {
-
-            id: createQuestionId(),
-
-            question:
-                normalizeMedia(q[0]),
-
-            options: {
-
-                A: normalizeMedia(q[1]),
-
-                B: normalizeMedia(q[2]),
-
-                C: normalizeMedia(q[3]),
-
-                D: normalizeMedia(q[4])
-
-            },
-
-            correctAnswer:
-                answer
-
-        };
+        return;
 
     }
 
 
-    /*
-     * -----------------------------------------------
-     * OLD FORMAT
-     * -----------------------------------------------
-     */
-
-    if (
-        q &&
-        typeof q === "object"
-    ) {
-
-        if (
-            q.question === undefined
-        ) {
-
-            throw new Error(
-                "Question text is missing."
-            );
-
-        }
+    preview.innerHTML = "";
 
 
-        if (
-            !q.options ||
-            typeof q.options !== "object"
-        ) {
+    if (!src) {
 
-            throw new Error(
-                "Options are missing."
-            );
+        return;
 
-        }
+    }
 
 
-        const keys =
-            ["A", "B", "C", "D"];
-
-
-        keys.forEach(
-            function (key) {
-
-                if (
-                    q.options[key] === undefined
-                ) {
-
-                    throw new Error(
-                        "Option " +
-                        key +
-                        " is missing."
-                    );
-
-                }
-
-            }
+    const image =
+        document.createElement(
+            "img"
         );
 
 
-        const answer =
-            String(
-                q.correctAnswer || ""
-            ).toUpperCase();
+    image.src =
+        src;
 
 
-        if (!keys.includes(answer)) {
+    image.alt =
+        key === "question"
 
-            throw new Error(
-                "Correct answer must be A, B, C, or D."
+            ? "Question image"
+
+            : "Option " +
+              key +
+              " image";
+
+
+    image.className =
+        "editor-image-preview";
+
+
+    preview.appendChild(
+        image
+    );
+
+
+    const removeButton =
+        document.createElement(
+            "button"
+        );
+
+
+    removeButton.type =
+        "button";
+
+
+    removeButton.textContent =
+        "Remove Image";
+
+
+    removeButton.className =
+        "remove-image-button";
+
+
+    removeButton.addEventListener(
+        "click",
+        function() {
+
+            removeImage(
+                key
             );
 
         }
+    );
 
 
-        return {
-
-            id:
-                typeof q.id === "string" &&
-                q.id.trim()
-                    ? q.id
-                    : createQuestionId(),
-
-            question:
-                normalizeMedia(
-                    q.question
-                ),
-
-            options: {
-
-                A:
-                    normalizeMedia(
-                        q.options.A
-                    ),
-
-                B:
-                    normalizeMedia(
-                        q.options.B
-                    ),
-
-                C:
-                    normalizeMedia(
-                        q.options.C
-                    ),
-
-                D:
-                    normalizeMedia(
-                        q.options.D
-                    )
-
-            },
-
-            correctAnswer:
-                answer
-
-        };
-
-    }
-
-
-    throw new Error(
-        "Invalid question."
+    preview.appendChild(
+        removeButton
     );
 
 }
 
 
 // ======================================================
-// MEDIA FORMAT
+// REMOVE IMAGE
 // ======================================================
 
-function normalizeMedia(value) {
+function removeImage(
+    key
+) {
 
-    /*
-     * Plain text
-     */
+    currentImages[key] =
+        null;
+
 
     if (
-        typeof value === "string"
+        imageInputs[key]
     ) {
 
-        if (!value.trim()) {
-
-            throw new Error(
-                "Empty text is not allowed."
-            );
-
-        }
-
-        return value.trim();
+        imageInputs[key].value =
+            "";
 
     }
 
 
-    /*
-     * Image or text + image
-     *
-     * {"i":"image.png"}
-     *
-     * {"t":"Text","i":"image.png"}
-     */
-
     if (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value)
+        imagePreviews[key]
     ) {
 
-        const text =
-            typeof value.t === "string"
-                ? value.t.trim()
-                : "";
+        imagePreviews[key].innerHTML =
+            "";
 
-        const image =
-            typeof value.i === "string"
-                ? value.i.trim()
-                : "";
+    }
+
+}
 
 
-        if (!text && !image) {
+// ======================================================
+// CREATE MEDIA VALUE
+// ======================================================
+//
+// Text only:
+//
+// "Option A"
+//
+// Image only:
+//
+// { "i": "data:image/..." }
+//
+// Text + image:
+//
+// { "t": "Option A",
+//   "i": "data:image/..." }
+//
+// ======================================================
 
-            throw new Error(
-                "Media object is empty."
-            );
+function createMediaValue(
+    text,
+    image
+) {
 
-        }
+    text =
+        String(
+            text || ""
+        ).trim();
 
+
+    if (
+        text &&
+        image
+    ) {
 
         return {
 
-            ...(text ? { t: text } : {}),
+            t: text,
 
-            ...(image ? { i: image } : {})
+            i: image
 
         };
 
     }
 
 
-    throw new Error(
-        "Invalid text/image value."
-    );
+    if (image) {
+
+        return {
+
+            i: image
+
+        };
+
+    }
+
+
+    return text;
 
 }
 
 
 // ======================================================
-// COMPACT MEDIA
+// EXTRACT MEDIA TEXT
 // ======================================================
 
-function compactMedia(value) {
-
-    if (
-        typeof value === "string"
-    ) {
-
-        return value;
-
-    }
-
-
-    if (
-        value &&
-        typeof value === "object"
-    ) {
-
-        const obj = {};
-
-        if (value.t) {
-
-            obj.t =
-                value.t;
-
-        }
-
-        if (value.i) {
-
-            obj.i =
-                value.i;
-
-        }
-
-        return obj;
-
-    }
-
-
-    return "";
-
-}
-
-
-// ======================================================
-// DISPLAY MEDIA
-// ======================================================
-
-function createMediaElement(value) {
-
-    const wrapper =
-        document.createElement("div");
-
-
-    if (
-        typeof value === "string"
-    ) {
-
-        wrapper.textContent =
-            value;
-
-        return wrapper;
-
-    }
-
-
-    if (
-        value &&
-        typeof value === "object"
-    ) {
-
-        if (value.t) {
-
-            const text =
-                document.createElement("div");
-
-            text.textContent =
-                value.t;
-
-            wrapper.appendChild(text);
-
-        }
-
-
-        if (value.i) {
-
-            const image =
-                document.createElement("img");
-
-            image.src =
-                value.i;
-
-       image.alt =
-                value.t || "Question image";
-
-            image.style.maxWidth =
-                "100%";
-
-            image.style.height =
-                "auto";
-
-            image.style.display =
-                "block";
-
-            image.style.marginTop =
-                "8px";
-
-            wrapper.appendChild(image);
-
-        }
-
-    }
-
-
-    return wrapper;
-
-}
-
-
-// ======================================================
-// MEDIA → TEXT
-// ======================================================
-
-function mediaText(value) {
+function getMediaText(
+    value
+) {
 
     if (
         typeof value === "string"
@@ -1226,140 +500,253 @@ function mediaText(value) {
 
 
 // ======================================================
-// MERGE IMPORTED QUESTIONS
+// EXTRACT MEDIA IMAGE
 // ======================================================
 
-function mergeImportedQuestions(imported) {
+function getMediaImage(
+    value
+) {
 
-    const existing =
-        getQuestions();
+    if (
+        value &&
+        typeof value === "object"
+    ) {
 
-
-    const ids =
-        new Set(
-            existing.map(
-                q => q.id
-            )
-        );
-
-
-    let duplicates = 0;
-
-
-    imported.forEach(
-        function (q) {
-
-            if (ids.has(q.id)) {
-
-                q.id =
-                    createQuestionId();
-
-                duplicates++;
-
-            }
-
-            ids.add(q.id);
-
-            existing.push(q);
-
-        }
-    );
-
-
-    if (!confirm(
-        "Import " +
-        imported.length +
-        " question(s)?\n\n" +
-        "Existing questions will be kept."
-    )) {
-
-        return;
+        return value.i || null;
 
     }
 
 
-    saveQuestions(existing);
-
-    renderQuestions();
-
-
-    alert(
-
-        imported.length +
-        " question(s) imported successfully." +
-
-        (
-            duplicates
-                ? "\n\n" +
-                  duplicates +
-                  " duplicate ID(s) received new IDs."
-                : ""
-        )
-
-    );
+    return null;
 
 }
 
 
 // ======================================================
-// DOWNLOAD JSON
+// SAVE QUESTION
 // ======================================================
 
-function downloadJSON(
-    json,
-    filename
-) {
+questionForm.addEventListener(
+    "submit",
+    function(event) {
 
-    const blob =
-        new Blob(
-            [json],
-            {
-                type:
-                    "application/json"
+        event.preventDefault();
+
+
+        const textQuestion =
+            questionInput.value.trim();
+
+
+        const answer =
+            correctAnswer.value;
+
+
+        // ------------------------------------------
+        // VALIDATION
+        // ------------------------------------------
+
+        if (
+            !textQuestion &&
+            !currentImages.question
+        ) {
+
+            alert(
+                "Please enter a question or select a question image."
+            );
+
+            return;
+
+        }
+
+
+        const optionValues = {};
+
+
+        ["A", "B", "C", "D"].forEach(
+            function(key) {
+
+                const input =
+                    document.getElementById(
+                        "option" + key
+                    );
+
+
+                optionValues[key] =
+                    createMediaValue(
+
+                        input
+                            ? input.value
+                            : "",
+
+                        currentImages[key]
+
+                    );
+
             }
         );
 
 
-    const url =
-        URL.createObjectURL(blob);
+        // ------------------------------------------
+        // CHECK OPTIONS
+        // ------------------------------------------
+
+        for (
+            const key of
+            ["A", "B", "C", "D"]
+        ) {
+
+            const value =
+                optionValues[key];
 
 
-    const link =
-        document.createElement("a");
+            const text =
+                getMediaText(
+                    value
+                );
 
 
-    link.href =
-        url;
-
-    link.download =
-        filename;
-
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
+            const image =
+                getMediaImage(
+                    value
+                );
 
 
-    URL.revokeObjectURL(url);
+            if (
+                !text &&
+                !image
+            ) {
 
-}
+                alert(
+                    "Please enter or add an image for Option " +
+                    key +
+                    "."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        if (!answer) {
+
+            alert(
+                "Please select the correct answer."
+            );
+
+            return;
+
+        }
+
+
+        // ------------------------------------------
+        // CREATE QUESTION
+        // ------------------------------------------
+
+        const questionObject = {
+
+            id:
+                questionId.value ||
+                createId(),
+
+            question:
+                createMediaValue(
+
+                    textQuestion,
+
+                    currentImages.question
+
+                ),
+
+            options:
+                optionValues,
+
+            correctAnswer:
+                answer
+
+        };
+
+
+        // ------------------------------------------
+        // EDIT EXISTING
+        // ------------------------------------------
+
+        if (
+            questionId.value
+        ) {
+
+            const index =
+                questions.findIndex(
+                    function(q) {
+
+                        return String(q.id) ===
+                            String(questionId.value);
+
+                    }
+                );
+
+
+            if (
+                index !== -1
+            ) {
+
+                questions[index] =
+                    questionObject;
+
+            }
+
+        }
+
+        // ------------------------------------------
+        // ADD NEW
+        // ------------------------------------------
+
+        else {
+
+            questions.push(
+                questionObject
+            );
+
+        }
+
+
+        saveQuestions(
+            questions
+        );
+
+
+        renderQuestions();
+
+
+        clearForm();
+
+
+        alert(
+            "Question saved successfully."
+        );
+
+    }
+);
 
 
 // ======================================================
 // CREATE ID
 // ======================================================
 
-function createQuestionId() {
+function createId() {
 
     return (
 
-        Date.now().toString(36) +
+        Date.now().toString(
+            36
+        )
+
+        +
 
         Math.random()
             .toString(36)
-            .slice(2, 8)
+            .substring(2, 8)
 
     );
 
@@ -1367,17 +754,1118 @@ function createQuestionId() {
 
 
 // ======================================================
-// HTML ESCAPING
+// RENDER QUESTIONS
 // ======================================================
 
-function escapeHTML(text) {
+function renderQuestions() {
 
-    const div =
-        document.createElement("div");
+    if (!questionsContainer) {
 
-    div.textContent =
-        text;
+        return;
 
-    return div.innerHTML;
+    }
+
+
+    questionsContainer.innerHTML =
+        "";
+
+
+    if (
+        questionCount
+    ) {
+
+        questionCount.textContent =
+
+            questions.length +
+            (
+                questions.length === 1
+                    ? " question"
+                    : " questions"
+            );
+
+    }
+
+
+    questions.forEach(
+        function(q, index) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "question-card";
+
+
+            // --------------------------------------
+            // NUMBER
+            // --------------------------------------
+
+            const heading =
+                document.createElement(
+                    "h3"
+                );
+
+
+            heading.textContent =
+                "Question " +
+                (index + 1);
+
+
+            card.appendChild(
+                heading
+            );
+
+
+            // --------------------------------------
+            // QUESTION
+            // --------------------------------------
+
+            const questionBox =
+                document.createElement(
+                    "div"
+                );
+
+
+            questionBox.className =
+                "editor-question-preview";
+
+
+            appendMedia(
+                questionBox,
+                q.question,
+                "Question image"
+            );
+
+
+            card.appendChild(
+                questionBox
+            );
+
+
+            // --------------------------------------
+            // OPTIONS
+            // --------------------------------------
+
+            ["A", "B", "C", "D"].forEach(
+                function(key) {
+
+                    const option =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    option.className =
+                        "editor-option-preview";
+
+
+                    const label =
+                        document.createElement(
+                            "strong"
+                        );
+
+
+                    label.textContent =
+                        key + ". ";
+
+
+                    option.appendChild(
+                        label
+                    );
+
+
+                    const content =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    appendMedia(
+                        content,
+                        q.options[key],
+                        "Option " +
+                        key +
+                        " image"
+                    );
+
+
+                    option.appendChild(
+                        content
+                    );
+
+
+                    if (
+                        key ===
+                        q.correctAnswer
+                    ) {
+
+                        option.classList.add(
+                            "editor-correct-option"
+                        );
+
+                    }
+
+
+                    card.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            // --------------------------------------
+            // BUTTONS
+            // --------------------------------------
+
+            const buttons =
+                document.createElement(
+                    "div"
+                );
+
+
+            buttons.className =
+                "question-card-buttons";
+
+
+            const editButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            editButton.type =
+                "button";
+
+
+            editButton.textContent =
+                "Edit";
+
+
+            editButton.addEventListener(
+                "click",
+                function() {
+
+                    editQuestion(
+                        index
+                    );
+
+                }
+            );
+
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.type =
+                "button";
+
+
+            deleteButton.textContent =
+                "Delete";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function() {
+
+                    deleteQuestion(
+                        index
+                    );
+
+                }
+            );
+
+
+            buttons.appendChild(
+                editButton
+            );
+
+
+            buttons.appendChild(
+                deleteButton
+            );
+
+
+            card.appendChild(
+                buttons
+            );
+
+
+            questionsContainer.appendChild(
+                card
+            );
 
         }
+    );
+
+}
+
+
+// ======================================================
+// DISPLAY MEDIA
+// ======================================================
+
+function appendMedia(
+    container,
+    value,
+    altText
+) {
+
+    if (
+        typeof value === "string"
+    ) {
+
+        container.appendChild(
+            document.createTextNode(
+                value
+            )
+        );
+
+        return;
+
+    }
+
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        if (value.t) {
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+
+            text.textContent =
+                value.t;
+
+
+            container.appendChild(
+                text
+            );
+
+        }
+
+
+        if (value.i) {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                value.i;
+
+
+            image.alt =
+                altText;
+
+
+            image.className =
+                "editor-media-image";
+
+
+            container.appendChild(
+                image
+            );
+
+        }
+
+    }
+
+}
+
+
+// ======================================================
+// EDIT QUESTION
+// ======================================================
+
+function editQuestion(
+    index
+) {
+
+    const q =
+        questions[index];
+
+
+    if (!q) {
+
+        return;
+
+    }
+
+
+    questionId.value =
+        q.id || "";
+
+
+    // ------------------------------------------
+    // QUESTION
+    // ------------------------------------------
+
+    questionInput.value =
+        getMediaText(
+            q.question
+        );
+
+
+    currentImages.question =
+        getMediaImage(
+            q.question
+        );
+
+
+    showImagePreview(
+        "question",
+        currentImages.question
+    );
+
+
+    // ------------------------------------------
+    // OPTIONS
+    // ------------------------------------------
+
+    ["A", "B", "C", "D"].forEach(
+        function(key) {
+
+            const input =
+                document.getElementById(
+                    "option" + key
+                );
+
+
+            if (input) {
+
+                input.value =
+                    getMediaText(
+                        q.options[key]
+                    );
+
+            }
+
+
+            currentImages[key] =
+                getMediaImage(
+                    q.options[key]
+                );
+
+
+            showImagePreview(
+                key,
+                currentImages[key]
+            );
+
+        }
+    );
+
+
+    // ------------------------------------------
+    // CORRECT ANSWER
+    // ------------------------------------------
+
+    correctAnswer.value =
+        q.correctAnswer || "";
+
+
+    // ------------------------------------------
+    // FORM TITLE
+    // ------------------------------------------
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Edit Question";
+
+    }
+
+
+    if (
+        questionForm
+    ) {
+
+        questionForm.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+// ======================================================
+// DELETE QUESTION
+// ======================================================
+
+function deleteQuestion(
+    index
+) {
+
+    if (
+        !confirm(
+            "Are you sure you want to delete this question?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    questions.splice(
+        index,
+        1
+    );
+
+
+    saveQuestions(
+        questions
+    );
+
+
+    renderQuestions();
+
+
+    clearForm();
+
+}
+
+
+// ======================================================
+// CLEAR FORM
+// ======================================================
+
+cancelButton.addEventListener(
+    "click",
+    function() {
+
+        clearForm();
+
+    }
+);
+
+
+function clearForm() {
+
+    questionForm.reset();
+
+
+    questionId.value =
+        "";
+
+
+    currentImages = {
+
+        question: null,
+
+        A: null,
+
+        B: null,
+
+        C: null,
+
+        D: null
+
+    };
+
+
+    Object.keys(
+        imagePreviews
+    ).forEach(
+        function(key) {
+
+            if (
+                imagePreviews[key]
+            ) {
+
+                imagePreviews[key].innerHTML =
+                    "";
+
+            }
+
+        }
+    );
+
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Add Question";
+
+    }
+
+}
+
+
+// ======================================================
+// CLEAR ALL QUESTIONS
+// ======================================================
+
+clearAllButton.addEventListener(
+    "click",
+    function() {
+
+        if (
+            questions.length === 0
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !confirm(
+                "Are you sure you want to delete ALL questions?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        questions = [];
+
+
+        saveQuestions(
+            questions
+        );
+
+
+        renderQuestions();
+
+
+        clearForm();
+
+    }
+);
+
+
+// ======================================================
+// EXPORT
+// ======================================================
+
+exportButton.addEventListener(
+    "click",
+    function() {
+
+        if (
+            questions.length === 0
+        ) {
+
+            alert(
+                "There are no questions to export."
+            );
+
+            return;
+
+        }
+
+
+        const compact =
+            questions.map(
+                function(q) {
+
+                    return [
+
+                        q.question,
+
+                        q.options.A,
+
+                        q.options.B,
+
+                        q.options.C,
+
+                        q.options.D,
+
+                        q.correctAnswer
+
+                    ];
+
+                }
+            );
+
+
+        const json =
+            JSON.stringify(
+                compact
+            );
+
+
+        const blob =
+            new Blob(
+                [json],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            "MockTest_Questions.json";
+
+
+        link.click();
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+    }
+);
+
+
+// ======================================================
+// IMPORT
+// ======================================================
+
+importButton.addEventListener(
+    "click",
+    function() {
+
+        importFile.click();
+
+    }
+);
+
+
+importFile.addEventListener(
+    "change",
+    function() {
+
+        const file =
+            importFile.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(event) {
+
+                importQuestions(
+                    event.target.result
+                );
+
+            };
+
+
+        reader.readAsText(
+            file
+        );
+
+    }
+);
+
+
+// ======================================================
+// IMPORT QUESTIONS
+// ======================================================
+
+function importQuestions(
+    text
+) {
+
+    let data;
+
+
+    try {
+
+        data =
+            JSON.parse(
+                text
+            );
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Import failed.\nInvalid JSON file."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(data)
+    ) {
+
+        alert(
+            "Import failed.\nInvalid question format."
+        );
+
+        return;
+
+    }
+
+
+    const imported = [];
+
+
+    data.forEach(
+        function(item) {
+
+            // --------------------------------------
+            // COMPACT FORMAT
+            // --------------------------------------
+
+            if (
+                Array.isArray(item) &&
+                item.length >= 6
+            ) {
+
+                const q =
+                    item[0];
+
+
+                const A =
+                    item[1];
+
+
+                const B =
+                    item[2];
+
+
+                const C =
+                    item[3];
+
+
+                const D =
+                    item[4];
+
+
+                const answer =
+                    String(
+                        item[5]
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                if (
+                    !answer.match(
+                        /^[ABCD]$/
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    !hasContent(q) ||
+                    !hasContent(A) ||
+                    !hasContent(B) ||
+                    !hasContent(C) ||
+                    !hasContent(D)
+                ) {
+
+                    return;
+
+                }
+
+
+                imported.push({
+
+                    id:
+                        createId(),
+
+                    question:
+                        q,
+
+                    options: {
+
+                        A: A,
+
+                        B: B,
+
+                        C: C,
+
+                        D: D
+
+                    },
+
+                    correctAnswer:
+                        answer
+
+                });
+
+            }
+
+        }
+    );
+
+
+    if (
+        imported.length === 0
+    ) {
+
+        alert(
+            "Import failed.\nNo valid questions were found."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            "Import " +
+            imported.length +
+            " question(s)?\n\n" +
+            "They will be added to the existing question bank."
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    questions =
+        questions.concat(
+            imported
+        );
+
+
+    saveQuestions(
+        questions
+    );
+
+
+    renderQuestions();
+
+
+    alert(
+        imported.length +
+        " question(s) imported successfully."
+    );
+
+
+    importFile.value =
+        "";
+
+}
+
+
+// ======================================================
+// CHECK CONTENT
+// ======================================================
+
+function hasContent(
+    value
+) {
+
+    if (
+        typeof value === "string"
+    ) {
+
+        return (
+            value.trim().length > 0
+        );
+
+    }
+
+
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        return Boolean(
+            value.t ||
+            value.i
+        );
+
+    }
+
+
+    return false;
+
+}
+
+
+// ======================================================
+// SETTINGS
+// ======================================================
+
+function loadSettings() {
+
+    const settings =
+        getSettings();
+
+
+    const positive =
+        document.getElementById(
+            "positiveMarks"
+        );
+
+    const negative =
+        document.getElementById(
+            "negativeMarks"
+        );
+
+    const duration =
+        document.getElementById(
+            "testDuration"
+        );
+
+
+    if (positive) {
+
+        positive.value =
+            settings.positiveMarks;
+
+    }
+
+
+    if (negative) {
+
+        negative.value =
+            settings.negativeMarks;
+
+    }
+
+
+    if (duration) {
+
+        duration.value =
+            settings.testDurationMinutes;
+
+    }
+
+}
+
+
+// ======================================================
+// SAVE SETTINGS
+// ======================================================
+
+const saveSettingsButton =
+    document.getElementById(
+        "saveSettingsButton"
+    );
+
+
+if (
+    saveSettingsButton
+) {
+
+    saveSettingsButton.addEventListener(
+        "click",
+        function() {
+
+            const positive =
+                Number(
+                    document.getElementById(
+                        "positiveMarks"
+                    ).value
+                );
+
+
+            const negative =
+                Number(
+                    document.getElementById(
+                        "negativeMarks"
+                    ).value
+                );
+
+
+            const duration =
+                Number(
+                    document.getElementById(
+                        "testDuration"
+                    ).value
+                );
+
+
+            if (
+                positive < 0 ||
+                negative < 0 ||
+                duration <= 0
+            ) {
+
+                alert(
+                    "Please enter valid test settings."
+                );
+
+                return;
+
+            }
+
+
+            saveSettings({
+
+                positiveMarks:
+                    positive,
+
+                negativeMarks:
+                    negative,
+
+                testDurationMinutes:
+                    duration
+
+            });
+
+
+            const message =
+                document.getElementById(
+                    "settingsMessage"
+                );
+
+
+            if (message) {
+
+                message.textContent =
+                    "Settings saved successfully.";
+
+            }
+
+        }
+    );
+
+}
+  
