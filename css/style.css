@@ -1302,3 +1302,44 @@ button:disabled {
 .status-unanswered {
     font-weight: bold;
 }
+/* ======================================================
+   EDITOR IMAGE SUPPORT
+   ====================================================== */
+
+.media-preview {
+    margin: 8px 0 15px;
+}
+
+.editor-image-preview,
+.editor-media-image {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    margin: 8px 0;
+    object-fit: contain;
+}
+
+.remove-image-button {
+    margin-bottom: 10px;
+}
+
+.editor-question-preview {
+    margin: 10px 0 15px;
+}
+
+.editor-option-preview {
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.editor-correct-option {
+    background-color: #c6efce;
+}
+
+.question-card-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
