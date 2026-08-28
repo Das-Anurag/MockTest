@@ -5,18 +5,23 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Question Editor</title>
 
-    <link rel="stylesheet"
-          href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
 </head>
 
 
 <body>
+
 
 <div class="editor-container">
 
@@ -34,7 +39,6 @@
         </p>
 
     </header>
-
 
 
     <!-- ========================================= -->
@@ -91,10 +95,9 @@
 
         <button
             type="button"
-            id="saveSettingsButton">
-
+            id="saveSettingsButton"
+        >
             Save Test Settings
-
         </button>
 
 
@@ -103,12 +106,12 @@
     </section>
 
 
-
     <!-- ========================================= -->
     <!-- QUESTION FORM -->
     <!-- ========================================= -->
 
     <section class="question-section">
+
 
         <h2 id="formTitle">
             Add Question
@@ -124,6 +127,10 @@
             >
 
 
+            <!-- ===================================== -->
+            <!-- QUESTION -->
+            <!-- ===================================== -->
+
             <label for="question">
                 Question
             </label>
@@ -132,9 +139,29 @@
                 id="question"
                 rows="4"
                 placeholder="Enter your question..."
-                required
             ></textarea>
 
+
+            <label for="questionImage">
+                Question Image
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="file"
+                id="questionImage"
+                accept="image/*"
+            >
+
+            <div
+                id="questionImagePreview"
+                class="media-preview"
+            ></div>
+
+
+            <!-- ===================================== -->
+            <!-- OPTION A -->
+            <!-- ===================================== -->
 
             <label for="optionA">
                 Option A
@@ -144,9 +171,29 @@
                 type="text"
                 id="optionA"
                 placeholder="Enter option A"
-                required
             >
 
+
+            <label for="optionAImage">
+                Option A Image
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="file"
+                id="optionAImage"
+                accept="image/*"
+            >
+
+            <div
+                id="optionAImagePreview"
+                class="media-preview"
+            ></div>
+
+
+            <!-- ===================================== -->
+            <!-- OPTION B -->
+            <!-- ===================================== -->
 
             <label for="optionB">
                 Option B
@@ -156,9 +203,29 @@
                 type="text"
                 id="optionB"
                 placeholder="Enter option B"
-                required
             >
 
+
+            <label for="optionBImage">
+                Option B Image
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="file"
+                id="optionBImage"
+                accept="image/*"
+            >
+
+            <div
+                id="optionBImagePreview"
+                class="media-preview"
+            ></div>
+
+
+            <!-- ===================================== -->
+            <!-- OPTION C -->
+            <!-- ===================================== -->
 
             <label for="optionC">
                 Option C
@@ -168,9 +235,29 @@
                 type="text"
                 id="optionC"
                 placeholder="Enter option C"
-                required
             >
 
+
+            <label for="optionCImage">
+                Option C Image
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="file"
+                id="optionCImage"
+                accept="image/*"
+            >
+
+            <div
+                id="optionCImagePreview"
+                class="media-preview"
+            ></div>
+
+
+            <!-- ===================================== -->
+            <!-- OPTION D -->
+            <!-- ===================================== -->
 
             <label for="optionD">
                 Option D
@@ -180,9 +267,29 @@
                 type="text"
                 id="optionD"
                 placeholder="Enter option D"
-                required
             >
 
+
+            <label for="optionDImage">
+                Option D Image
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="file"
+                id="optionDImage"
+                accept="image/*"
+            >
+
+            <div
+                id="optionDImagePreview"
+                class="media-preview"
+            ></div>
+
+
+            <!-- ===================================== -->
+            <!-- CORRECT ANSWER -->
+            <!-- ===================================== -->
 
             <label for="correctAnswer">
                 Correct Answer
@@ -216,24 +323,28 @@
             </select>
 
 
+            <!-- ===================================== -->
+            <!-- BUTTONS -->
+            <!-- ===================================== -->
+
             <div class="button-row">
+
 
                 <button
                     type="submit"
-                    id="saveButton">
-
+                    id="saveButton"
+                >
                     Save Question
-
                 </button>
 
 
                 <button
                     type="button"
-                    id="cancelButton">
-
+                    id="cancelButton"
+                >
                     Clear
-
                 </button>
+
 
             </div>
 
@@ -243,12 +354,12 @@
     </section>
 
 
-
     <!-- ========================================= -->
     <!-- QUESTION BANK -->
     <!-- ========================================= -->
 
     <section class="question-list">
+
 
         <h2>
             Question Bank
@@ -256,11 +367,8 @@
 
 
         <div id="questionCount">
-
             0 questions
-
         </div>
-
 
 
         <!-- ======================================= -->
@@ -269,33 +377,34 @@
 
         <div class="import-export-section">
 
+
             <h3>
                 Question Bank Backup
             </h3>
 
+
             <p>
-                Export your questions as a backup file
-                or import a previously saved backup.
+                Export your questions as a compact JSON
+                file or import a previously saved file.
             </p>
 
 
             <div class="import-export-buttons">
 
+
                 <button
                     type="button"
-                    id="exportButton">
-
+                    id="exportButton"
+                >
                     Export Questions
-
                 </button>
 
 
                 <button
                     type="button"
-                    id="importButton">
-
+                    id="importButton"
+                >
                     Import Questions
-
                 </button>
 
 
@@ -306,10 +415,11 @@
                     hidden
                 >
 
+
             </div>
 
-        </div>
 
+        </div>
 
 
         <!-- ======================================= -->
@@ -318,25 +428,20 @@
 
         <button
             type="button"
-            id="clearAllButton">
-
+            id="clearAllButton"
+        >
             Clear All Questions
-
         </button>
-
 
 
         <!-- ======================================= -->
         <!-- QUESTIONS -->
         <!-- ======================================= -->
 
-        <div id="questionsContainer">
-
-        </div>
+        <div id="questionsContainer"></div>
 
 
     </section>
-
 
 
     <!-- ========================================= -->
@@ -345,15 +450,13 @@
 
     <a
         href="index.html"
-        class="home-link">
-
+        class="home-link"
+    >
         ← Back to Home
-
     </a>
 
 
 </div>
-
 
 
 <!-- ============================================= -->
